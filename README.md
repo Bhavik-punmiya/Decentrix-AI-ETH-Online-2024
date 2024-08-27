@@ -1,1 +1,1 @@
-# Decentrix-AI-ETH-Online-2024
+# Decentrix.ai - ETH online 2024
