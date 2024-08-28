@@ -1,8 +1,8 @@
-# Decentrix.ai - ETH online 2024
+# Decentrix.AI - ETH online 2024
 
 Here's what our team is working on so far:
 
-**Name**: Decentrix.ai
+**Name**: Decentrix.AI
 
 **Description**: Decentrix is a pool of multi chains AI agents that will help developers to build on any chain using natural language and minimal coding.
 

@@ -2,10 +2,11 @@ import type {Metadata} from "next";
 import "./globals.css";
 import Providers from "@/components/Providers";
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 
 export const metadata: Metadata = {
-    title: "Decentrix.ai",
+    title: "Decentrix.AI",
     description: "Think ideas, not code",
 };
 
@@ -19,8 +20,8 @@ export default function RootLayout({
         <body className="pt-14">
         <Providers>
             <Navbar/>
-
             {children}
+            <Footer/>
         </Providers>
         </body>
         </html>

@@ -15,7 +15,7 @@ function BrandLogo(props) {
             <div
                 className=" text-theme-blue-dark text-xl"
             style={{fontWeight:900}}
-            >Decentrix.ai
+            >Decentrix.AI
             </div>
         </Link>
 

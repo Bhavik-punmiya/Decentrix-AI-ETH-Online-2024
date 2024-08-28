@@ -154,10 +154,20 @@ function Navbar() {
                             loggedIn ? (
                                 <div className='flex items-center space-x-4'>
                                     <Link href="/profile">
-                                        <div
-                                            className='w-8 h-8 bg-theme-light-purple font-bold rounded-full flex items-center justify-center'>
-                                            {nameInitials}
-                                        </div>
+                                        {
+                                            userData?.profileImage ? (
+                                                <img
+                                                    src={userData.profileImage}
+                                                    alt="profile"
+                                                    className="w-8 h-8 rounded-full"
+                                                />
+                                            ) : (
+                                                <div
+                                                    className='w-8 h-8 bg-theme-blue-light font-bold rounded-full flex items-center justify-center'>
+                                                    {nameInitials}
+                                                </div>
+                                            )
+                                        }
                                     </Link>
                                     <button
                                         onClick={() => logout()}
