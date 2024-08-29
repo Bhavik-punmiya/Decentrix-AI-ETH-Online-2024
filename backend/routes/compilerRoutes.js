@@ -1,10 +1,8 @@
-// routes/compilerRoutes.js
-
 const express = require('express');
 const router = express.Router();
-const compilerController = require('../controllers/compilerController');
+const { compileSolidity, upload } = require('../controllers/compilerController');
 
-// POST /compile - Compiles Solidity code and returns errors or success
-router.post('/compile', compilerController.compileSolidity);
+// Define the route for compiling Solidity code
+router.post('/compile', upload.single('file'), compileSolidity);
 
 module.exports = router;

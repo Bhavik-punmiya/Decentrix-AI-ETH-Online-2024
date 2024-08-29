@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { useState } from 'react';
 import TextEditor from '../components/TextEditor'; // Ensure this path is correct
 import axios from 'axios';
@@ -9,39 +9,73 @@ export default function Editor() {
 
   const compileCode = async () => {
     try {
-      const response = await axios.post('http://localhost:8080/api/compile', { code : JSON.stringify(code) });
+      // Create a FormData object
+      const formData = new FormData();
+      formData.append('file', new Blob([code], { type: 'text/plain' }), 'Contract.sol');
+  
+      // Send the file using FormData
+      const response = await axios.post('http://localhost:8080/api/compile', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
       setResult(response.data);
+      console.log(response.data);
     } catch (error) {
       setResult({ error: error.message });
     }
   };
 
-  return (
-    <div className="flex h-screen">
-      <div className="flex-1 p-4 bg-gray-100">
-        <h1 className="text-3xl font-bold">Welcome to Solidity Editor</h1>
-        <p className="mt-4">Compile results will appear here:</p>
-        <div className="mt-4 p-4 bg-white rounded-lg shadow">
-          {result ? (
-            result.error ? (
-              <pre className="text-red-600">{result.error}</pre>
-            ) : (
-              <pre>{result}</pre>
-            )
-          ) : (
-            <p>No results yet. Write some code and hit "Compile"!</p>
-          )}
-        </div>
-      </div>
+  const renderResult = () => {
+    if (!result) {
+      return <div>No results yet. Write some code and hit "Compile"!</div>;
+    }
 
-      <div className="w-1/2 mt-20 p-4 bg-transparent">
-        <button
-          onClick={compileCode}
-          className="mb-4 px-4 py-2 bg-blue-500 text-white font-semibold rounded shadow hover:bg-blue-600"
+    if (result.errors && result.errors.length > 0) {
+      // Extract the first error message
+      const error = result.errors[0];
+      return (
+        <div className="bg-red-100 border border-red-400 text-red-700 p-4 rounded">
+          <h3 className="font-bold">Compilation Error:</h3>
+          <p>{error.message}</p>
+        </div>
+      );
+    }
+
+    if (result.status === 'success') {
+      // Render compilation success result
+      return (
+        <div className="bg-green-100 border border-green-400 text-green-700 p-4 rounded">
+          <h3 className="font-bold">Compilation Successful!</h3>
+          <h4>Bytecode:</h4>
+          <pre>{result.bytecode}</pre>
+          <h4>ABI:</h4>
+          <pre>{JSON.stringify(result.abi, null, 2)}</pre>
+        </div>
+      );
+    }
+
+    // Fallback for unexpected cases
+    return (
+      <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 p-4 rounded">
+        Unexpected result format.
+      </div>
+    );
+  };
+
+  return (
+    <div className="flex">
+      <div className="w-1/2 p-4">
+        <h2 className="text-xl font-bold mb-4">Welcome to Solidity Editor</h2>
+        <TextEditor code={code} setCode={setCode} />
+        <button 
+          onClick={compileCode} 
+          className="mt-4 bg-blue-500 text-white py-2 px-4 rounded"
         >
           Compile
         </button>
-        <TextEditor code={code} setCode={setCode} />
+      </div>
+      <div className="w-1/2 p-4">
+        <h2 className="text-xl font-bold mb-4">Compile results will appear here:</h2>
+        {renderResult()}
       </div>
     </div>
   );

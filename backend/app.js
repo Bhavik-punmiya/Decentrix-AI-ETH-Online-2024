@@ -1,21 +1,19 @@
-// app.js
-
 const express = require('express');
+const bodyParser = require('body-parser');
+const solidityRoutes = require('./routes/compilerRoutes');
 const cors = require('cors');
 const app = express();
-const compilerRoutes = require('./routes/compilerRoutes');
 
-// Middleware to parse JSON requests
-app.use(express.json());
-
-// Enable CORS
+// Middleware
 app.use(cors());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
-// Use compiler routes
-app.use('/api', compilerRoutes);
+// Use the Solidity routes
+app.use('/api', solidityRoutes);
 
 // Start the server
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+  console.log(`Server is running on http://localhost:${PORT}`);
 });
