@@ -6,7 +6,7 @@ import {useEffect, useState} from "react";
 import {useContext} from "react";
 import {GlobalContext} from "@/contexts/UserContext";
 import {FaBars, FaTimes} from "react-icons/fa";
-import { RiCoinsLine } from "react-icons/ri";
+import {RiCoinsLine} from "react-icons/ri";
 import RPC from "./etherRPC";
 import BrandLogo from "@/components/BrandLogo";
 import Link from "next/link";
@@ -67,7 +67,7 @@ function Navbar() {
         };
 
         init();
-    }, []);
+    }, [userData]);
 
     const login = async () => {
         const web3authProvider = await web3auth.connect();
@@ -124,7 +124,7 @@ function Navbar() {
     useEffect(() => {
 
         //get current page url
-        if(pathname){
+        if (pathname) {
             setCurrentPage(pathname);
             console.log(pathname)
         }
@@ -132,18 +132,23 @@ function Navbar() {
     }, [pathname])
 
     return (
-        <nav className="fixed top-0 py-1 left-0 w-full z-10 border-b bg-white">
-
-            <div className=" mx-auto px-3">
+        <nav
+            className="fixed top-3 left-1/2 transform -translate-x-1/2  p-2 w-[95%] z-10 border bg-white rounded-full">
+            <div className=" mx-auto ">
                 <div className="flex justify-between">
-                    <div className="flex">
+                    <div className="flex px-3">
                         <BrandLogo/>
                     </div>
                     <div className="hidden md:flex gap-2 items-center justify-center font-bold">
-                        <Link href="/agents" className={`px-3 py-1 rounded-lg text-sm  ${
-                            currentPage === "/agents" ? 'bg-theme-blue text-white ' : 'text-gray-500 hover:text-black'
+                        <Link href="/agents" className={`px-3 py-1 rounded-lg text-sm text-black ${
+                            currentPage === "/agents" ? 'bg-theme-light-green ' : 'hover:text-gray-500'
                         }`}>
                             Agents
+                        </Link>
+                        <Link href="/profile" className={`px-3 py-1 rounded-lg text-sm text-black ${
+                            currentPage === "/profile" ? 'bg-theme-light-green ' : 'hover:text-gray-500'
+                        }`}>
+                            Profile
                         </Link>
 
                     </div>
@@ -169,16 +174,17 @@ function Navbar() {
                                             )
                                         }
                                     </Link>
+
                                     <button
                                         onClick={() => logout()}
-                                        className=" px-3 py-1 text-white bg-theme-gray-dark hover:bg-theme-blue rounded-lg "
+                                        className=" py-2 px-4 text-white bg-theme-gray-dark text rounded-full  "
                                     >Logout
                                     </button>
                                 </div>
                             ) : <div>
                                 <button
                                     onClick={() => login()}
-                                    className=" px-3 py-1 text-white bg-theme-gray-dark hover:bg-theme-blue rounded-lg "
+                                    className=" py-2 px-4 text-white bg-theme-gray-dark text rounded-full  "
                                 >Login
                                 </button>
                             </div>
@@ -204,13 +210,13 @@ function Navbar() {
                             loggedIn ? (
                                 <Link
                                     href="/profile"
-                                    className=" mx-4 px-3 py-1 text-white bg-theme-gray-dark hover:bg-theme-blue rounded-lg "
+                                    className=" mx-4 py-2 px-4 text-white bg-theme-gray-dark text rounded-full  "
                                 >Profile
                                 </Link>
                             ) : (
                                 <button
                                     onClick={() => login()}
-                                    className=" mx-4 px-3 py-1 text-white bg-theme-gray-dark hover:bg-theme-blue rounded-lg "
+                                    className=" mx-4 py-2 px-4 text-white bg-theme-gray-dark text rounded-full  "
                                 >Login</button>
                             )
                         }

@@ -10,8 +10,8 @@ function Footer(props) {
                 Decentrix.AI © 2024
             </div>
             <div className="flex flex-row gap-5 items-center">
-                <Link href="https://github.com/Bhavik-punmiya/Decentrix-AI-ETH-Online-2024" className="hover:text-white"><FaGithub /></Link>
-                <Link href="#" className="hover:text-white"><FaXTwitter /></Link>
+                <Link href="https://github.com/Bhavik-punmiya/Decentrix-AI-ETH-Online-2024" className=""><FaGithub /></Link>
+                <Link href="#" className=""><FaXTwitter /></Link>
 
 
             </div>
