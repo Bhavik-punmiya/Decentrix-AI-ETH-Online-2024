@@ -1,197 +1,94 @@
 "use client";
+import {useContext, useEffect, useState} from "react";
+import {GlobalContext} from "@/contexts/UserContext";
+import Link from "next/link";
+import {FaTelegramPlane} from "react-icons/fa";
+import Image from "next/image";
 
-import { CHAIN_NAMESPACES, IProvider, WEB3AUTH_NETWORK } from "@web3auth/base";
-import { EthereumPrivateKeyProvider } from "@web3auth/ethereum-provider";
-import { Web3Auth } from "@web3auth/modal";
-import { useEffect, useState } from "react";
-
-import RPC from "./etherRPC";
-// import RPC from "./viemRPC";
-// import RPC from "./web3RPC";
-
-const clientId = "BPi5PB_UiIZ-cPz1GtV5i1I2iOSOHuimiXBI0e-Oe_u6X3oVAbCiAZOTEBtTXw4tsluTITPqA8zMsfxIKMjiqNQ"; // get from https://dashboard.web3auth.io
-
-const chainConfig = {
-  chainNamespace: CHAIN_NAMESPACES.EIP155,
-  chainId: "0xaa36a7",
-  rpcTarget: "https://rpc.ankr.com/eth_sepolia",
-  // Avoid using public rpcTarget in production.
-  // Use services like Infura, Quicknode etc
-  displayName: "Ethereum Sepolia Testnet",
-  blockExplorerUrl: "https://sepolia.etherscan.io",
-  ticker: "ETH",
-  tickerName: "Ethereum",
-  logo: "https://cryptologos.cc/logos/ethereum-eth-logo.png",
-};
-
-const privateKeyProvider = new EthereumPrivateKeyProvider({
-  config: { chainConfig },
-});
-
-const web3auth = new Web3Auth({
-  clientId,
-  web3AuthNetwork: WEB3AUTH_NETWORK.SAPPHIRE_MAINNET,
-  privateKeyProvider,
-});
 
 function App() {
-  const [provider, setProvider] = useState<IProvider | null>(null);
-  const [loggedIn, setLoggedIn] = useState(false);
+    const {userData, setUserData} = useContext(GlobalContext);
 
-  useEffect(() => {
-    const init = async () => {
-      try {
-        await web3auth.initModal();
-        setProvider(web3auth.provider);
+    return (
+        <main className="w-full px-10">
+            <div className=" w-full  px-5 pt-44 flex flex-col justify-center  items-center gap-8 ">
+                <div className="text-6xl mx-auto text-center">Think <span className="">Ideas</span>, Not Code.</div>
+                <button onClick={()=>{
+                   //scoll to agents section
+                    // @ts-ignore
+                    document.getElementById("agents").scrollIntoView({behavior: "smooth"});
 
-        if (web3auth.connected) {
-          setLoggedIn(true);
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    };
 
-    init();
-  }, []);
+                }} className="py-3 px-5 text-white bg-theme-dark text rounded-full mx-auto">
+                    Get Started
+                </button>
+                <div className="w-[90%] border mt-2 border-theme-dark"></div>
+                <div className="text-3xl font-light  text-center ">
+                    Empowering Web2 developers to transition into Web3 with our AI-driven platform. <br/>Describe your needs,
+                    and
+                    our AI will handle the rest.
+                </div>
 
-  const login = async () => {
-    const web3authProvider = await web3auth.connect();
-    setProvider(web3authProvider);
-    if (web3auth.connected) {
-      setLoggedIn(true);
-    }
-  };
+            </div>
 
-  const getUserInfo = async () => {
-    const user = await web3auth.getUserInfo();
-    uiConsole(user);
-  };
+            <div className="bg-theme-off-white-light rounded-xl p-10 w-full mt-24 ">
+                <div className="w-full text-center text-4xl mb-10 " id="agents">Explore our agents</div>
 
-  const logout = async () => {
-    await web3auth.logout();
-    setProvider(null);
-    setLoggedIn(false);
-    uiConsole("logged out");
-  };
+                <div className="grid grid-cols-3 space-x-10  ">
+                    <div className="bg-theme-purple-light rounded-xl shadow-lg p-5">
+                        <div className="flex w-full justify-between items-center">
+                            <div className="flex items-center gap-1">
+                                <Image src="/chain/rootstock-logo.png" alt="rootstock" width={40} height={40}/>
+                                <div className=" text-xl text-center font-bold ">Rootstock</div>
+                            </div>
+                            <Link href={"/agent/rootstock"}
+                                  className="text-2xl   p-2 rounded-xl bg-theme-purple-dark text-white hover:scale-110 ease-out transition-all"><FaTelegramPlane/>
 
-  // Check the RPC file for the implementation
-  const getAccounts = async () => {
-    if (!provider) {
-      uiConsole("provider not initialized yet");
-      return;
-    }
-    const address = await RPC.getAccounts(provider);
-    uiConsole(address);
-  };
+                            </Link>
+                        </div>
+                        <div className="font-light text-lg mt-3 ">
+                            Rootstock is the top and oldest running Bitcoin Layer 2 Blockchain, fully EVM compatible.
 
-  const getBalance = async () => {
-    if (!provider) {
-      uiConsole("provider not initialized yet");
-      return;
-    }
-    const balance = await RPC.getBalance(provider);
-    uiConsole(balance);
-  };
+                        </div>
 
-  const signMessage = async () => {
-    if (!provider) {
-      uiConsole("provider not initialized yet");
-      return;
-    }
-    const signedMessage = await RPC.signMessage(provider);
-    uiConsole(signedMessage);
-  };
+                    </div>
+                    <div className="bg-theme-green-light rounded-xl shadow-lg p-5">
+                        <div className="flex w-full justify-between items-center">
+                            <div className="flex items-center gap-3">
+                                <Image src="/chain/hedera-logo.png" alt="hedera" width={30} height={30}/>
+                                <div className=" text-xl text-center font-bold ">Hedera</div>
+                            </div>
+                            <Link href={"/agent/rootstock"}
+                                  className="text-2xl   p-2 rounded-xl bg-theme-green-dark text-white hover:scale-110 ease-out transition-all"><FaTelegramPlane/>
 
-  const sendTransaction = async () => {
-    if (!provider) {
-      uiConsole("provider not initialized yet");
-      return;
-    }
-    uiConsole("Sending Transaction...");
-    const transactionReceipt = await RPC.sendTransaction(provider);
-    uiConsole(transactionReceipt);
-  };
+                            </Link>
+                        </div>
+                        <div className="font-light text-lg mt-3 ">
+                            An open source, public network governed by leading organizations around the world.
+                        </div>
 
-  function uiConsole(...args: any[]): void {
-    const el = document.querySelector("#console>p");
-    if (el) {
-      el.innerHTML = JSON.stringify(args || {}, null, 2);
-      console.log(...args);
-    }
-  }
+                    </div>
+                    <div className="bg-theme-gray-light rounded-xl shadow-lg p-5">
+                        <div className="flex w-full justify-between items-center">
+                            <div className="flex items-center gap-1">
+                                <Image src="/chain/kinto-logo.png" alt="kinto" width={40} height={40}/>
+                                <div className=" text-xl text-center font-bold ">Kinto</div>
+                            </div>
+                            <Link href={"/agent/kinto"}
+                                  className="text-2xl   p-2 rounded-xl bg-theme-gray-dark text-white hover:scale-110 ease-out transition-all"><FaTelegramPlane/>
 
-  const loggedInView = (
-    <>
-      <div className="flex-container">
-        <div>
-          <button onClick={getUserInfo} className="card">
-            Get User Info
-          </button>
-        </div>
-        <div>
-          <button onClick={getAccounts} className="card">
-            Get Accounts
-          </button>
-        </div>
-        <div>
-          <button onClick={getBalance} className="card">
-            Get Balance
-          </button>
-        </div>
-        <div>
-          <button onClick={signMessage} className="card">
-            Sign Message
-          </button>
-        </div>
-        <div>
-          <button onClick={sendTransaction} className="card">
-            Send Transaction
-          </button>
-        </div>
-        <div>
-          <button onClick={logout} className="card">
-            Log Out
-          </button>
-        </div>
-      </div>
-    </>
-  );
+                            </Link>
+                        </div>
+                        <div className="font-light text-lg mt-3 ">
+                            Kinto is an L2 focused on providing safe access to on-chain finance.
 
-  const unloggedInView = (
-    <button onClick={login} className="card">
-      Login
-    </button>
-  );
+                        </div>
 
-  return (
-    <div className="container">
-      <h1 className="title">
-        <a target="_blank" href="https://web3auth.io/docs/sdk/pnp/web/modal" rel="noreferrer">
-          Web3Auth{" "}
-        </a>
-        & NextJS Quick Start
-      </h1>
+                    </div>
+                </div>
+            </div>
 
-      <div className="grid">{loggedIn ? loggedInView : unloggedInView}</div>
-      <div id="console" style={{ whiteSpace: "pre-line" }}>
-        <p style={{ whiteSpace: "pre-line" }}></p>
-      </div>
-
-      <footer className="footer">
-        <a
-          href="https://github.com/Web3Auth/web3auth-pnp-examples/tree/main/web-modal-sdk/quick-starts/nextjs-modal-quick-start"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Source code
-        </a>
-        <a href="https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FWeb3Auth%2Fweb3auth-pnp-examples%2Ftree%2Fmain%2Fweb-modal-sdk%2Fquick-starts%2Fnextjs-modal-quick-start&project-name=w3a-nextjs-modal&repository-name=w3a-nextjs-modal">
-          <img src="https://vercel.com/button" alt="Deploy with Vercel" />
-        </a>
-      </footer>
-    </div>
-  );
+        </main>);
 }
 
 export default App;
