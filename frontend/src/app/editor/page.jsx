@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from 'react';
-import TextEditor from '../components/TextEditor'; // Ensure this path is correct
+import MonacoEditorComponent from '../components/TextEditor'; // Ensure this path is correct
 import axios from 'axios';
 
 export default function Editor() {
@@ -9,11 +9,8 @@ export default function Editor() {
 
   const compileCode = async () => {
     try {
-      // Create a FormData object
       const formData = new FormData();
       formData.append('file', new Blob([code], { type: 'text/plain' }), 'Contract.sol');
-  
-      // Send the file using FormData
       const response = await axios.post('http://localhost:8080/api/compile', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
@@ -28,9 +25,7 @@ export default function Editor() {
     if (!result) {
       return <div>No results yet. Write some code and hit "Compile"!</div>;
     }
-
     if (result.errors && result.errors.length > 0) {
-      // Extract the first error message
       const error = result.errors[0];
       return (
         <div className="bg-red-100 border border-red-400 text-red-700 p-4 rounded">
@@ -39,9 +34,7 @@ export default function Editor() {
         </div>
       );
     }
-
     if (result.status === 'success') {
-      // Render compilation success result
       return (
         <div className="bg-green-100 border border-green-400 text-green-700 p-4 rounded">
           <h3 className="font-bold">Compilation Successful!</h3>
@@ -52,8 +45,6 @@ export default function Editor() {
         </div>
       );
     }
-
-    // Fallback for unexpected cases
     return (
       <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 p-4 rounded">
         Unexpected result format.
@@ -62,12 +53,14 @@ export default function Editor() {
   };
 
   return (
-    <div className="flex">
+    <div className="flex" style={{ direction: 'ltr' }}>
       <div className="w-1/2 p-4">
         <h2 className="text-xl font-bold mb-4">Welcome to Solidity Editor</h2>
-        <TextEditor code={code} setCode={setCode} />
-        <button 
-          onClick={compileCode} 
+        <div style={{ direction: 'ltr' }}>
+          <MonacoEditorComponent code={code} setCode={setCode} />
+        </div>
+        <button
+          onClick={compileCode}
           className="mt-4 bg-blue-500 text-white py-2 px-4 rounded"
         >
           Compile

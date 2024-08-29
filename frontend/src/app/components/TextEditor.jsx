@@ -1,53 +1,87 @@
-"use client";
-import React from "react";
-import dynamic from "next/dynamic";
-import "@uiw/react-textarea-code-editor/dist.css";
-import rehypePrism from "rehype-prism-plus";
-import rehypeRewrite from "rehype-rewrite";
+import React, { useEffect, useRef } from 'react';
+import Editor, { loader } from '@monaco-editor/react';
 
-const CodeEditor = dynamic(
-  () => import("@uiw/react-textarea-code-editor").then((mod) => mod.default),
-  { ssr: false }
-);
+const MonacoEditorComponent = ({ code, setCode }) => {
+  const editorRef = useRef(null);
 
-function TextEditor({ code, setCode }) {
+  useEffect(() => {
+    loader.init().then((monaco) => {
+      monaco.languages.register({ id: 'solidity' });
+      monaco.languages.setMonarchTokensProvider('solidity', {
+        keywords: [
+          'pragma', 'solidity', 'contract', 'function', 'public', 'private', 
+          'internal', 'external', 'pure', 'view', 'payable', 'storage', 
+          'memory', 'calldata', 'var', 'bool', 'int', 'uint', 'fixed', 'ufixed', 
+          'bytes', 'string', 'address', 'mapping', 'struct', 'enum', 'return', 
+          'returns', 'event', 'indexed', 'using', 'library', 'modifier', 
+          'assembly', 'constant', 'constructor'
+        ],
+        operators: [
+          '=', '>', '<', '!', '~', '?', ':', '==', '<=', '>=', '!=',
+          '&&', '||', '++', '--', '+', '-', '*', '/', '&', '|', '^', '%',
+          '<<', '>>', '>>>', '+=', '-=', '*=', '/=', '&=', '|=', '^=',
+          '%=', '<<=', '>>=', '>>>='
+        ],
+        symbols:  /[=><!~?:&|+\-*\/\^%]+/,
+        tokenizer: {
+          root: [
+            [/[a-z_$][\w$]*/, { cases: { '@keywords': 'keyword',
+                                         '@default': 'identifier' } }],
+            [/[A-Z][\w\$]*/, 'type.identifier'],
+            { include: '@whitespace' },
+            [/[{}()\[\]]/, '@brackets'],
+            [/[<>](?!@symbols)/, '@brackets'],
+            [/@symbols/, { cases: { '@operators': 'operator',
+                                    '@default'  : '' } }],
+            [/\d*\.\d+([eE][\-+]?\d+)?/, 'number.float'],
+            [/0[xX][0-9a-fA-F]+/, 'number.hex'],
+            [/\d+/, 'number'],
+            [/"([^"\\]|\\.)*$/, 'string.invalid'],
+            [/"/, { token: 'string.quote', bracket: '@open', next: '@string' }],
+          ],
+          string: [
+            [/[^\\"]+/, 'string'],
+            [/\\./, 'string.escape.invalid'],
+            [/"/, { token: 'string.quote', bracket: '@close', next: '@pop' }]
+          ],
+          whitespace: [
+            [/[ \t\r\n]+/, 'white'],
+            [/\/\*/, 'comment', '@comment'],
+            [/\/\/.*$/, 'comment'],
+          ],
+          comment: [
+            [/[^\/*]+/, 'comment' ],
+            [/\*\//, 'comment', '@pop'],
+            [/[\/*]/, 'comment']
+          ],
+        },
+      });
+    });
+  }, []);
+
+  const handleEditorDidMount = (editor, monaco) => {
+    editorRef.current = editor;
+  };
+
+  useEffect(() => {
+    if (editorRef.current) {
+      editorRef.current.setValue(code);
+    }
+  }, [code]);
+
   return (
-    <div className="h-full flex items-center justify-center overflow-auto">
-      <CodeEditor
-        value={code}
-        language="sol"
-        placeholder="Please enter Solidity code."
-        onChange={(evn) => setCode(evn.target.value)}
-        padding={15}
-        rehypePlugins={[
-          [rehypePrism, { ignoreMissing: true }],
-          [
-            rehypeRewrite,
-            {
-              rewrite: (node, index, parent) => {
-                if (node.properties?.className?.includes("code-line")) {
-                  if (index === 0 && node.properties?.className) {
-                    node.properties.className.push("demo01");
-                  }
-                }
-                if (node.type === "text" && node.value === "return" && parent.children.length === 1) {
-                  parent.properties.className.push("demo123");
-                }
-              }
-            }
-          ]
-        ]}
-        style={{
-          width: "100%",
-          height: "90vh",
-          fontSize: 14,
-          backgroundColor: "#ffffff",
-          fontFamily: "ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace",
-          overflowY: "auto", 
-        }}
-      />
-    </div>
+    <Editor
+      height="90vh"
+      defaultLanguage="solidity"
+      value={code}
+      onChange={(value) => setCode(value)}
+      onMount={handleEditorDidMount}
+      options={{
+        selectOnLineNumbers: true,
+        automaticLayout: true,
+      }}
+    />
   );
-}
+};
 
-export default TextEditor;
+export default MonacoEditorComponent;
