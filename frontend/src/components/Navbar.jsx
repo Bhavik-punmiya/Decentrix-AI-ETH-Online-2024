@@ -6,7 +6,6 @@ import {useEffect, useState} from "react";
 import {useContext} from "react";
 import {GlobalContext} from "@/contexts/UserContext";
 import {FaBars, FaTimes} from "react-icons/fa";
-import {RiCoinsLine} from "react-icons/ri";
 import RPC from "./etherRPC";
 import BrandLogo from "@/components/BrandLogo";
 import Link from "next/link";
@@ -67,13 +66,15 @@ function Navbar() {
         };
 
         init();
-    }, [userData]);
+    }, []);
 
     const login = async () => {
         const web3authProvider = await web3auth.connect();
         setProvider(web3authProvider);
         if (web3auth.connected) {
             setLoggedIn(true);
+            const user_data = await web3auth.getUserInfo();
+            setUserData(user_data);
         }
     };
 
@@ -81,6 +82,7 @@ function Navbar() {
         await web3auth.logout();
         setProvider(null);
         setLoggedIn(false);
+        setUserData(null);
     };
 
     // Check the RPC file for the implementation
@@ -139,19 +141,7 @@ function Navbar() {
                     <div className="flex px-3">
                         <BrandLogo/>
                     </div>
-                    <div className="hidden md:flex gap-2 items-center justify-center font-bold">
-                        <Link href="/agents" className={`px-3 py-1 rounded-lg text-sm text-black ${
-                            currentPage === "/agents" ? 'bg-theme-green-light ' : 'hover:text-gray-500'
-                        }`}>
-                            Agents
-                        </Link>
-                        <Link href="/profile" className={`px-3 py-1 rounded-lg text-sm text-black ${
-                            currentPage === "/profile" ? 'bg-theme-green-light ' : 'hover:text-gray-500'
-                        }`}>
-                            Profile
-                        </Link>
 
-                    </div>
                     <div className="hidden md:flex gap-2 items-center justify-center font-bold  ">
 
                         {/*login with world id*/}

@@ -42,7 +42,7 @@ function App() {
                                 <div className=" text-xl text-center font-bold ">Rootstock</div>
                             </div>
                             <Link href={"/agent/rootstock"}
-                                  className="text-2xl  hover:text-black p-2 rounded-xl bg-theme-purple-dark text-white hover:scale-110 ease-out transition-all"><FaTelegramPlane/>
+                                  className="text-2xl   p-2 rounded-xl bg-theme-purple-dark text-white hover:scale-110 ease-out transition-all"><FaTelegramPlane/>
 
                             </Link>
                         </div>
@@ -59,7 +59,7 @@ function App() {
                                 <div className=" text-xl text-center font-bold ">Hedera</div>
                             </div>
                             <Link href={"/agent/rootstock"}
-                                  className="text-2xl  hover:text-black p-2 rounded-xl bg-theme-green-dark text-white hover:scale-110 ease-out transition-all"><FaTelegramPlane/>
+                                  className="text-2xl   p-2 rounded-xl bg-theme-green-dark text-white hover:scale-110 ease-out transition-all"><FaTelegramPlane/>
 
                             </Link>
                         </div>
@@ -75,7 +75,7 @@ function App() {
                                 <div className=" text-xl text-center font-bold ">Kinto</div>
                             </div>
                             <Link href={"/agent/kinto"}
-                                  className="text-2xl  hover:text-black p-2 rounded-xl bg-theme-gray-dark text-white hover:scale-110 ease-out transition-all"><FaTelegramPlane/>
+                                  className="text-2xl   p-2 rounded-xl bg-theme-gray-dark text-white hover:scale-110 ease-out transition-all"><FaTelegramPlane/>
 
                             </Link>
                         </div>
