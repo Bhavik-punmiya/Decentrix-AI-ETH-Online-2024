@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from 'react';
-import MonacoEditorComponent from '../components/TextEditor'; // Ensure this path is correct
+import MonacoEditorComponent  from '@/components/TextEditor'; // Ensure this path is correct
 import axios from 'axios';
 
 export default function Editor() {
