@@ -133,7 +133,7 @@ function Navbar() {
 
     return (
         <nav
-            className="fixed top-3 left-1/2 transform -translate-x-1/2  p-2 w-[95%] z-10 border bg-white rounded-full">
+            className="fixed top-3 left-1/2 transform -translate-x-1/2  p-2 w-[95%] z-10   rounded-full backdrop-blur-xl ">
             <div className=" mx-auto ">
                 <div className="flex justify-between">
                     <div className="flex px-3">
@@ -141,12 +141,12 @@ function Navbar() {
                     </div>
                     <div className="hidden md:flex gap-2 items-center justify-center font-bold">
                         <Link href="/agents" className={`px-3 py-1 rounded-lg text-sm text-black ${
-                            currentPage === "/agents" ? 'bg-theme-light-green ' : 'hover:text-gray-500'
+                            currentPage === "/agents" ? 'bg-theme-green-light ' : 'hover:text-gray-500'
                         }`}>
                             Agents
                         </Link>
                         <Link href="/profile" className={`px-3 py-1 rounded-lg text-sm text-black ${
-                            currentPage === "/profile" ? 'bg-theme-light-green ' : 'hover:text-gray-500'
+                            currentPage === "/profile" ? 'bg-theme-green-light ' : 'hover:text-gray-500'
                         }`}>
                             Profile
                         </Link>
@@ -177,14 +177,14 @@ function Navbar() {
 
                                     <button
                                         onClick={() => logout()}
-                                        className=" py-2 px-4 text-white bg-theme-gray-dark text rounded-full  "
+                                        className=" py-2 px-4 text-white bg-theme-dark text rounded-full  "
                                     >Logout
                                     </button>
                                 </div>
                             ) : <div>
                                 <button
                                     onClick={() => login()}
-                                    className=" py-2 px-4 text-white bg-theme-gray-dark text rounded-full  "
+                                    className=" py-2 px-4 text-white bg-theme-dark text rounded-full  "
                                 >Login
                                 </button>
                             </div>
@@ -210,13 +210,13 @@ function Navbar() {
                             loggedIn ? (
                                 <Link
                                     href="/profile"
-                                    className=" mx-4 py-2 px-4 text-white bg-theme-gray-dark text rounded-full  "
+                                    className=" mx-4 py-2 px-4 text-white bg-theme-dark text rounded-full  "
                                 >Profile
                                 </Link>
                             ) : (
                                 <button
                                     onClick={() => login()}
-                                    className=" mx-4 py-2 px-4 text-white bg-theme-gray-dark text rounded-full  "
+                                    className=" mx-4 py-2 px-4 text-white bg-theme-dark text rounded-full  "
                                 >Login</button>
                             )
                         }

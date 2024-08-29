@@ -13,8 +13,8 @@ function BrandLogo(props) {
                 className="w-auto h-8 rounded-xl overflow-clip"
             />
             <div
-                className=" text-theme-blue-dark text-xl"
-            style={{fontWeight:900}}
+                className=" text-theme-blue-dark text-xl font-bold"
+
             >Decentrix.AI
             </div>
         </Link>
