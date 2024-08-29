@@ -17,7 +17,7 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en">
-        <body className="bg-theme-off-white ">
+        <body className="bg-theme-off-white pt-20">
         <Providers>
             <Navbar/>
             {children}

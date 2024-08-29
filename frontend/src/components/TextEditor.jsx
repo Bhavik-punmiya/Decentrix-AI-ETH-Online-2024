@@ -12,7 +12,7 @@ const CodeEditor = dynamic(
 
 function TextEditor({ code, setCode }) {
   return (
-    <div className="h-full flex items-center justify-center overflow-auto">
+    <div className=" flex items-center justify-center">
       <CodeEditor
         value={code}
         language="sol"
@@ -43,7 +43,8 @@ function TextEditor({ code, setCode }) {
           fontSize: 14,
           backgroundColor: "#ffffff",
           fontFamily: "ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace",
-          overflowY: "auto", 
+          overflowY: "auto",
+          color: "#333",
         }}
       />
     </div>
