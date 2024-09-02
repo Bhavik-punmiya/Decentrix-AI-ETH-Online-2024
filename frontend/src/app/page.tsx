@@ -32,7 +32,8 @@ function App() {
             </div>
 
             <div className="bg-theme-off-white-light rounded-xl p-10 w-full mt-24 ">
-                <div className="w-full text-center text-4xl mb-10 " id="agents">Explore our agents</div>
+                <div className="w-full text-center text-4xl mb-10" id="agents"><span>Choose an agent</span>
+                </div>
 
                 <div className="grid grid-cols-3 space-x-10  ">
                     <div className="bg-theme-purple-light rounded-xl shadow-lg p-5">
@@ -58,7 +59,7 @@ function App() {
                                 <Image src="/chain/hedera-logo.png" alt="hedera" width={30} height={30}/>
                                 <div className=" text-xl text-center font-bold ">Hedera</div>
                             </div>
-                            <Link href={"/agent/rootstock"}
+                            <Link href={"/editor"}
                                   className="text-2xl   p-2 rounded-xl bg-theme-green-dark text-white hover:scale-110 ease-out transition-all"><FaTelegramPlane/>
 
                             </Link>
