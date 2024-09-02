@@ -9,15 +9,17 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@chakra-ui/react": "^2.8.2",
     "@monaco-editor/react": "^4.6.0",
     "@nextui-org/react": "^2.4.6",
     "@solidity-parser/parser": "^0.18.0",
+    "@tanstack/react-query": "^5.53.3",
     "@types/react-beautiful-dnd": "^13.1.8",
     "@uiw/react-textarea-code-editor": "^3.0.2",
     "@web3auth/base": "^8.12.4",
     "@web3auth/ethereum-provider": "^8.12.4",
+    "@web3auth/metamask-adapter": "^8.12.4",
     "@web3auth/modal": "^8.12.4",
+    "@web3modal/wagmi": "^5.1.4",
     "axios": "^1.7.5",
     "dotenv": "^16.4.5",
     "ethers": "^6.13.2",
@@ -31,7 +33,8 @@
     "react-monaco-editor": "^0.56.1",
     "react-resizable": "^3.0.5",
     "rehype-rewrite": "^4.0.2",
-    "viem": "^2.20.1",
+    "viem": "^2.21.1",
+    "wagmi": "^2.12.8",
     "web3": "^4.12.1"
   },
   "devDependencies": {

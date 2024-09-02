@@ -14,6 +14,7 @@ import {usePathname} from "next/navigation";
 // import RPC from "./web3RPC";
 
 const clientId = process.env.NEXT_PUBLIC_WEB3_AUTH_CLIENT_ID;
+
 const chainConfig = {
     chainNamespace: CHAIN_NAMESPACES.EIP155,
     chainId: "0xaa36a7",
