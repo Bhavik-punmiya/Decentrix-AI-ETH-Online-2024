@@ -123,6 +123,17 @@ export default function Editor() {
                     {loading ? 'Loading...' : 'Review My Code'}
                 </Button>
 
+                <div>
+                    {
+                        error && (
+                            <div>
+                                <h1>Error</h1>
+                                <p>{error}</p>
+                            </div>
+                        )
+                    }
+                </div>
+
                 <div className="my-3">
                     <h1 className="font-bold my-2">Progress</h1>
                     <p>{progressMessage}</p>
