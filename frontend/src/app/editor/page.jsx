@@ -75,6 +75,8 @@ export default function Editor() {
         setCode(value);
     };
 
+    //useEffect to monitor sugeestion changes and compile code
+
     const renderResult = () => {
         const [ABIcopied, setABICopied] = useState(false);
         const [Bytecopied, setByteCopied] = useState(false);

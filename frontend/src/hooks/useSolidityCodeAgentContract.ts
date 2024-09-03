@@ -141,6 +141,10 @@ export function useSolidityCodeAgentContract(): UseSolidityCodeAgentContract {
             handleOpenErrorModal('Error fetching suggestions');
         } finally {
             console.log('Agent run complete');
+            // /run comipler
+            // if(error){
+            //     runErrorAgent();
+            // }
             setLoading(false);
             setProgressMessage('');
         }
