@@ -3,7 +3,7 @@ import React from 'react';
 
 export default function EditorLayout({ children }) {
   return (
-    <div className="min-h-screen ">
+    <div className=" ">
       {/* <SideBar /> */}
       <main className="">{children}</main>
     </div>

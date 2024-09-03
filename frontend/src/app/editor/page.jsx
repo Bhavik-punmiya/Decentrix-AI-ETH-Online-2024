@@ -170,7 +170,6 @@ export default function Editor() {
         <div className="flex h-full bg-[rgb(235, 232, 224)]">
             <div className="w-1/2 p-4">
                 <Card className="flex-grow h-full p-6">
-                    {/* Left side: Placeholder for Chat Bot UI */}
                     <div className="max-w-2xl bg-gray-100 p-4 rounded-lg shadow-md">
                         <div className="flex items-center space-x-4">
                             <Avatar isBordered radius="md" src="chain/rootstock-logo.png"/>

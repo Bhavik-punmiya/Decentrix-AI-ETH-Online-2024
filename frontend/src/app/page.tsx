@@ -11,7 +11,7 @@ function App() {
 
     return (
         <main className="w-full px-10">
-            <div className=" w-full  px-5 pt-44 flex flex-col justify-center  items-center gap-8 ">
+            <div className=" w-full  px-5 pt-36 flex flex-col justify-center  items-center gap-8 ">
                 <div className="text-6xl mx-auto text-center">Think <span className="">Ideas</span>, Not Code.</div>
                 <button onClick={()=>{
                    //scoll to agents section
