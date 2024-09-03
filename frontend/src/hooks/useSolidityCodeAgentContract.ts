@@ -6,6 +6,8 @@ import { useAccount, useWalletClient } from "wagmi";
 type UseSolidityCodeAgentContract = {
     code: string;
     setCode: (code: string) => void;
+    userPrompt: string;
+    setUserPrompt: (prompt: string) => void;
     suggestions: string | null;
     loading: boolean;
     error: string | null;
@@ -20,6 +22,7 @@ type UseSolidityCodeAgentContract = {
 
 export function useSolidityCodeAgentContract(): UseSolidityCodeAgentContract {
     const [code, setCode] = useState('');
+    const [userPrompt, setUserPrompt] = useState('');
     const [suggestions, setSuggestions] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -30,20 +33,14 @@ export function useSolidityCodeAgentContract(): UseSolidityCodeAgentContract {
     const { isConnected } = useAccount();
     const { data: walletClient } = useWalletClient();
 
-    const codeReviewMessages = useMemo(() => [
-        'Analyzing your code...',
-        'Identifying code improvement suggestions...',
-        'Evaluating best coding practices...',
-        'Inspecting for potential bugs...',
-        'Optimizing gas usage...',
+
+    const codeGenerationMessages = useMemo(() => [
+        'Generating code...',
+        'Analyzing your instructions...',
+        'Creating the smart contract...',
+        'Finalizing the code...',
     ], []);
 
-    const codeImprovementMessages = useMemo(() => [
-        'Reviewing your code...',
-        'Identifying areas for enhancement...',
-        'Making requested changes...',
-        'Finalizing the review...',
-    ], []);
 
     const handleOpenErrorModal = (message: string) => {
         setError(message);
@@ -91,44 +88,29 @@ export function useSolidityCodeAgentContract(): UseSolidityCodeAgentContract {
         return await contract?.isRunFinished(runId);
     }, [contract]);
 
-    const handleRunAgent = useCallback(async (prompt: string, isImprovementPrompt: boolean) => {
+    const handleRunAgent = useCallback(async (prompt: string) => {
         if (!isConnected) {
             handleOpenErrorModal('Please connect your wallet');
             return;
         }
         if (!prompt) {
-            handleOpenErrorModal('Please enter some code.');
+            handleOpenErrorModal('Please enter some prompt.');
             return;
         }
 
         const maxIterations = 10;
 
-        const codeImprovementQuery = `
-        Please review and modify the following Solidity code as per the instructions provided within the comments marked with '@Genie:'. Only make changes where specified by these '@Genie' instructions. Do not alter any other parts of the code.
+
+        const codeGenerationQuery = `
+        Please generate a Solidity smart contract based on the following instructions. Provide only the code without any additional text, comments, or formatting at the start or end. The code should be ready to use in a smart contract editor. Start directly with the code and do not include any backticks or other information. make sure to include SPDX license identifier at the top of the file.
 
         Instructions:
         ${prompt}
 
-        Solidity code:
-        ${suggestions}
         `;
 
-        const codeReviewQuery = `
-            Please review the following Solidity code as an expert smart contract researcher. Your review should be detailed and organized into the following sections:
-                
-            1. **Code Improvement Suggestions**: Provide specific suggestions to improve the code quality.
-            2. **Best Practices**: Highlight the best practices that should be followed.
-            3. **Potential Bugs**: Identify any potential bugs in the code.
-            4. **Gas Optimization**: Suggest ways to optimize gas usage.
-                
-            After providing the feedback, include the revised version of the code with all recommended changes applied. Do not use any markdown formatting for the code.
-                
-            Solidity code:
-            ${prompt}
-            `;
-
-        const query = isImprovementPrompt ? codeImprovementQuery : codeReviewQuery;
-        const messages = isImprovementPrompt ? codeImprovementMessages : codeReviewMessages;
+        const query = codeGenerationQuery;
+        const messages = codeGenerationMessages;
 
         setLoading(true);
         setError(null);
@@ -163,11 +145,13 @@ export function useSolidityCodeAgentContract(): UseSolidityCodeAgentContract {
             setProgressMessage('');
         }
 
-    }, [codeImprovementMessages, codeReviewMessages, getMessageHistoryContents, isRunFinished, runAgent, suggestions, isConnected]);
+    }, [codeGenerationMessages, getMessageHistoryContents, isRunFinished, runAgent, suggestions, isConnected]);
 
     return {
         code,
         setCode,
+        userPrompt,
+        setUserPrompt,
         suggestions,
         loading,
         error,

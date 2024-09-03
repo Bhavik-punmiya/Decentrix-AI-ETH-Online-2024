@@ -18,6 +18,8 @@ export default function Editor() {
     const {
         code,
         setCode,
+        userPrompt,
+        setUserPrompt,
         suggestions,
         loading,
         error,
@@ -39,7 +41,7 @@ export default function Editor() {
             const formData = new FormData();
             formData.append(
                 "file",
-                new Blob([code], {type: "text/plain"}),
+                new Blob([suggestions], {type: "text/plain"}),
                 "Contract.sol"
             );
             const response = await axios.post(
@@ -118,15 +120,17 @@ export default function Editor() {
 
                 <Button
                     disabled={loading}
-                    onClick={() => handleRunAgent(code, false)}
+                    onClick={() => {
+                        handleRunAgent(userPrompt)
+                    }}
                 >
-                    {loading ? 'Loading...' : 'Review My Code'}
+                    {loading ? 'Loading...' : 'Generate code'}
                 </Button>
 
                 <div>
                     {
                         error && (
-                            <div>
+                            <div className="text-red-500">
                                 <h1>Error</h1>
                                 <p>{error}</p>
                             </div>
@@ -139,12 +143,13 @@ export default function Editor() {
                     <p>{progressMessage}</p>
                 </div>
 
-                <div className="my-3 h-screen">
-                    <h1 className="font-bold my-2">Suggestions</h1>
-                    <SolidityEditor
-                        code={suggestions}
-                        onChange={setSuggestions}
-                        defaultValue={"// Suggestions will appear here"}
+                <div className="my-3 h-48">
+                    <h1 className="font-bold my-2">Describe your smart contract</h1>
+                    <textarea
+                        value={userPrompt}
+                        onChange={(e) => setUserPrompt(e.target.value)}
+                        className="w-full h-full"
+                        placeholder="E.g. I want to create a smart contract that allows users to create a token"
                     />
                 </div>
             </div>
@@ -153,7 +158,7 @@ export default function Editor() {
                     <CardHeader className="flex justify-between items-center px-4 py-2">
                         <div className="flex items-center">
                             <Button color="primary" onClick={compileCode} className="mr-4">
-                            Compile
+                                Compile
                             </Button>
                             <h2 className="text-xl font-bold">Solidity Editor</h2>
                         </div>
@@ -167,15 +172,15 @@ export default function Editor() {
                             style={{maxHeight: "calc(100vh - 200px)"}}
                         >
 
-                                <div className="flex flex-col h-full">
-                                    <div className="flex-grow h-screen">
-                                        <SolidityEditor
-                                            code={code}
-                                            onChange={handleCodeChange}
-                                            defaultValue={"// Solidity code will appear here"}
-                                        />
-                                    </div>
+                            <div className="flex flex-col h-full">
+                                <div className="flex-grow h-screen">
+                                    <SolidityEditor
+                                        code={suggestions}
+                                        onChange={handleCodeChange}
+                                        defaultValue={"// Solidity code will appear here"}
+                                    />
                                 </div>
+                            </div>
 
                         </div>
 
