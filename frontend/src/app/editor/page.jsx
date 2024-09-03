@@ -1,8 +1,6 @@
 "use client";
-import React, { useState } from "react";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faClipboard, faClipboardCheck } from '@fortawesome/free-solid-svg-icons'; // Import specific icons
-import { Avatar } from "@nextui-org/react";
+import React, {useState} from "react";
+import {Avatar} from "@nextui-org/react";
 import {
     NextUIProvider,
     Button,
@@ -14,8 +12,9 @@ import {
 import SolidityEditor from "@/components/SolidityEditor"; // Ensure this path is correct
 import axios from "axios";
 import WalletConnectButton from "../../components/WalletConnectButton";
-import { useAccount } from "wagmi";
-import { useSolidityCodeAgentContract } from '@/hooks/useSolidityCodeAgentContract';
+import {useAccount} from "wagmi";
+import {useSolidityCodeAgentContract} from '@/hooks/useSolidityCodeAgentContract';
+import { FaClipboard, FaClipboardCheck } from "react-icons/fa";
 
 export default function Editor() {
     const {
@@ -46,21 +45,20 @@ export default function Editor() {
             const formData = new FormData();
             formData.append(
                 "file",
-                new Blob([suggestions], { type: "text/plain" }),
+                new Blob([code], {type: "text/plain"}),
                 "Contract.sol"
             );
             const response = await axios.post(
                 "http://localhost:8080/api/compile",
                 formData,
                 {
-                    headers: { "Content-Type": "multipart/form-data" },
+                    headers: {"Content-Type": "multipart/form-data"},
                 }
             );
-            setView("result");
             setResult(response.data);
             console.log(response.data);
         } catch (error) {
-            setResult({ error: error.message });
+            setResult({error: error.message});
         } finally {
             setCompiling(false); // Reset to false after completion
         }
@@ -82,12 +80,8 @@ export default function Editor() {
         const [Bytecopied, setByteCopied] = useState(false);
 
         const copyToClipboard = (text, ele) => {
-            navigator.clipboard.writeText(text).then(() => {
-                !ele ? setABICopied(true) : setByteCopied(true);
-                setTimeout(() => {
-                    !ele ? setABICopied(true) : setByteCopied(true);
-                }, 2000);
-            });
+            console.log(text);
+            navigator.clipboard.writeText(text);
         };
 
         if (!result) {
@@ -102,26 +96,9 @@ export default function Editor() {
             const error = result.errors[0];
             return (
                 <div>
-                    <div className="bg-green-100 border border-green-400 text-green-700 p-4 rounded">
-                        <h3 className="font-bold">Compilation Successful!</h3>
-                    </div>
-                    <div className="bg-gray-100 border border-gray-400 p-4 rounded flex items-center justify-between">
-                        <div className="flex items-center">
-                            <h4 className="mt-2 mr-2">Bytecode:</h4>
-                            <FontAwesomeIcon
-                                icon={Bytecopied ? faClipboardCheck : faClipboard}
-                                className="cursor-pointer text-gray-700"
-                                onClick={() => copyToClipboard(result.bytecode, 1)}
-                            />
-                        </div>
-                        <div className="flex items-center">
-                            <h4 className="mt-2 mr-2">ABI:</h4>
-                            <FontAwesomeIcon
-                                icon={ABIcopied ? faClipboardCheck : faClipboard}
-                                className="cursor-pointer text-gray-700"
-                                onClick={() => copyToClipboard(JSON.stringify(result.abi), 0)}
-                            />
-                        </div>
+                    <div className="bg-red-100 border border-red-400 text-red-700 p-4 rounded">
+                        <h3 className="font-bold">Compilation failed!</h3>
+                        <p>{error.message}</p>
                     </div>
                 </div>
             );
@@ -133,28 +110,40 @@ export default function Editor() {
                     <div className="bg-green-100 border border-green-400 text-green-700 p-4 rounded">
                         <h3 className="font-bold">Compilation Successful!</h3>
                     </div>
-                    <div className="flex justify-end items-center bg-transparent">
-                        <div className="flex items-center mr-4">
-                            <label className="mr-2">ABI:</label>
-                            <FontAwesomeIcon
-                                icon={setABICopied ? faClipboardCheck : faClipboard}
-                                className="cursor-pointer text-gray-500" // Adjust text color if needed
-                                onClick={() => copyToClipboard(JSON.stringify(result.abi))}
-                            />
-                        </div>
-                        <div className="flex items-center">
-                            <label className="mr-2">Bytecode:</label>
-                            <FontAwesomeIcon
-                                icon={setByteCopied ? faClipboardCheck : faClipboard}
-                                className="cursor-pointer text-gray-500" // Adjust text color if needed
-                                onClick={() => copyToClipboard(result.bytecode)}
-                            />
-                        </div>
-                    </div>
+                    <div className=" p-4 rounded flex items-center justify-between my-2">
+                        <Button color="primary" className="flex gap-2 items-center" onClick={
+                            () => {
+                                copyToClipboard(result.bytecode, 1)
+                            }
+                        }>
+                            <h4 className="">
+                                {
+                                    Bytecopied ? "Bytecode Copied" : "Copy Bytecode"
+                                }
+                            </h4>
+                            {
+                                Bytecopied ? <FaClipboardCheck/>
+                                    : <FaClipboard/>
+                            }
+                        </Button>
+                        <Button color="primary" className="flex gap-2 items-center" onClick={() => {
+                            copyToClipboard(JSON.stringify(result.abi), 0)
+                        }}>
+                            <h4 className="">{
+                                ABIcopied ? "ABI Copied" : "Copy ABI"
+                            }</h4>
+                            {
+                                ABIcopied ? <FaClipboardCheck/>
+                                    : <FaClipboard/>
+                            }
+                        </Button>
 
                 </div>
 
-            );
+        </div>
+
+        )
+            ;
         }
 
         return (
@@ -163,7 +152,6 @@ export default function Editor() {
             </div>
         );
     };
-
 
 
     return (
@@ -259,7 +247,7 @@ export default function Editor() {
                     <CardBody className="p-4 h-full">
                         <div
                             className="h-full overflow-auto"
-                            style={{ maxHeight: "calc(100vh - 200px)" }}
+                            style={{maxHeight: "calc(100vh - 200px)"}}
                         >
 
                             <div className="flex flex-col h-full">
