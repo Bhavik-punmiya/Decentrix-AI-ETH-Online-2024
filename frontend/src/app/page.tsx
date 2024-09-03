@@ -59,7 +59,7 @@ function App() {
                                 <Image src="/chain/hedera-logo.png" alt="hedera" width={30} height={30}/>
                                 <div className=" text-xl text-center font-bold ">Hedera</div>
                             </div>
-                            <Link href={"/editor"}
+                            <Link href={"/agent/hedera"}
                                   className="text-2xl   p-2 rounded-xl bg-theme-green-dark text-white hover:scale-110 ease-out transition-all"><FaTelegramPlane/>
 
                             </Link>

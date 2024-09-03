@@ -11,7 +11,7 @@ import {
 } from "@nextui-org/react";
 import SolidityEditor from "@/components/SolidityEditor"; // Ensure this path is correct
 import axios from "axios";
-import WalletConnectButton from "../../components/WalletConnectButton";
+import WalletConnectButton from "@/components/WalletConnectButton";
 import {useAccount} from "wagmi";
 import {useSolidityCodeAgentContract} from '@/hooks/useSolidityCodeAgentContract';
 import { FaClipboard, FaClipboardCheck } from "react-icons/fa";
