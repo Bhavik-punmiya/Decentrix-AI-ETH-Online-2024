@@ -75,7 +75,7 @@ export default function Editor() {
 
     //useEffect to monitor sugeestion changes and compile code
 
-    const renderResult = () => {
+    const RenderResult = () => {
         const [ABIcopied, setABICopied] = useState(false);
         const [Bytecopied, setByteCopied] = useState(false);
 
@@ -210,7 +210,7 @@ export default function Editor() {
                     </div>
 
                     <div className="my-5">
-                        {renderResult()}
+                        {RenderResult()}
                     </div>
 
                     <div className="">
