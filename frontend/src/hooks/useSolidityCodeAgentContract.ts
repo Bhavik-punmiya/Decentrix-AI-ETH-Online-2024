@@ -1,9 +1,7 @@
 import { useState, useCallback, useEffect, useMemo } from "react";
 import { ethers } from 'ethers';
-import SolidityCodeAgentABI from '@/utils/SolidityCodeAgentABI.json';
-import { Web3Auth } from "@web3auth/web3auth";
-import { CHAIN_NAMESPACES, SafeEventEmitterProvider } from "@web3auth/base";
-import { MetamaskAdapter } from "@web3auth/metamask-adapter";
+import SolidityCodeAgentABI from '../utils/SolidityCodeAgentABI.json';
+import { useAccount, useWalletClient } from "wagmi";
 
 type UseSolidityCodeAgentContract = {
     code: string;
@@ -26,9 +24,11 @@ export function useSolidityCodeAgentContract(): UseSolidityCodeAgentContract {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
-    const [web3Auth, setWeb3Auth] = useState<Web3Auth | null>(null);
-    const [provider, setProvider] = useState<SafeEventEmitterProvider | null>(null);
+    const [ethersProvider, setEthersProvider] = useState<ethers.providers.Web3Provider | null>(null);
     const [progressMessage, setProgressMessage] = useState<string>('');
+
+    const { isConnected } = useAccount();
+    const { data: walletClient } = useWalletClient();
 
     const codeReviewMessages = useMemo(() => [
         'Analyzing your code...',
@@ -55,49 +55,32 @@ export function useSolidityCodeAgentContract(): UseSolidityCodeAgentContract {
     };
 
     useEffect(() => {
-        const initWeb3Auth = async () => {
-            const web3auth = new Web3Auth({
-                clientId: process.env.NEXT_PUBLIC_WEB3AUTH_CLIENT_ID!,
-                chainConfig: {
-                    chainNamespace: CHAIN_NAMESPACES.EIP155,
-                    chainId: '0x1',
-                    rpcTarget: 'https://rpc.ankr.com/eth',
-                },
-            });
+        if (isConnected) {
+            console.log('Wallet connected:');
+        }
+    }, [isConnected]);
 
-            const metamaskAdapter = new MetamaskAdapter({
-                chainConfig: {
-                    chainNamespace: CHAIN_NAMESPACES.EIP155,
-                    chainId: '0x1',
-                    rpcTarget: 'https://rpc.ankr.com/eth',
-                },
-            });
+    useEffect(() => {
+        if (walletClient) {
+            const provider = new ethers.providers.Web3Provider(walletClient.transport, "any");
+            setEthersProvider(provider);
+        }
+    }, [walletClient]);
 
-            web3auth.configureAdapter(metamaskAdapter);
-
-            setWeb3Auth(web3auth);
-            const provider = await web3auth.connect();
-            setProvider(provider);
-        };
-
-        initWeb3Auth();
-    }, []);
-
-    const signer = provider?.getSigner();
+    const signer = ethersProvider?.getSigner();
     const contractAddress = process.env.NEXT_PUBLIC_SOLIDITY_CODE_AGENT_CONTRACT_ADDRESS ?? '';
-    console.log('contractAddress', contractAddress);
 
     const contract = useMemo(() => {
-        if (provider) {
+        if (ethersProvider && signer) {
             return new ethers.Contract(contractAddress, SolidityCodeAgentABI, signer);
         }
-    }, [contractAddress, provider, signer]);
+    }, [contractAddress, ethersProvider, signer]);
 
     const runAgent = useCallback(async (query: string, maxIterations: number) => {
         const tx = await contract?.runAgent(query, maxIterations);
         const receipt = await tx.wait();
         const event = receipt.events?.find((event: { event: string; }) => event.event === 'AgentRunCreated');
-        return event.args[1].toNumber();
+        return event?.args[1].toNumber();
     }, [contract]);
 
     const getMessageHistoryContents = useCallback(async (agentId: number) => {
@@ -109,7 +92,7 @@ export function useSolidityCodeAgentContract(): UseSolidityCodeAgentContract {
     }, [contract]);
 
     const handleRunAgent = useCallback(async (prompt: string, isImprovementPrompt: boolean) => {
-        if (!provider) {
+        if (!isConnected) {
             handleOpenErrorModal('Please connect your wallet');
             return;
         }
@@ -180,7 +163,7 @@ export function useSolidityCodeAgentContract(): UseSolidityCodeAgentContract {
             setProgressMessage('');
         }
 
-    }, [codeImprovementMessages, codeReviewMessages, getMessageHistoryContents, isRunFinished, runAgent, suggestions, provider]);
+    }, [codeImprovementMessages, codeReviewMessages, getMessageHistoryContents, isRunFinished, runAgent, suggestions, isConnected]);
 
     return {
         code,

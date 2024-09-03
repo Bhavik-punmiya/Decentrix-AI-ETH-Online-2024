@@ -11,13 +11,29 @@ import {
 import SolidityEditor from "@/components/SolidityEditor"; // Ensure this path is correct
 import axios from "axios";
 import WalletConnectButton from "../../components/WalletConnectButton";
-import { useAccount } from "wagmi";
+import {useAccount} from "wagmi";
+import {useSolidityCodeAgentContract} from '@/hooks/useSolidityCodeAgentContract';
 
 export default function Editor() {
-    const [code, setCode] = useState("");
+    const {
+        code,
+        setCode,
+        suggestions,
+        loading,
+        error,
+        isErrorModalOpen,
+        handleCloseErrorModal,
+        handleRunAgent,
+        setError,
+        progressMessage,
+        setSuggestions,
+        handleOpenErrorModal,
+    } = useSolidityCodeAgentContract();
+
     const [result, setResult] = useState(null);
     const [view, setView] = useState("code");
-const account = useAccount();
+    const account = useAccount();
+
     const compileCode = async () => {
         try {
             const formData = new FormData();
@@ -33,6 +49,7 @@ const account = useAccount();
                     headers: {"Content-Type": "multipart/form-data"},
                 }
             );
+            setView("result");
             setResult(response.data);
             console.log(response.data);
         } catch (error) {
@@ -88,20 +105,44 @@ const account = useAccount();
                 {/* Left side: Placeholder for Chat Bot UI */}
                 <WalletConnectButton/>
                 {
-                        account.isConnected && (
-                            <div>
-                                <h1>Connected</h1>
-                                <p>Account: {account?.address}</p>
-                            </div>
-                        )
+                    account.isConnected && (
+                        <div>
+                            <h1>Connected</h1>
+                            <p>Account: {account?.address}</p>
+                        </div>
+                    )
                 }
+                <div className="my-5">
+                    {renderResult()}
+                </div>
+
+                <Button
+                    disabled={loading}
+                    onClick={() => handleRunAgent(code, false)}
+                >
+                    {loading ? 'Loading...' : 'Review My Code'}
+                </Button>
+
+                <div className="my-3">
+                    <h1 className="font-bold my-2">Progress</h1>
+                    <p>{progressMessage}</p>
+                </div>
+
+                <div className="my-3 h-screen">
+                    <h1 className="font-bold my-2">Suggestions</h1>
+                    <SolidityEditor
+                        code={suggestions}
+                        onChange={setSuggestions}
+                        defaultValue={"// Suggestions will appear here"}
+                    />
+                </div>
             </div>
             <div className="w-1/2 p-4 flex flex-col">
                 <Card className="flex-grow">
                     <CardHeader className="flex justify-between items-center px-4 py-2">
                         <div className="flex items-center">
                             <Button color="primary" onClick={compileCode} className="mr-4">
-                                Compile
+                            Compile
                             </Button>
                             <h2 className="text-xl font-bold">Solidity Editor</h2>
                         </div>
@@ -114,7 +155,7 @@ const account = useAccount();
                             className="h-full overflow-auto"
                             style={{maxHeight: "calc(100vh - 200px)"}}
                         >
-                            {view === "code" ? (
+
                                 <div className="flex flex-col h-full">
                                     <div className="flex-grow h-screen">
                                         <SolidityEditor
@@ -124,10 +165,9 @@ const account = useAccount();
                                         />
                                     </div>
                                 </div>
-                            ) : (
-                                renderResult()
-                            )}
+
                         </div>
+
                     </CardBody>
                 </Card>
             </div>
