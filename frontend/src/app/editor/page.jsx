@@ -45,7 +45,7 @@ export default function Editor() {
             const formData = new FormData();
             formData.append(
                 "file",
-                new Blob([code], {type: "text/plain"}),
+                new Blob([suggestions], {type: "text/plain"}),
                 "Contract.sol"
             );
             const response = await axios.post(
@@ -70,7 +70,7 @@ export default function Editor() {
     };
 
     const handleCodeChange = (value) => {
-        setCode(value);
+        setSuggestions(value);
     };
 
     //useEffect to monitor sugeestion changes and compile code
