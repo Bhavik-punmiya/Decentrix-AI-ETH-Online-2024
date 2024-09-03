@@ -3,9 +3,9 @@ import React from 'react';
 
 export default function EditorLayout({ children }) {
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen ">
       {/* <SideBar /> */}
-      <main className="p-4">{children}</main>
+      <main className="">{children}</main>
     </div>
   );
 }

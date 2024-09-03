@@ -23,7 +23,7 @@ export default function RootLayout({
 
     return (
         <html lang="en">
-        <body className="bg-theme-off-white pt-20">
+        <body className="bg-theme-off-white pt-16">
         <Providers>
             <Navbar/>
             <WagmiProviderComp initialState={initialState}>

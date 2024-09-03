@@ -93,7 +93,7 @@ export default function Editor() {
         if (!result) {
             return (
                 <div className="text-gray-600">
-                    No results yet. Write some code and hit "Compile"!
+                    No results yet.
                 </div>
             );
         }
@@ -169,11 +169,11 @@ export default function Editor() {
     return (
         <div className="flex h-full bg-[rgb(235, 232, 224)]">
             <div className="w-1/2 p-4">
-                <Card className="flex-grow p-6">
+                <Card className="flex-grow h-full p-6">
                     {/* Left side: Placeholder for Chat Bot UI */}
                     <div className="max-w-2xl bg-gray-100 p-4 rounded-lg shadow-md">
                         <div className="flex items-center space-x-4">
-                            <Avatar isBordered radius="md" src="chain/rootstock-logo.png" />
+                            <Avatar isBordered radius="md" src="chain/rootstock-logo.png"/>
                             <div className="flex-grow">
                                 {account.isConnected ? (
                                     <div className="flex items-center justify-between">
@@ -186,41 +186,19 @@ export default function Editor() {
                                     <span className="text-gray-600">Not connected</span>
                                 )}
                             </div>
-                            <WalletConnectButton />
+                            <WalletConnectButton/>
                         </div>
                     </div>
-                    <div className="my-5">
-                        {renderResult()}
-                    </div>
-
-
-
-                    <div>
-                        {
-                            error && (
-                                <div className="text-red-500">
-                                    <h1>Error</h1>
-                                    <p>{error}</p>
-                                </div>
-                            )
-                        }
-                    </div>
-
-                    <div className="my-3">
-                        <h1 className="font-bold my-2">Progress</h1>
-                        <p>{progressMessage}</p>
-                    </div>
-
                     <div className="my-3 h-48 mb-14">
                         <h1 className="font-bold my-2">Describe your smart contract</h1>
                         <textarea
-
                             value={userPrompt}
                             onChange={(e) => setUserPrompt(e.target.value)}
-                            className="w-full h-full p-4 rounded-xl"
+                            className="w-full h-full p-4 rounded-xl border"
                             placeholder="E.g. I want to create a smart contract that allows users to create a token"
                         />
                     </div>
+
                     <div className="max-w-xl">
                         <Button
                             disabled={loading}
@@ -233,6 +211,26 @@ export default function Editor() {
                             {loading ? 'Loading...' : 'Generate code'}
                         </Button>
                     </div>
+
+                    <div>
+                        {
+                            error && (
+                                <div className="text-red-500 text-sm m-1">
+                                    <p>{error}</p>
+                                </div>
+                            )
+                        }
+                    </div>
+
+                    <div className="my-5">
+                        {renderResult()}
+                    </div>
+
+                    <div className="">
+                        <h1 className="font-bold my-2">Progress</h1>
+                        <p>{progressMessage}</p>
+                    </div>
+
 
                 </Card>
             </div>
