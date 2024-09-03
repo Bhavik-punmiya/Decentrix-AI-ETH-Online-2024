@@ -25,13 +25,9 @@ export default function Editor() {
         suggestions,
         loading,
         error,
-        isErrorModalOpen,
-        handleCloseErrorModal,
         handleRunAgent,
-        setError,
         progressMessage,
         setSuggestions,
-        handleOpenErrorModal,
     } = useSolidityCodeAgentContract();
 
     const [result, setResult] = useState(null);
@@ -160,7 +156,7 @@ export default function Editor() {
                 <Card className="flex-grow h-full p-6">
                     <div className="max-w-2xl bg-gray-100 p-4 rounded-lg shadow-md">
                         <div className="flex items-center space-x-4">
-                            <Avatar isBordered radius="md" src="chain/rootstock-logo.png"/>
+                            <Avatar isBordered radius="md" src="/chain/rootstock-logo.png"/>
                             <div className="flex-grow">
                                 {account.isConnected ? (
                                     <div className="flex items-center justify-between">
@@ -195,7 +191,7 @@ export default function Editor() {
                             }}
                             color="default"
                         >
-                            {loading ? 'Loading...' : 'Generate code'}
+                            {loading ? progressMessage : 'Generate code'}
                         </Button>
                     </div>
 
@@ -213,10 +209,6 @@ export default function Editor() {
                         {RenderResult()}
                     </div>
 
-                    <div className="">
-                        <h1 className="font-bold my-2">Progress</h1>
-                        <p>{progressMessage}</p>
-                    </div>
 
 
                 </Card>

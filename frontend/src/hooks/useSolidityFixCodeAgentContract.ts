@@ -1,45 +1,37 @@
 import { useState, useCallback, useEffect, useMemo } from "react";
 import { ethers } from 'ethers';
-import SolidityCodeAgentABI from '../utils/SolidityCodeAgentABI.json';
+import SolidityFixCodeAgentABI from '../utils/SolidityFixCodeAgentABI.json';
 import { useAccount, useWalletClient } from "wagmi";
+import {undefined} from "zod";
 
-type UseSolidityCodeAgentContract = {
-    code: string;
-    setCode: (code: string) => void;
-    userPrompt: string;
-    setUserPrompt: (prompt: string) => void;
-    suggestions: string | null;
-    loading: boolean;
-    error: string | null;
-    isErrorModalOpen: boolean;
-    handleCloseErrorModal: () => void;
-    handleRunAgent: (prompt: string, isImprovementPrompt: boolean) => void;
-    setError: (error: string) => void;
-    progressMessage: string;
-    setSuggestions: (suggestions: string | null) => void;
-    handleOpenErrorModal: (message: string) => void;
+type UseSolidityFixCodeAgentContract = {
+    fixedCode: string | null;
+    fixing: boolean;
+    handleRunFixAgent: (compilationError: string, code:string) => void;
+    fixingMessages: string;
+    setFixedCode: (fixedCode: string | null) => void;
+    setCompilationError: (compilationError: string | null) => void;
 };
 
-export function useSolidityCodeAgentContract(): UseSolidityCodeAgentContract {
-    const [code, setCode] = useState('');
-    const [userPrompt, setUserPrompt] = useState('');
-    const [suggestions, setSuggestions] = useState<string | null>(null);
-    const [loading, setLoading] = useState(false);
+export function useSolidityFixCodeAgentContract(): UseSolidityFixCodeAgentContract {
+    const [compilationError, setCompilationError] = useState<string | null>(null);
+    const [fixedCode, setFixedCode] = useState<string | null>(null);
+    const [fixing, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
     const [ethersProvider, setEthersProvider] = useState<ethers.providers.Web3Provider | null>(null);
-    const [progressMessage, setProgressMessage] = useState<string>('');
+    const [fixingMessages, setProgressMessage] = useState<string>('');
 
     const { isConnected } = useAccount();
     const { data: walletClient } = useWalletClient();
 
 
-    const codeGenerationMessages = useMemo(() => [
-        'Generating code...',
-        'Analyzing your instructions...',
-        'Creating the smart contract...',
-        'Finalizing the code...',
-        "Almost there...",
+    const codeFixingMessages = useMemo(() => [
+        'Analysing erros...',
+      'Searching online for solutions...',
+        'Applying fixes...',
+        'Finalizing code...',
+        'Almost done...',
     ], []);
 
 
@@ -66,16 +58,16 @@ export function useSolidityCodeAgentContract(): UseSolidityCodeAgentContract {
     }, [walletClient]);
 
     const signer = ethersProvider?.getSigner();
-    const contractAddress = process.env.NEXT_PUBLIC_SOLIDITY_CODE_AGENT_CONTRACT_ADDRESS ?? '';
+    const contractAddress = process.env.NEXT_PUBLIC_SOLIDITY_FIX_CODE_AGENT_CONTRACT_ADDRESS ?? '';
 
     const contract = useMemo(() => {
         if (ethersProvider && signer) {
-            return new ethers.Contract(contractAddress, SolidityCodeAgentABI, signer);
+            return new ethers.Contract(contractAddress, SolidityFixCodeAgentABI, signer);
         }
     }, [contractAddress, ethersProvider, signer]);
 
-    const runAgent = useCallback(async (query: string, maxIterations: number) => {
-        const tx = await contract?.runAgent(query, maxIterations);
+    const runFixAgent = useCallback(async (query: string, maxIterations: number) => {
+        const tx = await contract?.runFixAgent(query, maxIterations);
         const receipt = await tx.wait();
         const event = receipt.events?.find((event: { event: string; }) => event.event === 'AgentRunCreated');
         return event?.args[1].toNumber();
@@ -89,36 +81,41 @@ export function useSolidityCodeAgentContract(): UseSolidityCodeAgentContract {
         return await contract?.isRunFinished(runId);
     }, [contract]);
 
-    const handleRunAgent = useCallback(async (prompt: string) => {
+    const handleRunFixAgent = useCallback(async (code:string) => {
         if (!isConnected) {
             handleOpenErrorModal('Please connect your wallet');
             return;
         }
-        if (!prompt) {
-            handleOpenErrorModal('Please enter some prompt.');
+        if (!compilationError) {
+            handleOpenErrorModal('Please give error.');
             return;
         }
 
         const maxIterations = 10;
 
 
-        const codeGenerationQuery = `
-        Please generate a Solidity smart contract based on the following instructions. Provide only the code without any additional text, comments, or formatting at the start or end. The code should be ready to use in a smart contract editor. Start directly with the code and do not include any backticks or other information. make sure to include SPDX license identifier at the top of the file. dont give any thing other that tne code, starting from spdx license identifier to the end of the code.
-
-        Instructions:
-        ${prompt}
+        const codeFixQuery = `
+        Please fix the following solidity code using the comipilation errors provided below:
+         
+        Current Code: 
+        ${code}
+        Errors:
+        ${compilationError}
+        
+        Provide only the code without any additional text, comments, or formatting at the start or end. The code should be ready to use in a smart contract editor. Start directly with the code and do not include any backticks or other information. make sure to include SPDX license identifier at the top of the file. dont give any thing other that tne code, starting from spdx license identifier to the end of the code.
+      
         `;
 
-        const query = codeGenerationQuery;
-        const messages = codeGenerationMessages;
+        const query = codeFixQuery;
+        const messages = codeFixingMessages;
 
         setLoading(true);
         setError(null);
 
         console.log('Running agent...');
         try {
-            const runId = await runAgent(query, maxIterations);
-            console.log('Agent run started:');
+            const runId = await runFixAgent(query, maxIterations);
+            console.log('Fixer Agent run started:');
             console.log('Run ID:', runId);
 
             let finished = false;
@@ -135,10 +132,10 @@ export function useSolidityCodeAgentContract(): UseSolidityCodeAgentContract {
             }
             const messageHistoryContents = await getMessageHistoryContents(runId);
             console.log('Message history contents:', messageHistoryContents);
-            setSuggestions(messageHistoryContents[2]);
+            setFixedCode(messageHistoryContents[2]);
         } catch (error) {
             console.error('Error running agent:', error);
-            handleOpenErrorModal('Error fetching suggestions');
+            handleOpenErrorModal('Error fetching fixedCode');
         } finally {
             console.log('Agent run complete');
             // /run comipler
@@ -149,22 +146,14 @@ export function useSolidityCodeAgentContract(): UseSolidityCodeAgentContract {
             setProgressMessage('');
         }
 
-    }, [codeGenerationMessages, getMessageHistoryContents, isRunFinished, runAgent, suggestions, isConnected]);
+    }, [codeFixingMessages, getMessageHistoryContents, isRunFinished, runFixAgent, fixedCode, isConnected]);
 
     return {
-        code,
-        setCode,
-        userPrompt,
-        setUserPrompt,
-        suggestions,
-        loading,
-        error,
-        isErrorModalOpen,
-        handleCloseErrorModal,
-        handleRunAgent,
-        setError,
-        progressMessage,
-        setSuggestions,
-        handleOpenErrorModal,
+       fixedCode,
+        fixing,
+        handleRunFixAgent,
+        setCompilationError,
+        fixingMessages,
+        setFixedCode
     };
 }
