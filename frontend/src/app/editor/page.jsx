@@ -62,6 +62,8 @@ export default function Editor() {
         setCode(value);
     };
 
+    //useEffect to monitor sugeestion changes and compile code
+
     const renderResult = () => {
         if (!result) {
             return (
