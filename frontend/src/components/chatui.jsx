@@ -44,7 +44,7 @@ const Chat = () => {
 
       // Hardcoded AI response with a larger message in Markdown format
       const botMessage = {
-        text: `Hello! I'm an AI chatbot. Here’s a code snippet for you:\n\n\`\`\`javascript\nconst greet = (name) => {\n  return \`Hello, \${name}!\`;\n};\n\nconsole.log(greet('World'));\n\`\`\``,
+        text: `Hello! I'm an AI chatbot. Heres a code snippet for you:\n\n\`\`\`javascript\nconst greet = (name) => {\n  return \`Hello, \${name}!\`;\n};\n\nconsole.log(greet('World'));\n\`\`\``,
         type: 'bot',
       };
 
