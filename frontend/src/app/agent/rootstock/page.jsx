@@ -10,13 +10,13 @@ import {
     CardHeader,
     Switch,
 } from "@nextui-org/react";
-import SolidityEditor from "@/components/SolidityEditor"; // Ensure this path is correct
+import SolidityEditor from "@/components/SolidityEditor";
 import axios from "axios";
 import WalletConnectButton from "@/components/WalletConnectButton";
 import {useAccount} from "wagmi";
 import {useSolidityCodeAgentContract} from '@/hooks/useSolidityCodeAgentContract';
 import { FaClipboard, FaClipboardCheck } from "react-icons/fa";
-import { Toaster } from 'react-hot-toast';
+import { Toaster, toast } from 'react-hot-toast';
 
 export default function Editor() {
     const {
