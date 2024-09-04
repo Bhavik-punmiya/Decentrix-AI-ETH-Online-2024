@@ -10,13 +10,13 @@ import {
     CardHeader,
     Switch,
 } from "@nextui-org/react";
-import SolidityEditor from "@/components/SolidityEditor"; // Ensure this path is correct
+import SolidityEditor from "@/components/SolidityEditor";
 import axios from "axios";
 import WalletConnectButton from "@/components/WalletConnectButton";
 import {useAccount} from "wagmi";
 import {useSolidityCodeAgentContract} from '@/hooks/useSolidityCodeAgentContract';
 import { FaClipboard, FaClipboardCheck } from "react-icons/fa";
-import { Toaster } from 'react-hot-toast';
+import { Toaster, toast } from 'react-hot-toast';
 
 export default function Editor() {
     const {
@@ -281,7 +281,7 @@ export default function Editor() {
                             <Button
                                 color="default"
                                 onClick={compileCode}
-                                className="ml-4"
+                                className=""
                                 isLoading={isCompiling} // Use isLoading to indicate loading state
                             >
                                 {isCompiling ? "Compiling..." : "Compile"} {/* Dynamic text based on state */}
@@ -290,6 +290,7 @@ export default function Editor() {
                 color="success"
                 onClick={deployContract}
                 isLoading={isDeploying}
+                className="ml-4"
               >
                 {isDeploying ? "Deploying..." : "Deploy"}
               </Button>
