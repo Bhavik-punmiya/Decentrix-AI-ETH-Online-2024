@@ -65,6 +65,7 @@ export function useSolidityCodeAgentContract(): UseSolidityCodeAgentContract {
         }
     }, [walletClient]);
 
+
     const signer = ethersProvider?.getSigner();
     const contractAddress = process.env.NEXT_PUBLIC_SOLIDITY_CODE_AGENT_CONTRACT_ADDRESS ?? '';
 

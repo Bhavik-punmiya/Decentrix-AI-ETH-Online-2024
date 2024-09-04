@@ -24,7 +24,7 @@ const rootstockTestnet: Chain = {
         symbol: "tRSK",
     },
     rpcUrls: {
-        default: { http: ["https://rpc.testnet.rootstock.io/Bdy1104g3ShYB2xePNTtuuxOoSKoDp-"] }
+        default: { http: ["https://rpc.testnet.rootstock.io/jggMDTcHMyqeQhJChAG7xhsjMIgLai-T"] }
     },
     blockExplorers: {
         default: { name: "Rootstock Explorer", url: "https://explorer.testnet.rsk.co" },
