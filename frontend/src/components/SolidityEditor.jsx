@@ -23,7 +23,6 @@ export default function SolidityEditor({ code, onChange, defaultValue }) {
 
   return (
     <MonacoEditor
-      height="100%"
       defaultLanguage="sol"
       value={code}
       onChange={onChange}

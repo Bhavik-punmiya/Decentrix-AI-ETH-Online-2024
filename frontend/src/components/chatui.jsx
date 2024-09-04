@@ -6,8 +6,8 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeHighlight from 'rehype-highlight';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism'; // Import dark theme
-import 'highlight.js/styles/github.css'; // Syntax highlighting theme
+import { atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import 'highlight.js/styles/github.css';
 
 const CodeBlock = ({ children, language }) => {
   const [isCopied, setIsCopied] = useState(false);
@@ -54,58 +54,66 @@ const Chat = () => {
   };
 
   return (
-    <div className="flex flex-col p-4 w-[35%] mx-auto h-[90vh] bg-transparent shadow-lg rounded-lg">
-      <div className="flex-1 overflow-y-auto p-4 space-y-2">
-        {messages.map((msg, index) => (
-          <div
-            key={index}
-            className={`p-2 rounded-lg mb-4 max-w-[80%] ${
-              msg.type === 'user' ? 'bg-[rgb(247,247,245)] text-black self-end ml-auto' : 'bg-[#e4e0d0] text-black self-start'
-            }`}
-          >
-            {/* Render user messages as plain text */}
-            {msg.type === 'user' ? (
-              <div>
-                <pre className="whitespace-pre-wrap">{msg.text}</pre>
+      <div className="flex flex-col  w-full mx-auto h-full  p-5">
+          <div className="bg-white rounded-lg shadow p-5">
+              <div className="font-bold text-2xl   ">Have doubts? Just ask!</div>
+              <p className="mb-5">Our agent know just about everything there is to know about Rootstock!</p>
+
+              <div className="flex items-center my-2">
+                  <Input
+                      className="flex-1"
+                      placeholder="Type your message..."
+                      value={input}
+                      onChange={(e) => setInput(e.target.value)}
+                  />
+                  <Button onClick={handleSend} className="ml-2" icon={<FaPaperPlane/>}>
+                      Send
+                  </Button>
               </div>
-            ) : (
-              <div>
-                <ReactMarkdown
-                  className="whitespace-pre-wrap p-2 mb-2"
-                  remarkPlugins={[remarkGfm]}
-                  rehypePlugins={[rehypeHighlight]}
-                  components={{
-                    code({ node, inline, className, children, ...props }) {
-                      const match = /language-(\w+)/.exec(className || '');
-                      return !inline && match ? (
-                        <CodeBlock language={match[1]}>{String(children).replace(/\n$/, '')}</CodeBlock>
-                      ) : (
-                        <code className={className} {...props}>
-                          {children}
-                        </code>
-                      );
-                    },
-                  }}
-                >
-                  {msg.text}
-                </ReactMarkdown>
+
+              <div className="flex-1 overflow-y-auto   rounded-lg  p-2 space-y-2">
+                  {messages.map((msg, index) => (
+                      <div
+                          key={index}
+                          className={`p-2 rounded-lg mb-4 max-w-[80%] ${
+                              msg.type === 'user' ? 'bg-theme-green-light text-black self-end ml-auto' : 'bg-theme-purple-light text-black self-start'
+                          }`}
+                      >
+                          {/* Render user messages as plain text */}
+                          {msg.type === 'user' ? (
+                              <div className="">
+                                  <pre className="whitespace-pre-wrap">{msg.text}</pre>
+                              </div>
+                          ) : (
+                              <div>
+                                  <ReactMarkdown
+                                      className="whitespace-pre-wrap p-2 mb-2"
+                                      remarkPlugins={[remarkGfm]}
+                                      rehypePlugins={[rehypeHighlight]}
+                                      components={{
+                                          code({node, inline, className, children, ...props}) {
+                                              const match = /language-(\w+)/.exec(className || '');
+                                              return !inline && match ? (
+                                                  <CodeBlock
+                                                      language={match[1]}>{String(children).replace(/\n$/, '')}</CodeBlock>
+                                              ) : (
+                                                  <code className={className} {...props}>
+                                                      {children}
+                                                  </code>
+                                              );
+                                          },
+                                      }}
+                                  >
+                                      {msg.text}
+                                  </ReactMarkdown>
+                              </div>
+                          )}
+                      </div>
+                  ))}
               </div>
-            )}
           </div>
-        ))}
+
       </div>
-      <div className="flex items-center">
-        <Input
-          className="flex-1"
-          placeholder="Type your message..."
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-        />
-        <Button onClick={handleSend} className="ml-2" icon={<FaPaperPlane />}>
-          Send
-        </Button>
-      </div>
-    </div>
   );
 };
 

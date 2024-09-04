@@ -15,8 +15,9 @@ import axios from "axios";
 import WalletConnectButton from "@/components/WalletConnectButton";
 import {useAccount} from "wagmi";
 import {useSolidityCodeAgentContract} from '@/hooks/useSolidityCodeAgentContract';
-import { FaClipboard, FaClipboardCheck } from "react-icons/fa";
-import { Toaster, toast } from 'react-hot-toast';
+import {FaClipboard, FaClipboardCheck} from "react-icons/fa";
+import {Toaster, toast} from 'react-hot-toast';
+import ChatUi from "@/components/chatui";
 
 export default function Editor() {
     const {
@@ -69,7 +70,7 @@ export default function Editor() {
             return;
         }
         console.log("Deploying contract...");
-    
+
         try {
             // Prompt user to connect their wallet if not connected
             if (!window.ethereum) {
@@ -77,14 +78,14 @@ export default function Editor() {
                 return;
             }
             console.log("Requesting MetaMask connection...");
-    
+
             // Request to connect to MetaMask
-            await window.ethereum.request({ method: "eth_requestAccounts" });
-    
+            await window.ethereum.request({method: "eth_requestAccounts"});
+
             const provider = new ethers.providers.Web3Provider(window.ethereum); // Web3Provider for ethers v5
             const signer = provider.getSigner();
             console.log("Connected to MetaMask.");
-    
+
             // Check if the user is on the correct network (Rootstock Testnet)
             const network = await provider.getNetwork();
             if (network.chainId !== 31) {
@@ -93,16 +94,16 @@ export default function Editor() {
             }
             console.log("Connected to Rootstock Testnet.");
             setIsDeploying(true);
-    
+
             // Create a new contract factory for deployment
             const contractFactory = new ethers.ContractFactory(result.abi, result.bytecode, signer);
             console.log("Deploying contract...");
             console.log("result.abi", result.abi);
-    
+
             // Deploy the contract
             const contract = await contractFactory.deploy();
             await contract.deployed();
-    
+
             toast.success(`Contract deployed successfully at address: ${contract.address}`);
             console.log(`Contract deployed at: ${contract.address}`);
         } catch (error) {
@@ -112,7 +113,7 @@ export default function Editor() {
             setIsDeploying(false);
         }
     };
-      
+
 
     const shortenAddress = (address) => {
         if (!address) return '';
@@ -136,8 +137,8 @@ export default function Editor() {
 
         if (!result) {
             return (
-                <div className="text-gray-600">
-                    No results yet.
+                <div className="text-gray-600 ">
+                    Compilation results will appear here.
                 </div>
             );
         }
@@ -188,12 +189,12 @@ export default function Editor() {
                             }
                         </Button>
 
+                    </div>
+
                 </div>
 
-        </div>
-
-        )
-            ;
+            )
+                ;
         }
 
         return (
@@ -205,118 +206,120 @@ export default function Editor() {
 
 
     return (
-        <div className="flex h-full bg-[rgb(235, 232, 224)]">
-             <Toaster />
-            <div className="w-1/2 p-4">
-                <Card className="flex-grow h-full p-6">
-                    <div className="max-w-2xl bg-gray-100 p-4 rounded-lg shadow-md">
-                        <div className="flex items-center space-x-4">
-                            <Avatar isBordered radius="md" src="/chain/rootstock-logo.png"/>
-                            <div className="flex-grow">
-                                {account.isConnected ? (
-                                    <div className="flex items-center justify-between">
-                                        <span className="text-green-600 font-semibold">Connected</span>
-                                        <span className="text-gray-600 text-sm">
+        <div className="">
+            <Toaster/>
+            <div className="flex ">
+                <div className="w-1/2 p-4">
+                    <Card className="flex-grow h-full p-6">
+                        <div className="max-w-2xl bg-gray-100 p-4 rounded-lg shadow-md">
+                            <div className="flex items-center space-x-4">
+                                <Avatar isBordered radius="md" src="/chain/rootstock-logo.png"/>
+                                <div className="flex-grow">
+                                    {account.isConnected ? (
+                                        <div className="flex items-center justify-between">
+                                            <span className="text-green-600 font-semibold">Connected</span>
+                                            <span className="text-gray-600 text-sm">
                                             {shortenAddress(account?.address)}
                                         </span>
-                                    </div>
-                                ) : (
-                                    <span className="text-gray-600">Not connected</span>
-                                )}
-                            </div>
-                            <WalletConnectButton/>
-                        </div>
-                    </div>
-                    <div className="my-3 h-48 mb-14">
-                        <h1 className="font-bold my-2">Describe your smart contract</h1>
-                        <textarea
-                            value={userPrompt}
-                            onChange={(e) => setUserPrompt(e.target.value)}
-                            className="w-full h-full p-4 rounded-xl border"
-                            placeholder="E.g. I want to create a smart contract that allows users to create a token"
-                        />
-                    </div>
-
-                    <div className="max-w-xl">
-                        <Button
-                            disabled={loading}
-                            isLoading={loading} // Use isLoading to show the loading state
-                            onClick={() => {
-                                handleRunAgent(userPrompt);
-                            }}
-                            color="default"
-                        >
-                            {loading ? progressMessage : 'Generate code'}
-                        </Button>
-                    </div>
-
-                    <div>
-                        {
-                            error && (
-                                <div className="text-red-500 text-sm m-1">
-                                    <p>{error}</p>
+                                        </div>
+                                    ) : (
+                                        <span className="text-gray-600">Not connected</span>
+                                    )}
                                 </div>
-                            )
-                        }
-                    </div>
-
-                    <div className="my-5">
-                        {RenderResult()}
-                    </div>
-
-
-
-                </Card>
-            </div>
-            <div className="w-1/2 p-4 flex flex-col">
-                <Card className="flex-grow">
-                    <CardHeader className="flex justify-between items-center px-4 py-2">
-                        <div className="flex items-center">
-
-                            <h2 className="text-xl font-bold">Solidity Editor</h2>
-
+                                <WalletConnectButton/>
+                            </div>
                         </div>
-                        <div className="py-2">
+                        <div className="my-3 h-48 mb-14">
+                            <h1 className="font-bold my-2">Describe your smart contract</h1>
+                            <textarea
+                                value={userPrompt}
+                                onChange={(e) => setUserPrompt(e.target.value)}
+                                className="w-full h-full p-4 rounded-xl border"
+                                placeholder="E.g. I want to create a smart contract that allows users to create a token"
+                            />
+                        </div>
 
+                        <div className="max-w-xl">
                             <Button
+                                disabled={loading}
+                                isLoading={loading} // Use isLoading to show the loading state
+                                onClick={() => {
+                                    handleRunAgent(userPrompt);
+                                }}
                                 color="default"
-                                onClick={compileCode}
-                                className=""
-                                isLoading={isCompiling} // Use isLoading to indicate loading state
                             >
-                                {isCompiling ? "Compiling..." : "Compile"} {/* Dynamic text based on state */}
+                                {loading ? progressMessage : 'Generate code'}
                             </Button>
-                            <Button
-                color="success"
-                onClick={deployContract}
-                isLoading={isDeploying}
-                className="ml-4"
-              >
-                {isDeploying ? "Deploying..." : "Deploy"}
-              </Button>
                         </div>
-                    </CardHeader>
-                    <CardBody className="p-4 h-full">
-                        <div
-                            className="h-full overflow-auto"
-                            style={{maxHeight: "calc(100vh - 200px)"}}
-                        >
 
-                            <div className="flex flex-col h-full">
-                                <div className="flex-grow h-screen">
-                                    <SolidityEditor
-                                        code={suggestions}
-                                        onChange={handleCodeChange}
-                                        defaultValue={"// Solidity code will appear here"}
-                                    />
+                        <div>
+                            {
+                                error && (
+                                    <div className="text-red-500 text-sm m-1">
+                                        <p>{error}</p>
+                                    </div>
+                                )
+                            }
+                        </div>
+
+                        <div className="my-5">
+                            {RenderResult()}
+                        </div>
+
+
+                    </Card>
+                </div>
+                <div className="w-1/2 p-4 flex flex-col">
+                    <Card className="flex-grow">
+                        <CardHeader className="flex justify-between items-center px-4 py-2">
+                            <div className="flex items-center">
+
+                                <h2 className="text-xl font-bold">Solidity Editor</h2>
+
+                            </div>
+                            <div className="py-2">
+
+                                <Button
+                                    color="default"
+                                    onClick={compileCode}
+                                    className=""
+                                    isLoading={isCompiling} // Use isLoading to indicate loading state
+                                >
+                                    {isCompiling ? "Compiling..." : "Compile"} {/* Dynamic text based on state */}
+                                </Button>
+                                <Button
+                                    color="success"
+                                    onClick={deployContract}
+                                    isLoading={isDeploying}
+                                    className="ml-4"
+                                >
+                                    {isDeploying ? "Deploying..." : "Deploy"}
+                                </Button>
+                            </div>
+                        </CardHeader>
+                        <CardBody className="p-4 h-full">
+                            <div
+                                className="h-full overflow-auto"
+                                style={{maxHeight: "calc(100vh - 200px)"}}
+                            >
+
+                                <div className="flex flex-col h-full">
+                                    <div className="flex-grow h-screen">
+                                        <SolidityEditor
+                                            code={suggestions}
+                                            onChange={handleCodeChange}
+                                            defaultValue={"// Solidity code will appear here"}
+                                        />
+                                    </div>
                                 </div>
+
                             </div>
 
-                        </div>
-
-                    </CardBody>
-                </Card>
+                        </CardBody>
+                    </Card>
+                </div>
             </div>
+            <ChatUi/>
         </div>
     );
 }
