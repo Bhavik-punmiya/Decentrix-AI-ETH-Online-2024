@@ -281,7 +281,7 @@ export default function Editor() {
                             <Button
                                 color="default"
                                 onClick={compileCode}
-                                className="ml-4"
+                                className=""
                                 isLoading={isCompiling} // Use isLoading to indicate loading state
                             >
                                 {isCompiling ? "Compiling..." : "Compile"} {/* Dynamic text based on state */}
@@ -290,6 +290,7 @@ export default function Editor() {
                 color="success"
                 onClick={deployContract}
                 isLoading={isDeploying}
+                className="ml-4"
               >
                 {isDeploying ? "Deploying..." : "Deploy"}
               </Button>
