@@ -6,12 +6,9 @@ import {useEffect, useState} from "react";
 import {useContext} from "react";
 import {GlobalContext} from "@/contexts/UserContext";
 import {FaBars, FaTimes} from "react-icons/fa";
-import RPC from "./etherRPC";
 import BrandLogo from "@/components/BrandLogo";
 import Link from "next/link";
 import {usePathname} from "next/navigation";
-// import RPC from "./viemRPC";
-// import RPC from "./web3RPC";
 
 const clientId = process.env.NEXT_PUBLIC_WEB3_AUTH_CLIENT_ID;
 
@@ -86,43 +83,6 @@ function Navbar() {
         setUserData(null);
     };
 
-    // Check the RPC file for the implementation
-    const getAccounts = async () => {
-        if (!provider) {
-            console.log("provider not initialized yet");
-            return;
-        }
-        const address = await RPC.getAccounts(provider);
-        console.log(address);
-    };
-
-    const getBalance = async () => {
-        if (!provider) {
-            console.log("provider not initialized yet");
-            return;
-        }
-        const balance = await RPC.getBalance(provider);
-        console.log(balance);
-    };
-
-    const signMessage = async () => {
-        if (!provider) {
-            console.log("provider not initialized yet");
-            return;
-        }
-        const signedMessage = await RPC.signMessage(provider);
-        console.log(signedMessage);
-    };
-
-    const sendTransaction = async () => {
-        if (!provider) {
-            console.log("provider not initialized yet");
-            return;
-        }
-        console.log("Sending Transaction...");
-        const transactionReceipt = await RPC.sendTransaction(provider);
-        console.log(transactionReceipt);
-    };
 
     useEffect(() => {
 
@@ -150,20 +110,12 @@ function Navbar() {
                             loggedIn ? (
                                 <div className='flex items-center space-x-4'>
                                     <Link href="/profile">
-                                        {
-                                            userData?.profileImage ? (
-                                                <img
-                                                    src={userData.profileImage}
-                                                    alt="profile"
-                                                    className="w-8 h-8 rounded-full"
-                                                />
-                                            ) : (
-                                                <div
-                                                    className='w-8 h-8 bg-theme-blue-light font-bold rounded-full flex items-center justify-center'>
-                                                    {nameInitials}
-                                                </div>
-                                            )
-                                        }
+
+                                        <div
+                                            className='w-10 h-10 bg-theme-purple-light hover:bg-theme-purple-dark font-bold rounded-full flex items-center justify-center'>
+                                            {nameInitials}
+                                        </div>
+
                                     </Link>
 
                                     <button
