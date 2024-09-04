@@ -1,6 +1,7 @@
 "use client";
 import React, {useState} from "react";
 import {Avatar} from "@nextui-org/react";
+import {ethers} from "ethers";
 import {
     NextUIProvider,
     Button,
@@ -15,6 +16,7 @@ import WalletConnectButton from "@/components/WalletConnectButton";
 import {useAccount} from "wagmi";
 import {useSolidityCodeAgentContract} from '@/hooks/useSolidityCodeAgentContract';
 import { FaClipboard, FaClipboardCheck } from "react-icons/fa";
+import { Toaster } from 'react-hot-toast';
 
 export default function Editor() {
     const {
@@ -34,6 +36,7 @@ export default function Editor() {
     const [view, setView] = useState("code");
     const account = useAccount();
     const [isCompiling, setCompiling] = useState(false);
+    const [isDeploying, setIsDeploying] = useState(false);
 
     const compileCode = async () => {
         setCompiling(true); // Set to true when starting compilation
@@ -59,6 +62,57 @@ export default function Editor() {
             setCompiling(false); // Reset to false after completion
         }
     };
+
+    const deployContract = async () => {
+        if (!result || result.status !== "success") {
+            toast.error("Please compile the contract successfully before deploying.");
+            return;
+        }
+        console.log("Deploying contract...");
+    
+        try {
+            // Prompt user to connect their wallet if not connected
+            if (!window.ethereum) {
+                toast.error("Please install MetaMask to deploy the contract.");
+                return;
+            }
+            console.log("Requesting MetaMask connection...");
+    
+            // Request to connect to MetaMask
+            await window.ethereum.request({ method: "eth_requestAccounts" });
+    
+            const provider = new ethers.providers.Web3Provider(window.ethereum); // Web3Provider for ethers v5
+            const signer = provider.getSigner();
+            console.log("Connected to MetaMask.");
+    
+            // Check if the user is on the correct network (Rootstock Testnet)
+            const network = await provider.getNetwork();
+            if (network.chainId !== 31) {
+                toast.error("Please switch to the Rootstock Testnet in MetaMask.");
+                return;
+            }
+            console.log("Connected to Rootstock Testnet.");
+            setIsDeploying(true);
+    
+            // Create a new contract factory for deployment
+            const contractFactory = new ethers.ContractFactory(result.abi, result.bytecode, signer);
+            console.log("Deploying contract...");
+            console.log("result.abi", result.abi);
+    
+            // Deploy the contract
+            const contract = await contractFactory.deploy();
+            await contract.deployed();
+    
+            toast.success(`Contract deployed successfully at address: ${contract.address}`);
+            console.log(`Contract deployed at: ${contract.address}`);
+        } catch (error) {
+            console.error("Error deploying contract:", error);
+            toast.error("Failed to deploy contract. Check the console for details.");
+        } finally {
+            setIsDeploying(false);
+        }
+    };
+      
 
     const shortenAddress = (address) => {
         if (!address) return '';
@@ -152,6 +206,7 @@ export default function Editor() {
 
     return (
         <div className="flex h-full bg-[rgb(235, 232, 224)]">
+             <Toaster />
             <div className="w-1/2 p-4">
                 <Card className="flex-grow h-full p-6">
                     <div className="max-w-2xl bg-gray-100 p-4 rounded-lg shadow-md">
@@ -231,9 +286,13 @@ export default function Editor() {
                             >
                                 {isCompiling ? "Compiling..." : "Compile"} {/* Dynamic text based on state */}
                             </Button>
-                            <Button color="danger" className="ml-4">
-                                Deploy
-                            </Button>
+                            <Button
+                color="success"
+                onClick={deployContract}
+                isLoading={isDeploying}
+              >
+                {isDeploying ? "Deploying..." : "Deploy"}
+              </Button>
                         </div>
                     </CardHeader>
                     <CardBody className="p-4 h-full">
