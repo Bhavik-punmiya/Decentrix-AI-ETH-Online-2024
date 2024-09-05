@@ -229,7 +229,7 @@ export default function Editor() {
         <div className="">
             <Toaster/>
             <div className="flex ">
-                <div className="w-1/2 p-4">
+                <div className="w-1/2 p-2">
                     <Card className="flex-grow h-full p-6">
                         <div className="max-w-2xl bg-gray-100 p-4 rounded-lg shadow-md">
                             <div className="flex items-center space-x-4">
