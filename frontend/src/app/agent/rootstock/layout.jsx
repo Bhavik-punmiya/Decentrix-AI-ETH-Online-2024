@@ -1,16 +1,13 @@
-import Sidebar from '@/components/Sidebar';
-import { ContractProvider } from '@/contexts/ContractContext';
+import SecondaryNavbar from "../../../components/SecondaryNavbar";
 
 const Layout = ({ children }) => {
   return (
-    <ContractProvider>
-      <div className="flex">
-        <Sidebar />
-        <main className="flex-1 ml-28 p-4">
+      <div className="">
+        <SecondaryNavbar />
+        <main className=" ">
           {children}
         </main>
       </div>
-    </ContractProvider>
   );
 };
 

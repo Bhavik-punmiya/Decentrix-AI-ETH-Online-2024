@@ -3,9 +3,9 @@ pragma solidity ^0.8.9;
 
 import './interfaces/IOracle.sol';
 
-// @title SolidityCodeAgent
+// @title SolidityFixCodeAgent
 // @notice This contract interacts with teeML oracle to run agents that perform multiple iterations of querying and responding using a large language model (LLM).
-contract SolidityCodeAgent {
+contract SolidityFixCodeAgent {
     string public prompt;
 
     struct Message {
@@ -58,7 +58,7 @@ contract SolidityCodeAgent {
             stop: '', // null
             temperature: 10, // Example temperature (scaled up, 10 means 1.0), > 20 means null
             topP: 101, // Percentage 0-100, > 100 means null
-            tools: '[{"type":"function","function":{"name":"web_search","description":"Search the internet for information relevant to Solidity development and syntax of solidity language and latest compiler versions","parameters":{"type":"object","properties":{"query":{"type":"string","description":"Search query"}},"required":["query"]}}},{"type":"function","function":{"name":"code_interpreter","description":"Compile the following solidity contracts and return any errors","parameters":{"type":"object","properties":{"code":{"type":"string","description":"Solidity code to compile and return the compilation results"}},"required":["code"]}}}]',
+            tools: '[{"type":"function","function":{"name":"web_search","description":"Search the internet for information relevant to Solidity development","parameters":{"type":"object","properties":{"query":{"type":"string","description":"Search query"}},"required":["query"]}}},{"type":"function","function":{"name":"code_interpreter","description":"Fix the following solidity code","parameters":{"type":"object","properties":{"code":{"type":"string","description":"Solidity code to fix the compilation error"}},"required":["code"]}}}]',
             toolChoice: 'auto',
             user: '' // null
         });
@@ -88,7 +88,7 @@ contract SolidityCodeAgent {
     // @param query The initial user query
     // @param max_iterations The maximum number of iterations for the agent run
     // @return The ID of the newly created agent run
-    function runAgent(
+    function runFixAgent(
         string memory query,
         uint8 max_iterations
     ) public returns (uint) {
