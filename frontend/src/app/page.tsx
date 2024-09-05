@@ -42,7 +42,7 @@ function App() {
                                 <Image src="/chain/rootstock-logo.png" alt="rootstock" width={40} height={40}/>
                                 <div className=" text-xl text-center font-bold ">Rootstock</div>
                             </div>
-                            <Link href={"/agent/rootstock"}
+                            <Link href={"/agent/rootstock/code"}
                                   className="text-2xl   p-2 rounded-xl bg-theme-purple-dark text-white hover:scale-110 ease-out transition-all"><FaTelegramPlane/>
 
                             </Link>

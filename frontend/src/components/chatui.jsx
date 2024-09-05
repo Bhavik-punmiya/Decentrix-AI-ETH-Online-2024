@@ -66,13 +66,10 @@ const Chat = () => {
     return (
         <div className="flex flex-col w-full mx-auto h-full p-5">
             <div className="bg-white rounded-lg shadow p-5">
-                <div className="font-bold text-2xl">Have doubts? Just ask!</div>
-                <p className="mb-5">Our agent knows just about everything there is to know about Rootstock!</p>
-
-                <div className="flex items-center my-2">
+                <div className="flex items-center my-2 text-lg">
                     <Input
-                        className="flex-1"
-                        placeholder="Type your message..."
+                        className="flex-1 text-lg"
+                        placeholder="Ask anything..."
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
                         disabled={loading}
