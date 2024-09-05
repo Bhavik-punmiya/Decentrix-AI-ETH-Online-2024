@@ -6,13 +6,13 @@ async function main() {
     }
     const oracleAddress: string = process.env.ORACLE_ADDRESS;
     const systemPrompt: string = "you are a helpful agent"; // Replace with your desired system prompt
-    const knowledgeBaseCID: string = process.env.ROOTSTOCK_KNOWLEDGE_BASE_CID ?? ""; // Replace with your knowledge base CID
+    const knowledgeBaseCID: string = "QmQdgDynJthGU4EkXF3DP8ESgbqQrtWzTo9ViudsY2yRa2"; // Replace with your knowledge base CID
 
     await deployAgent(oracleAddress, systemPrompt, knowledgeBaseCID);
 }
 
 async function deployAgent(oracleAddress: string, systemPrompt: string, knowledgeBaseCID: string) {
-    const agent = await ethers.deployContract("SolidityCodeAgentWithKb", [oracleAddress, systemPrompt, knowledgeBaseCID], {});
+    const agent = await ethers.deployContract("HederaAgent", [oracleAddress, systemPrompt, knowledgeBaseCID], {});
 
     await agent.waitForDeployment();
 

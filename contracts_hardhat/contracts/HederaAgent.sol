@@ -3,7 +3,7 @@ pragma solidity ^0.8.9;
 
 import './interfaces/IOracle.sol';
 
-contract RootstockAgentWithKb {
+contract HederaAgent {
     string public prompt;
     string public knowledgeBase;
 
@@ -49,7 +49,7 @@ contract RootstockAgentWithKb {
             stop: '',
             temperature: 10,
             topP: 101,
-            tools: '[{"type":"function","function":{"name":"web_search","description":"Search the internet for information relevant to Solidity development","parameters":{"type":"object","properties":{"query":{"type":"string","description":"Search query"}},"required":["query"]}}},{"type":"function","function":{"name":"code_interpreter","description":"Compile the following solidity contracts and return any errors","parameters":{"type":"object","properties":{"code":{"type":"string","description":"Solidity code to compile and return the compilation results"}},"required":["code"]}}}]',
+            tools: '[{"type":"function","function":{"name":"web_search","description":"Search the internet for information relevant to Hedera blockchain","parameters":{"type":"object","properties":{"query":{"type":"string","description":"Search query"}},"required":["query"]}}},{"type":"function","function":{"name":"code_interpreter","description":"Return all the relevant answers to users prompt","parameters":{"type":"object","properties":{"code":{"type":"string","description":"Solidity code to compile and return the compilation results"}},"required":["code"]}}}]',
             toolChoice: 'auto',
             user: ''
         });

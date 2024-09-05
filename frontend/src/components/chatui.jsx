@@ -7,7 +7,6 @@ import rehypeHighlight from 'rehype-highlight';
 import {Prism as SyntaxHighlighter} from 'react-syntax-highlighter';
 import {atomDark} from 'react-syntax-highlighter/dist/esm/styles/prism';
 import 'highlight.js/styles/github.css';
-import {useRootstockCodeAgentContract} from "@/hooks/useRootstockAgentContract";
 
 const CodeBlock = ({children, language}) => {
     const [isCopied, setIsCopied] = useState(false);
@@ -34,18 +33,10 @@ const CodeBlock = ({children, language}) => {
     );
 };
 
-const Chat = ({account}) => {
+const Chat = ({account, userPrompt, setUserPrompt, suggestions, loading, error, handleRunAgent, progressMessage}) => {
     const [input, setInput] = useState('');
     const [messages, setMessages] = useState([]);
-    const {
-        userPrompt,
-        setUserPrompt,
-        suggestions,
-        loading,
-        error,
-        handleRunAgent,
-        progressMessage,
-    } = useRootstockCodeAgentContract();
+
 
     useEffect(() => {
         if (suggestions) {

@@ -1,17 +1,19 @@
 "use client"
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { FaHome, FaCode, FaRobot, FaUser, FaEthereum } from 'react-icons/fa';
 import { Button } from '@nextui-org/react';
 import { useContractState } from '@/contexts/ContractContext';
 import ContractInteraction from '@/components/ContractInteractions';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import {BsChatDotsFill} from "react-icons/bs";
 
 const Sidebar = () => {
+    const [chainName, setChainName] = useState(null);
     const { contractState } = useContractState();
     const [activeIcon, setActiveIcon] = useState(null);
     const [hoveredIcon, setHoveredIcon] = useState(null);
     const router = useRouter();
+    const pathname = usePathname();
 
     const handleIconClick = (icon, path) => {
         if (icon === 'contract') {
@@ -21,6 +23,12 @@ const Sidebar = () => {
             router.push(path);
         }
     };
+
+    useEffect(() => {
+        if(pathname){
+            setChainName(pathname.split('/')[2]);
+        }
+    }, [pathname]);
 
     const SidebarIcon = ({ icon, path, iconName, label }) => (
         <div
@@ -48,8 +56,8 @@ const Sidebar = () => {
     return (
         <div className="fixed top-0 left-0 h-screen w-16 m-0 flex flex-col bg-white text-black shadow z-50">
             <SidebarIcon icon={<FaHome size="20" />} path="/" iconName="home" label="Home" />
-            <SidebarIcon icon={<FaCode size="20" />} path="/agent/rootstock/code" iconName="code" label="Code" />
-            <SidebarIcon icon={<BsChatDotsFill size="20" />} path="/agent/rootstock/chat" iconName="robot" label="Chat" />
+            <SidebarIcon icon={<FaCode size="20" />} path={`/agent/${chainName}/code`} iconName="code" label="Code" />
+            <SidebarIcon icon={<BsChatDotsFill size="20" />} path={`/agent/${chainName}/chat`} iconName="robot" label="Chat" />
             <SidebarIcon icon={<FaEthereum size="20" />} iconName="contract" label="Contract" />
             <SidebarIcon icon={<FaUser size="20" />} path="/dashboard" iconName="user" label="User" />
 

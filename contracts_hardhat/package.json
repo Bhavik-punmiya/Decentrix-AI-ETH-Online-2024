@@ -9,6 +9,7 @@
     "test": "npx hardhat test",
     "deploySolidityCodeAgent": "npx hardhat run scripts/deploySolidityCodeAgent.ts --network galadriel",
     "deployRootstockAgent": "npx hardhat run scripts/deployRootstockAgent.ts --network galadriel",
+    "deployHederaAgent": "npx hardhat run scripts/deployHederaAgent.ts --network galadriel",
     "callQuickstart": "npx hardhat run scripts/callQuickstart.ts --network galadriel",
     "generateStandardJson": "npx hardhat solidity-json",
     "debug": "npx hardhat test scripts/debugContract.ts"
