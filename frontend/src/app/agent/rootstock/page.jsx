@@ -62,11 +62,12 @@ export default function Editor() {
           
           // Update the shared contract state
           if (response.data.status === "success") {
-            setContractState({
-              abi: response.data.abi,
-              bytecode: response.data.bytecode,
-              isCompiled: true,
-            });
+            setContractState(prevState => ({
+                ...prevState,
+                abi: response.data.abi,
+                bytecode: response.data.bytecode,
+                isCompiled: true,
+              }));
           }
         } catch (error) {
           setResult({ error: error.message });
@@ -115,6 +116,12 @@ export default function Editor() {
             // Deploy the contract
             const contract = await contractFactory.deploy();
             await contract.deployed();
+
+            await setContractState(prevState => ({
+                ...prevState,
+                address: contract.address,
+                isDeployed: true,
+            }));
 
             toast.success(`Contract deployed successfully at address: ${contract.address}`);
             console.log(`Contract deployed at: ${contract.address}`);

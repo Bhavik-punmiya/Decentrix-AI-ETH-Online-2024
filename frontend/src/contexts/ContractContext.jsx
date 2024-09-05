@@ -7,7 +7,9 @@ export const ContractProvider = ({ children }) => {
   const [contractState, setContractState] = useState({
     abi: null,
     bytecode: null,
+    address: null,
     isCompiled: false,
+    isDeployed: false,
   });
 
   return (
