@@ -1,6 +1,6 @@
 "use client"
 import React, { useState } from 'react';
-import { FaHome, FaUserAlt, FaChartLine, FaCog } from 'react-icons/fa';
+import { FaHome, FaCode, FaRobot, FaUser, FaEthereum } from 'react-icons/fa';
 import { Button } from '@nextui-org/react';
 import { useContractState } from '@/contexts/ContractContext';
 import ContractInteraction from '@/components/ContractInteractions';
@@ -16,10 +16,18 @@ const Sidebar = () => {
   return (
     <div className="fixed top-0 left-0 h-screen w-28 m-0 flex flex-col bg-white text-black shadow z-50">
       <SidebarIcon icon={<FaHome size="28" />} onClick={() => handleIconClick('home')} />
-      <SidebarIcon icon={<FaUserAlt size="28" />} onClick={() => handleIconClick('user')} />
-      <SidebarIcon icon={<FaChartLine size="28" />} onClick={() => handleIconClick('chart')} />
-      <SidebarIcon icon={<FaCog size="28" />} onClick={() => handleIconClick('settings')} />
+      <SidebarIcon icon={<FaCode size="28" />} onClick={() => handleIconClick('home')} />
+      <SidebarIcon icon={<FaRobot size="28" />} onClick={() => handleIconClick('user')} />
+      <SidebarIcon icon={<FaEthereum size="28" />} onClick={() => handleIconClick('settings')} />
+      <SidebarIcon icon={<FaUser size="28" />} onClick={() => handleIconClick('chart')} />
 
+      {activeIcon === 'home' && (
+        <NestedSidebar title="Home">
+          <Button auto color="primary">Home Option 1</Button>
+          <Button auto color="primary">Home Option 2</Button>
+        </NestedSidebar>
+      )}
+      
       {activeIcon === 'home' && (
         <NestedSidebar title="Home">
           <Button auto color="primary">Home Option 1</Button>
