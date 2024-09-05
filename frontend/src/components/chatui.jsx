@@ -94,7 +94,7 @@ const Chat = ({account, userPrompt, setUserPrompt, suggestions, loading, error, 
                     </div>
                 )}
 
-                <div className="flex-1 overflow-y-auto rounded-lg p-2 space-y-2 mt-4">
+                <div className="flex-1 h-screen overflow-y-auto rounded-lg p-2 space-y-2 mt-4">
                     {messages.map((msg, index) => (
                         <div
                             key={index}
@@ -122,6 +122,13 @@ const Chat = ({account, userPrompt, setUserPrompt, suggestions, loading, error, 
                                                     <code className={className} {...props}>
                                                         {children}
                                                     </code>
+                                                );
+                                            },
+                                            a({node, children, href, ...props}) {
+                                                return (
+                                                    <a href={href} className="text-blue-500 underline" {...props}>
+                                                        {children}
+                                                    </a>
                                                 );
                                             },
                                         }}
