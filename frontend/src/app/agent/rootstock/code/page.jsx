@@ -18,7 +18,7 @@ import {useSolidityCodeAgentContract} from '@/hooks/useSolidityCodeAgentContract
 import {FaClipboard, FaClipboardCheck} from "react-icons/fa";
 import {Toaster, toast} from 'react-hot-toast';
 import { useContractState } from '@/contexts/ContractContext';
-import ChatUi from "@/components/chatui";
+import ContractInteraction from '@/components/ContractInteractions';
 
 export default function Editor() {
     const {
@@ -40,6 +40,7 @@ export default function Editor() {
     const account = useAccount();
     const [isCompiling, setCompiling] = useState(false);
     const [isDeploying, setIsDeploying] = useState(false);
+    const { contractState } = useContractState();
 
     const compileCode = async () => {
         setCompiling(true);
@@ -278,6 +279,16 @@ export default function Editor() {
                             {RenderResult()}
                         </div>
 
+                        {contractState.isCompiled && contractState.abi ? (
+                            <ContractInteraction />
+                        ) : (
+                            <div className="p-4 bg-yellow-100 border border-yellow-400 text-yellow-700 rounded">
+                                <p className="font-bold">No Contracts Compiled Yet</p>
+                                <p className="mt-2">Please compile a contract to interact with it.</p>
+                            </div>
+                        )}
+
+
 
                     </Card>
                 </div>
@@ -331,7 +342,7 @@ export default function Editor() {
                     </Card>
                 </div>
             </div>
-            <ChatUi/>
+
         </div>
     );
 }
