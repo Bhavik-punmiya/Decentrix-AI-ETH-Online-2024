@@ -109,6 +109,7 @@ export function useRootstockCodeAgentContract(): UseRootstockCodeAgentContract {
             1. Analyze the user's question carefully: "${prompt}"
             2. Use the provided knowledge base to formulate your response.
             3. If the question relates to code or implementation, provide relevant code snippets or examples.
+            4. Give links to official documentation or other resources where appropriate.
             
             Remember to use the knowledge base provided and avoid using any external information, your goal is to assist users in understanding and working with Rootstock technology effectively. Tailor your response to best address the user's specific needs and level of expertise.
             `;
