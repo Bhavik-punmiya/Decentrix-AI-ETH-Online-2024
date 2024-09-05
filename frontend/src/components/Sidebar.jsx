@@ -1,9 +1,12 @@
-"use client";
+"use client"
 import React, { useState } from 'react';
 import { FaHome, FaUserAlt, FaChartLine, FaCog } from 'react-icons/fa';
 import { Button } from '@nextui-org/react';
+import { useContractState } from '@/contexts/ContractContext';
+import ContractInteraction from '@/components/ContractInteractions';
 
 const Sidebar = () => {
+  const { contractState } = useContractState();
   const [activeIcon, setActiveIcon] = useState(null);
 
   const handleIconClick = (icon) => {
@@ -39,9 +42,15 @@ const Sidebar = () => {
       )}
 
       {activeIcon === 'settings' && (
-        <NestedSidebar title="Settings">
-          <Button auto color="primary">Settings Option 1</Button>
-          <Button auto color="primary">Settings Option 2</Button>
+        <NestedSidebar title="Contract Interaction">
+          {contractState.isCompiled && contractState.abi ? (
+            <ContractInteraction />
+          ) : (
+            <div className="p-4 bg-yellow-100 border border-yellow-400 text-yellow-700 rounded">
+              <p className="font-bold">No Contracts Compiled Yet</p>
+              <p className="mt-2">Please compile a contract to interact with it.</p>
+            </div>
+          )}
         </NestedSidebar>
       )}
     </div>
@@ -62,7 +71,7 @@ const SidebarIcon = ({ icon, onClick }) => (
 );
 
 const NestedSidebar = ({ title, children }) => (
-  <div className="absolute ml-28 top-0 h-screen w-[400px] bg-white p-4 text-black shadow">
+  <div className="absolute ml-28 top-0 h-screen w-[400px] bg-white p-4 text-black shadow overflow-y-auto">
     <h2 className="text-xl font-bold mb-4">{title}</h2>
     <div className="space-y-2">{children}</div>
   </div>

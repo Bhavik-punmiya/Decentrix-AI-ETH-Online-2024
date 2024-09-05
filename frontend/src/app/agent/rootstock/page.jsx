@@ -17,6 +17,7 @@ import {useAccount} from "wagmi";
 import {useSolidityCodeAgentContract} from '@/hooks/useSolidityCodeAgentContract';
 import {FaClipboard, FaClipboardCheck} from "react-icons/fa";
 import {Toaster, toast} from 'react-hot-toast';
+import { useContractState } from '@/contexts/ContractContext';
 import ChatUi from "@/components/chatui";
 
 export default function Editor() {
@@ -34,35 +35,46 @@ export default function Editor() {
     } = useSolidityCodeAgentContract();
 
     const [result, setResult] = useState(null);
+    const { setContractState } = useContractState();
     const [view, setView] = useState("code");
     const account = useAccount();
     const [isCompiling, setCompiling] = useState(false);
     const [isDeploying, setIsDeploying] = useState(false);
 
     const compileCode = async () => {
-        setCompiling(true); // Set to true when starting compilation
+        setCompiling(true);
         try {
-            const formData = new FormData();
-            formData.append(
-                "file",
-                new Blob([suggestions], {type: "text/plain"}),
-                "Contract.sol"
-            );
-            const response = await axios.post(
-                "http://localhost:8080/api/compile",
-                formData,
-                {
-                    headers: {"Content-Type": "multipart/form-data"},
-                }
-            );
-            setResult(response.data);
-            console.log(response.data);
+          const formData = new FormData();
+          formData.append(
+            "file",
+            new Blob([suggestions], { type: "text/plain" }),
+            "Contract.sol"
+          );
+          const response = await axios.post(
+            "http://localhost:8080/api/compile",
+            formData,
+            {
+              headers: { "Content-Type": "multipart/form-data" },
+            }
+          );
+          setResult(response.data);
+          console.log(response.data);
+          
+          // Update the shared contract state
+          if (response.data.status === "success") {
+            setContractState({
+              abi: response.data.abi,
+              bytecode: response.data.bytecode,
+              isCompiled: true,
+            });
+          }
         } catch (error) {
-            setResult({error: error.message});
+          setResult({ error: error.message });
         } finally {
-            setCompiling(false); // Reset to false after completion
+          setCompiling(false);
         }
-    };
+      };
+
 
     const deployContract = async () => {
         if (!result || result.status !== "success") {
