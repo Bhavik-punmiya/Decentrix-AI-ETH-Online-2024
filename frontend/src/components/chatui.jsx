@@ -34,7 +34,7 @@ const CodeBlock = ({children, language}) => {
     );
 };
 
-const Chat = () => {
+const Chat = ({account}) => {
     const [input, setInput] = useState('');
     const [messages, setMessages] = useState([]);
     const {
@@ -54,6 +54,9 @@ const Chat = () => {
     }, [suggestions]);
 
     const handleSend = async () => {
+        if(!account.isConnected) {
+            return;
+        }
         if (input.trim()) {
             const userMessage = {text: input, type: 'user'};
             setMessages(prevMessages => [userMessage, ...prevMessages]);

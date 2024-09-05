@@ -41,7 +41,7 @@ export default function ChatPage() {
                   <WalletConnectButton/>
               </div>
           </div>
-          <ChatUi/>
+          <ChatUi account={account}/>
       </div>
     );
 }
