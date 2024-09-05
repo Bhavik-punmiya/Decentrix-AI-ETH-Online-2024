@@ -1,120 +1,150 @@
-"use client";
-import { useState } from 'react';
-import { Input, Button } from '@nextui-org/react';
-import { FaPaperPlane } from 'react-icons/fa';
+import React, {useState, useEffect} from 'react';
+import {Input, Button} from '@nextui-org/react';
+import {FaPaperPlane} from 'react-icons/fa';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeHighlight from 'rehype-highlight';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import {Prism as SyntaxHighlighter} from 'react-syntax-highlighter';
+import {atomDark} from 'react-syntax-highlighter/dist/esm/styles/prism';
 import 'highlight.js/styles/github.css';
+import {useRootstockCodeAgentContract} from "@/hooks/useRootstockAgentContract";
 
-const CodeBlock = ({ children, language }) => {
-  const [isCopied, setIsCopied] = useState(false);
+const CodeBlock = ({children, language}) => {
+    const [isCopied, setIsCopied] = useState(false);
 
-  const handleCopy = () => {
-    navigator.clipboard.writeText(children).then(() => {
-      setIsCopied(true);
-      setTimeout(() => setIsCopied(false), 2000); // Reset copy status after 2 seconds
-    });
-  };
+    const handleCopy = () => {
+        navigator.clipboard.writeText(children).then(() => {
+            setIsCopied(true);
+            setTimeout(() => setIsCopied(false), 2000);
+        });
+    };
 
-  return (
-    <div className="relative">
-      <button
-        className="absolute right-2 top-2 text-sm bg-gray-800 text-white py-1 px-2 rounded"
-        onClick={handleCopy}
-      >
-        {isCopied ? 'Copied!' : 'Copy'}
-      </button>
-      <SyntaxHighlighter language={language} style={atomDark}>
-        {children}
-      </SyntaxHighlighter>
-    </div>
-  );
+    return (
+        <div className="relative">
+            <button
+                className="absolute right-2 top-2 text-sm bg-gray-800 text-white py-1 px-2 rounded"
+                onClick={handleCopy}
+            >
+                {isCopied ? 'Copied!' : 'Copy'}
+            </button>
+            <SyntaxHighlighter language={language} style={atomDark}>
+                {children}
+            </SyntaxHighlighter>
+        </div>
+    );
 };
 
 const Chat = () => {
-  const [input, setInput] = useState('');
-  const [messages, setMessages] = useState([]);
+    const [input, setInput] = useState('');
+    const [messages, setMessages] = useState([]);
+    const {
+        userPrompt,
+        setUserPrompt,
+        suggestions,
+        loading,
+        error,
+        handleRunAgent,
+        progressMessage,
+    } = useRootstockCodeAgentContract();
 
-  const handleSend = () => {
-    if (input.trim()) {
-      const userMessage = { text: input, type: 'user' };
+    useEffect(() => {
+        if (suggestions) {
+            setMessages(prevMessages => [{text: suggestions, type: 'bot'}, ...prevMessages]);
+        }
+    }, [suggestions]);
 
-      // Hardcoded AI response with a larger message in Markdown format
-      const botMessage = {
-        text: `Hello! I'm an AI chatbot. Heres a code snippet for you:\n\n\`\`\`javascript\nconst greet = (name) => {\n  return \`Hello, \${name}!\`;\n};\n\nconsole.log(greet('World'));\n\`\`\``,
-        type: 'bot',
-      };
+    const handleSend = async () => {
+        if (input.trim()) {
+            const userMessage = {text: input, type: 'user'};
+            setMessages(prevMessages => [userMessage, ...prevMessages]);
+            setUserPrompt(input);
+            setInput('');
+            await handleRunAgent(input);
+        }
+    };
 
-      setMessages((prevMessages) => [...prevMessages, userMessage, botMessage]);
-      setInput('');
-    }
-  };
+    return (
+        <div className="flex flex-col w-full mx-auto h-full p-5">
+            <div className="bg-white rounded-lg shadow p-5">
+                <div className="font-bold text-2xl">Have doubts? Just ask!</div>
+                <p className="mb-5">Our agent knows just about everything there is to know about Rootstock!</p>
 
-  return (
-      <div className="flex flex-col  w-full mx-auto h-full  p-5">
-          <div className="bg-white rounded-lg shadow p-5">
-              <div className="font-bold text-2xl   ">Have doubts? Just ask!</div>
-              <p className="mb-5">Our agent know just about everything there is to know about Rootstock!</p>
+                <div className="flex items-center my-2">
+                    <Input
+                        className="flex-1"
+                        placeholder="Type your message..."
+                        value={input}
+                        onChange={(e) => setInput(e.target.value)}
+                        disabled={loading}
+                    />
+                    <Button color="success" onClick={handleSend} className="ml-2 text-white" disabled={loading}
+                            isLoading={loading} // Use isLoading to show the loading state
+                    >
+                        {
+                            loading ? (
+                                <span>Loading...</span>
+                            ) : (
+                                <FaPaperPlane className="text-lg"/>
+                            )
 
-              <div className="flex items-center my-2">
-                  <Input
-                      className="flex-1"
-                      placeholder="Type your message..."
-                      value={input}
-                      onChange={(e) => setInput(e.target.value)}
-                  />
-                  <Button onClick={handleSend} className="ml-2" icon={<FaPaperPlane/>}>
-                      Send
-                  </Button>
-              </div>
+                        }
+                    </Button>
+                </div>
 
-              <div className="flex-1 overflow-y-auto   rounded-lg  p-2 space-y-2">
-                  {messages.map((msg, index) => (
-                      <div
-                          key={index}
-                          className={`p-2 rounded-lg mb-4 max-w-[80%] ${
-                              msg.type === 'user' ? 'bg-theme-green-light text-black self-end ml-auto' : 'bg-theme-purple-light text-black self-start'
-                          }`}
-                      >
-                          {/* Render user messages as plain text */}
-                          {msg.type === 'user' ? (
-                              <div className="">
-                                  <pre className="whitespace-pre-wrap">{msg.text}</pre>
-                              </div>
-                          ) : (
-                              <div>
-                                  <ReactMarkdown
-                                      className="whitespace-pre-wrap p-2 mb-2"
-                                      remarkPlugins={[remarkGfm]}
-                                      rehypePlugins={[rehypeHighlight]}
-                                      components={{
-                                          code({node, inline, className, children, ...props}) {
-                                              const match = /language-(\w+)/.exec(className || '');
-                                              return !inline && match ? (
-                                                  <CodeBlock
-                                                      language={match[1]}>{String(children).replace(/\n$/, '')}</CodeBlock>
-                                              ) : (
-                                                  <code className={className} {...props}>
-                                                      {children}
-                                                  </code>
-                                              );
-                                          },
-                                      }}
-                                  >
-                                      {msg.text}
-                                  </ReactMarkdown>
-                              </div>
-                          )}
-                      </div>
-                  ))}
-              </div>
-          </div>
+                {loading && (
+                    <div className="text-blue-500 mt-2">
+                        {progressMessage || 'Processing your request...'}
+                    </div>
+                )}
 
-      </div>
-  );
+                {error && (
+                    <div className="text-red-500 mt-2">
+                        Error: {error}
+                    </div>
+                )}
+
+                <div className="flex-1 overflow-y-auto rounded-lg p-2 space-y-2 mt-4">
+                    {messages.map((msg, index) => (
+                        <div
+                            key={index}
+                            className={`p-2 rounded-lg mb-4 max-w-[80%] ${
+                                msg.type === 'user' ? 'bg-theme-green-light text-black self-end ml-auto' : 'bg-theme-purple-light text-black self-start'
+                            }`}
+                        >
+                            {msg.type === 'user' ? (
+                                <div className="">
+                                    <pre className="whitespace-pre-wrap">{msg.text}</pre>
+                                </div>
+                            ) : (
+                                <div>
+                                    <ReactMarkdown
+                                        className="whitespace-pre-wrap p-2 mb-2"
+                                        remarkPlugins={[remarkGfm]}
+                                        rehypePlugins={[rehypeHighlight]}
+                                        components={{
+                                            code({node, inline, className, children, ...props}) {
+                                                const match = /language-(\w+)/.exec(className || '');
+                                                return !inline && match ? (
+                                                    <CodeBlock
+                                                        language={match[1]}>{String(children).replace(/\n$/, '')}</CodeBlock>
+                                                ) : (
+                                                    <code className={className} {...props}>
+                                                        {children}
+                                                    </code>
+                                                );
+                                            },
+                                        }}
+                                    >
+                                        {msg.text}
+                                    </ReactMarkdown>
+                                </div>
+                            )}
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </div>
+    );
 };
 
 export default Chat;
