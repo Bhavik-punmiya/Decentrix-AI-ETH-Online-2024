@@ -96,7 +96,7 @@ function Navbar() {
 
     return (
         <nav
-            className="fixed top-3 left-1/2 transform -translate-x-1/2  p-2 w-[90%] z-40   rounded-full backdrop-blur-xl ">
+            className="fixed top-0 left-0 z-40 w-full p-3  border-b border-gray-400 backdrop-blur-xl ">
             <div className=" mx-auto ">
                 <div className="flex justify-between">
                     <div className="flex px-3">

@@ -32,7 +32,7 @@ const Sidebar = () => {
 
     const SidebarIcon = ({ icon, path, iconName, label }) => (
         <div
-            className="relative h-8 w-8 flex items-center justify-center m-4 rounded-md hover:bg-gray-200 focus:bg-gray-200"
+            className="relative h-10 w-10 flex items-center justify-center m-4 rounded-md hover:bg-theme-purple focus:bg-gray-200"
             onMouseEnter={() => setHoveredIcon(iconName)}
             onMouseLeave={() => setHoveredIcon(null)}
         >
@@ -46,7 +46,7 @@ const Sidebar = () => {
                 {icon}
             </Button>
             {hoveredIcon === iconName && (
-                <div className="absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-xs rounded whitespace-nowrap">
+                <div className="absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-lg rounded whitespace-nowrap">
                     {label}
                 </div>
             )}
@@ -54,12 +54,12 @@ const Sidebar = () => {
     );
 
     return (
-        <div className="fixed top-0 left-0 h-screen w-16 m-0 flex flex-col bg-white text-black shadow z-50">
-            <SidebarIcon icon={<FaHome size="20" />} path="/" iconName="home" label="Home" />
-            <SidebarIcon icon={<FaCode size="20" />} path={`/agent/${chainName}/code`} iconName="code" label="Code" />
-            <SidebarIcon icon={<BsChatDotsFill size="20" />} path={`/agent/${chainName}/chat`} iconName="robot" label="Chat" />
-            <SidebarIcon icon={<FaEthereum size="20" />} iconName="contract" label="Contract" />
-            <SidebarIcon icon={<FaUser size="20" />} path="/dashboard" iconName="user" label="User" />
+        <div className="fixed top-16 left-0 h-screen w-fit m-0 flex flex-col bg-transparent  text-black  z-50 border-r border-gray-400">
+            <SidebarIcon icon={<FaHome size="24" />} path="/" iconName="home" label="Home" />
+            <SidebarIcon icon={<FaCode size="24" />} path={`/agent/${chainName}/code`} iconName="code" label="Code" />
+            <SidebarIcon icon={<BsChatDotsFill size="24" />} path={`/agent/${chainName}/chat`} iconName="robot" label="Chat" />
+            <SidebarIcon icon={<FaEthereum size="24" />} iconName="contract" label="Contract" />
+            <SidebarIcon icon={<FaUser size="24" />} path="/dashboard" iconName="user" label="User" />
 
             {activeIcon === 'contract' && (
                 <NestedSidebar title="Contract Interaction">
