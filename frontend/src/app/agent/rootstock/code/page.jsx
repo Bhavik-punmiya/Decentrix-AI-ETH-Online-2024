@@ -84,7 +84,7 @@ export default function Editor() {
 
 
     
-      const deployContract = async () => {
+      const DeployContract = async () => {
         if (!result || result.status !== "success") {
             toast.error("Please compile the contract successfully before deploying.");
             return;

@@ -80,7 +80,7 @@ export default function Editor() {
       };
 
 
-      const deployContract = async () => {
+      const DeployContract = async () => {
         if (!result || result.status !== "success") {
             toast.error("Please compile the contract successfully before deploying.");
             return;
@@ -133,7 +133,7 @@ export default function Editor() {
             };
             consoel.log(userData.email);
             // Get user email from context
-            const { userData } = useContext(GlobalContext);
+           
             if (userData && userData.email) {
                 await saveContractData(contractData, userData.email);
             } else {
