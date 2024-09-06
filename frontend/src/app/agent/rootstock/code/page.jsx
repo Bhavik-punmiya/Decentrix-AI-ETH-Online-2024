@@ -1,5 +1,5 @@
 "use client";
-import React, {useState} from "react";
+import React, {useState, useContext} from "react";
 import {Avatar} from "@nextui-org/react";
 import {ethers} from "ethers";
 import {
@@ -20,7 +20,7 @@ import {Toaster, toast} from 'react-hot-toast';
 import { useContractState } from '@/contexts/ContractContext';
 import ContractInteraction from '@/components/ContractInteractions';
 import { saveContractData, saveSolidityCode } from "@/lib/contractService";
-
+import { GlobalContext } from "@/contexts/UserContext";
 
 export default function Editor() {
     const {
@@ -43,6 +43,8 @@ export default function Editor() {
     const [isCompiling, setCompiling] = useState(false);
     const [isDeploying, setIsDeploying] = useState(false);
     const { contractState } = useContractState();
+    const { userData } = useContext(GlobalContext);
+
 
     const compileCode = async () => {
         setCompiling(true);
@@ -80,13 +82,15 @@ export default function Editor() {
       };
 
 
-    const deployContract = async () => {
+
+    
+      const deployContract = async () => {
         if (!result || result.status !== "success") {
             toast.error("Please compile the contract successfully before deploying.");
             return;
         }
         console.log("Deploying contract...");
-
+    
         try {
             // Prompt user to connect their wallet if not connected
             if (!window.ethereum) {
@@ -94,14 +98,14 @@ export default function Editor() {
                 return;
             }
             console.log("Requesting MetaMask connection...");
-
+    
             // Request to connect to MetaMask
-            await window.ethereum.request({method: "eth_requestAccounts"});
-
-            const provider = new ethers.providers.Web3Provider(window.ethereum); // Web3Provider for ethers v5
+            await window.ethereum.request({ method: "eth_requestAccounts" });
+    
+            const provider = new ethers.providers.Web3Provider(window.ethereum);
             const signer = provider.getSigner();
             console.log("Connected to MetaMask.");
-
+    
             // Check if the user is on the correct network (Rootstock Testnet)
             const network = await provider.getNetwork();
             if (network.chainId !== 31) {
@@ -110,40 +114,57 @@ export default function Editor() {
             }
             console.log("Connected to Rootstock Testnet.");
             setIsDeploying(true);
-
+    
             // Create a new contract factory for deployment
             const contractFactory = new ethers.ContractFactory(result.abi, result.bytecode, signer);
             console.log("Deploying contract...");
-            console.log("result.abi", result.abi);
-
+    
             // Deploy the contract
             const contract = await contractFactory.deploy();
             await contract.deployed();
+    
+            // Get the block explorer URL
+            const blockExplorerUrl = `https://explorer.testnet.rsk.co/address/${contract.address}`;
             
-            await setContractState(prevState => ({
-                ...prevState,
-                address: contract.address,
-                isDeployed: true,
-            }));
+            const solidityCode = suggestions; // Assuming suggestions holds your Solidity code
+            const fileName = `Contract_${contract.address}.sol`; // Generate a unique file name
+            const solidityFilePath = await saveSolidityCode(solidityCode, fileName); // Save the Solidity code and get the file path
 
-                 // Prepare contract data to save
-        const solidityCode = suggestions; // Assuming suggestions holds your Solidity code
-        const fileName = `Contract_${contract.address}.sol`; // Generate a unique file name
-        const solidityFilePath = await saveSolidityCode(solidityCode, fileName); // Save the Solidity code and get the file path
-
-
+            // Prepare contract data to save
             const contractData = {
                 chainId: network.chainId,
                 contractAddress: contract.address,
                 abi: result.abi,
                 bytecode: result.bytecode,
+                blockExplorerUrl: blockExplorerUrl,
                 solidityFilePath: solidityFilePath,
+                deploymentDate: new Date().toISOString(),
             };
+        
+            // Get user email from context
+            
+            if (userData && userData.email) {
+                await saveContractData(contractData, userData.email);
+            } else {
+                console.error("User email not available");
+            }
     
-            const userId = "hardcodedUserId"; // Replace this with actual user ID later
-            await saveContractData(contractData, userId);
-
-            toast.success(`Contract deployed successfully at address: ${contract.address}`);
+            await setContractState(prevState => ({
+                ...prevState,
+                address: contract.address,
+                isDeployed: true,
+                blockExplorerUrl: blockExplorerUrl,
+            }));
+    
+            toast.success(
+                <div>
+                    Contract deployed successfully!
+                    <a href={blockExplorerUrl} target="_blank" rel="noopener noreferrer" className="block mt-2 text-black-500 hover:underline">
+                        View on Block Explorer
+                    </a>
+                </div>,
+                { duration: 5000 }
+            );
             console.log(`Contract deployed at: ${contract.address}`);
         } catch (error) {
             console.error("Error deploying contract:", error);
@@ -152,6 +173,7 @@ export default function Editor() {
             setIsDeploying(false);
         }
     };
+
 
 
     const shortenAddress = (address) => {
@@ -200,7 +222,7 @@ export default function Editor() {
                     <div className="bg-green-100 border border-green-400 text-green-700 p-4 rounded">
                         <h3 className="font-bold">Compilation Successful!</h3>
                     </div>
-                    <div className=" p-4 rounded flex items-center justify-between my-2">
+                    <div className=" p-4 rounded flex items-center space-x-4 justify-end my-2">
                         <Button color="primary" className="flex gap-2 items-center" onClick={
                             () => {
                                 copyToClipboard(result.bytecode, 1)
