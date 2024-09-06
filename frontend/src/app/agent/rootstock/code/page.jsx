@@ -19,6 +19,8 @@ import {FaClipboard, FaClipboardCheck} from "react-icons/fa";
 import {Toaster, toast} from 'react-hot-toast';
 import { useContractState } from '@/contexts/ContractContext';
 import ContractInteraction from '@/components/ContractInteractions';
+import { saveContractData, saveSolidityCode } from "@/lib/contractService";
+
 
 export default function Editor() {
     const {
@@ -117,12 +119,29 @@ export default function Editor() {
             // Deploy the contract
             const contract = await contractFactory.deploy();
             await contract.deployed();
-
+            
             await setContractState(prevState => ({
                 ...prevState,
                 address: contract.address,
                 isDeployed: true,
             }));
+
+                 // Prepare contract data to save
+        const solidityCode = suggestions; // Assuming suggestions holds your Solidity code
+        const fileName = `Contract_${contract.address}.sol`; // Generate a unique file name
+        const solidityFilePath = await saveSolidityCode(solidityCode, fileName); // Save the Solidity code and get the file path
+
+
+            const contractData = {
+                chainId: network.chainId,
+                contractAddress: contract.address,
+                abi: result.abi,
+                bytecode: result.bytecode,
+                solidityFilePath: solidityFilePath,
+            };
+    
+            const userId = "hardcodedUserId"; // Replace this with actual user ID later
+            await saveContractData(contractData, userId);
 
             toast.success(`Contract deployed successfully at address: ${contract.address}`);
             console.log(`Contract deployed at: ${contract.address}`);
