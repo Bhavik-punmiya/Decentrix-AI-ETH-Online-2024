@@ -43,6 +43,8 @@ function Navbar() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [currentPage, setCurrentPage] = useState('/');
     const pathname = usePathname();
+    const [userProfileImg, setUserProfileImg] = useState(null);
+
 
     useEffect(() => {
         const init = async () => {
@@ -54,6 +56,7 @@ function Navbar() {
                     setLoggedIn(true);
                     const user_data = await web3auth.getUserInfo();
                     setUserData(user_data);
+                    setUserProfileImg(user_data.profileImage);
                     console.log("user_data", user_data);
                     const initials = user_data.name.split(' ').map((n) => n[0]).join('');
                     setNameInitials(initials);
@@ -103,18 +106,41 @@ function Navbar() {
                         <BrandLogo/>
                     </div>
 
+                    <div className="flex gap-4 justify-center items-center font-bold text-lg">
+                        <Link href="/" className="hover:text-gray-600">
+
+                            Home
+
+                        </Link>
+                        {
+                            loggedIn && (
+                                <Link href="/dashboard" className="hover:text-gray-600">
+
+                                    Dashboard
+
+                                </Link>)
+                        }
+                    </div>
+
                     <div className="hidden md:flex gap-2 items-center justify-center font-bold  ">
 
-                        {/*login with world id*/}
+                        {/*login with web3 auth*/}
                         {
                             loggedIn ? (
                                 <div className='flex items-center space-x-4'>
+
                                     <Link href="/dashboard">
 
-                                        <div
-                                            className='w-10 h-10 bg-theme-purple-light hover:bg-theme-purple-dark font-bold rounded-full flex items-center justify-center'>
-                                            {nameInitials}
-                                        </div>
+                                        {
+                                            userProfileImg ? (
+                                                <img src={userProfileImg} alt="profile"
+                                                     className="w-8 h-8 rounded-full"/>
+                                            ) : (
+                                                <div className="w-8 h-8 bg-gray-300 text-white rounded-full flex items-center justify-center">
+                                                    {nameInitials}
+                                                </div>
+                                            )
+                                        }
 
                                     </Link>
 
@@ -148,14 +174,24 @@ function Navbar() {
                     {isMenuOpen && (<div
                         className=" text-center flex flex-col gap-2  border-t border-theme-blue-light py-2  font-bold">
                         <Link className=" py-1 hover:text-black text-gray-500" href="/agents">Explore Agents</Link>
-                        {/*login with world id*/}
+                        {/*login with web3 auth*/}
                         {
                             loggedIn ? (
-                                <Link
-                                    href="/dashboard"
-                                    className=" mx-4 py-2 px-4 text-white bg-theme-dark text rounded-full  "
-                                >Profile
+                                <Link href="/dashboard">
+
+                                    {
+                                        userProfileImg ? (
+                                            <img src={userProfileImg} alt="profile"
+                                                 className="w-8 h-8 rounded-full"/>
+                                        ) : (
+                                            <div className="w-8 h-8 bg-gray-300 text-white rounded-full flex items-center justify-center">
+                                                {nameInitials}
+                                            </div>
+                                        )
+                                    }
+
                                 </Link>
+
                             ) : (
                                 <button
                                     onClick={() => login()}
