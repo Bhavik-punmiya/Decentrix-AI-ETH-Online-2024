@@ -274,7 +274,7 @@ export default function Editor() {
                     <Card className="flex-grow h-full p-6">
                         <div className="max-w-2xl bg-gray-100 p-4 rounded-lg shadow-md">
                             <div className="flex items-center space-x-4">
-                                <Avatar isBordered radius="md" src="/chain/rootstock-logo.png"/>
+                                <Avatar isBordered radius="md" src="/chain/morph-logo.png"/>
                                 <div className="flex-grow">
                                     {account.isConnected ? (
                                         <div className="flex items-center justify-between">

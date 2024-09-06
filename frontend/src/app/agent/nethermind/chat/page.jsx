@@ -35,7 +35,7 @@ export default function ChatPage() {
                 </div>
 
                 <div className="flex items-center space-x-4 w-fit bg-gray-100 p-4 rounded-lg  shadow-md mx-auto">
-                    <Avatar isBordered radius="md" src="/chain/rootstock-logo.png"/>
+                    <Avatar isBordered radius="md" src="/chain/nethermind-logo.png"/>
                     <div className="flex-grow">
                         {account.isConnected ? (
                             <div className="flex items-center justify-between">
