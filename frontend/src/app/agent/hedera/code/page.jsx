@@ -54,7 +54,7 @@ export default function Editor() {
             "Contract.sol"
           );
           const response = await axios.post(
-            "http://localhost:8080/api/compile",
+            "https://msl8g5vbv6.execute-api.ap-south-1.amazonaws.com/prod/api/contract/compile",
             formData,
             {
               headers: { "Content-Type": "multipart/form-data" },
