@@ -348,7 +348,7 @@ export default function Editor() {
                                 </Button>
                                 <Button
                                     color="success"
-                                    onClick={deployContract}
+                                    onClick={DeployContract}
                                     isLoading={isDeploying}
                                     className="ml-4"
                                 >
