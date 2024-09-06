@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
+"use client";
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { FaTelegramPlane } from 'react-icons/fa';
@@ -42,7 +44,7 @@ const DashboardPage = () => {
   }
 
   return (
-    <div className="p-8 min-h-screen bg-gray-100">
+    <div className="p-8 min-h-screen ">
       <div className="max-w-7xl mx-auto">
         <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
           <div className="flex items-center space-x-4">

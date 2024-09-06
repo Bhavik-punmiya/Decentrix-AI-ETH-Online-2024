@@ -31,7 +31,7 @@ const privateKeyProvider = new EthereumPrivateKeyProvider({
 
 const web3auth = new Web3Auth({
     clientId,
-    web3AuthNetwork: WEB3AUTH_NETWORK.SAPPHIRE_MAINNET,
+    web3AuthNetwork: WEB3AUTH_NETWORK.SAPPHIRE_DEVNET,
     privateKeyProvider,
 });
 
@@ -109,7 +109,7 @@ function Navbar() {
                         {
                             loggedIn ? (
                                 <div className='flex items-center space-x-4'>
-                                    <Link href="/profile">
+                                    <Link href="/dashboard">
 
                                         <div
                                             className='w-10 h-10 bg-theme-purple-light hover:bg-theme-purple-dark font-bold rounded-full flex items-center justify-center'>
@@ -152,7 +152,7 @@ function Navbar() {
                         {
                             loggedIn ? (
                                 <Link
-                                    href="/profile"
+                                    href="/dashboard"
                                     className=" mx-4 py-2 px-4 text-white bg-theme-dark text rounded-full  "
                                 >Profile
                                 </Link>
