@@ -1,55 +1,28 @@
-import React, {useState, useEffect} from 'react';
-import {Input, Button} from '@nextui-org/react';
-import {FaPaperPlane} from 'react-icons/fa';
+import React, { useState, useEffect } from 'react';
+import { Input, Button } from '@nextui-org/react';
+import { FaPaperPlane } from 'react-icons/fa';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import rehypeHighlight from 'rehype-highlight';
-import {Prism as SyntaxHighlighter} from 'react-syntax-highlighter';
-import {atomDark} from 'react-syntax-highlighter/dist/esm/styles/prism';
-import 'highlight.js/styles/github.css';
+import CodeBlock from '@/components/CodeBlock.jsx';  // Assuming CodeBlock is in a separate file
 
-const CodeBlock = ({children, language}) => {
-    const [isCopied, setIsCopied] = useState(false);
 
-    const handleCopy = () => {
-        navigator.clipboard.writeText(children).then(() => {
-            setIsCopied(true);
-            setTimeout(() => setIsCopied(false), 2000);
-        });
-    };
-
-    return (
-        <div className="relative">
-            <button
-                className="absolute right-2 top-2 text-sm bg-gray-800 text-white py-1 px-2 rounded"
-                onClick={handleCopy}
-            >
-                {isCopied ? 'Copied!' : 'Copy'}
-            </button>
-            <SyntaxHighlighter language={language} style={atomDark}>
-                {children}
-            </SyntaxHighlighter>
-        </div>
-    );
-};
-
-const Chat = ({account, userPrompt, setUserPrompt, suggestions, loading, error, handleRunAgent, progressMessage}) => {
+const Chat = ({ account, userPrompt, setUserPrompt, suggestions, loading, error, handleRunAgent, progressMessage }) => {
     const [input, setInput] = useState('');
     const [messages, setMessages] = useState([]);
 
-
     useEffect(() => {
         if (suggestions) {
-            setMessages(prevMessages => [{text: suggestions, type: 'bot'}, ...prevMessages]);
+            setMessages(prevMessages => [{ text: suggestions, type: 'bot' }, ...prevMessages]);
         }
     }, [suggestions]);
 
     const handleSend = async () => {
-        if(!account.isConnected) {
+        if (!account.isConnected) {
+            alert("Please connect wallet!");
             return;
         }
         if (input.trim()) {
-            const userMessage = {text: input, type: 'user'};
+            const userMessage = { text: input, type: 'user' };
             setMessages(prevMessages => [userMessage, ...prevMessages]);
             setUserPrompt(input);
             setInput('');
@@ -69,16 +42,9 @@ const Chat = ({account, userPrompt, setUserPrompt, suggestions, loading, error, 
                         disabled={loading}
                     />
                     <Button color="success" onClick={handleSend} className="ml-2 text-white" disabled={loading}
-                            isLoading={loading} // Use isLoading to show the loading state
+                            isLoading={loading}
                     >
-                        {
-                            loading ? (
-                                <span>Loading...</span>
-                            ) : (
-                                <FaPaperPlane className="text-lg"/>
-                            )
-
-                        }
+                        {loading ? <span>Loading...</span> : <FaPaperPlane className="text-lg" />}
                     </Button>
                 </div>
 
@@ -111,20 +77,18 @@ const Chat = ({account, userPrompt, setUserPrompt, suggestions, loading, error, 
                                     <ReactMarkdown
                                         className="whitespace-pre-wrap p-2 mb-2"
                                         remarkPlugins={[remarkGfm]}
-                                        rehypePlugins={[rehypeHighlight]}
                                         components={{
-                                            code({node, inline, className, children, ...props}) {
+                                            code({ node, inline, className, children, ...props }) {
                                                 const match = /language-(\w+)/.exec(className || '');
                                                 return !inline && match ? (
-                                                    <CodeBlock
-                                                        language={match[1]}>{String(children).replace(/\n$/, '')}</CodeBlock>
+                                                    <CodeBlock language={match[1]}>{String(children).replace(/\n$/, '')}</CodeBlock>
                                                 ) : (
                                                     <code className={className} {...props}>
                                                         {children}
                                                     </code>
                                                 );
                                             },
-                                            a({node, children, href, ...props}) {
+                                            a({ node, children, href, ...props }) {
                                                 return (
                                                     <a href={href} className="text-blue-500 underline" {...props}>
                                                         {children}
