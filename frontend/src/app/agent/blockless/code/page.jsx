@@ -100,13 +100,13 @@ export default function Editor() {
             const signer = provider.getSigner();
             console.log("Connected to MetaMask.");
 
-            // Check if the user is on the correct network (Rootstock Testnet)
+            // Check if the user is on the correct network (Blockless Testnet)
             const network = await provider.getNetwork();
             if (network.chainId !== 31) {
-                toast.error("Please switch to the Rootstock Testnet in MetaMask.");
+                toast.error("Please switch to the Blockless Testnet in MetaMask.");
                 return;
             }
-            console.log("Connected to Rootstock Testnet.");
+            console.log("Connected to Blockless Testnet.");
             setIsDeploying(true);
 
             // Create a new contract factory for deployment
@@ -233,7 +233,7 @@ export default function Editor() {
                     <Card className="flex-grow h-full p-6">
                         <div className="max-w-2xl bg-gray-100 p-4 rounded-lg shadow-md">
                             <div className="flex items-center space-x-4">
-                                <Avatar isBordered radius="md" src="/chain/rootstock-logo.png"/>
+                                <Avatar isBordered radius="md" src="/chain/blockless-logo.png"/>
                                 <div className="flex-grow">
                                     {account.isConnected ? (
                                         <div className="flex items-center justify-between">
@@ -302,7 +302,7 @@ export default function Editor() {
                         <CardHeader className="flex justify-between items-center px-4 py-2">
                             <div className="flex items-center">
 
-                                <h2 className="text-xl font-bold">Hedera</h2>
+                                <h2 className="text-xl font-bold">Blockless</h2>
 
                             </div>
                             <div className="py-2">

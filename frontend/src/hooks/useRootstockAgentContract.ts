@@ -138,7 +138,7 @@ export function useRootstockCodeAgentContract(): UseRootstockCodeAgentContract {
                 await new Promise((resolve) => setTimeout(resolve, 5000));
             }
             const messageHistoryContents = await getMessageHistoryContents(runId);
-            console.log('Message history contents:', messageHistoryContents);
+            // console.log('Message history contents:', messageHistoryContents);
             setSuggestions(messageHistoryContents[2]);
         } catch (error) {
             console.error('Error running agent:', error);

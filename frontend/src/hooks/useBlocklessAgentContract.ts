@@ -1,9 +1,9 @@
-import { useState, useCallback, useEffect, useMemo } from "react";
-import { ethers } from 'ethers';
+import {useState, useCallback, useEffect, useMemo} from "react";
+import {ethers} from 'ethers';
 import SolidityCodeAgentABI from '../utils/SolidityCodeAgentABI.json';
-import { useAccount, useWalletClient } from "wagmi";
+import {useAccount, useWalletClient} from "wagmi";
 
-type UseSolidityCodeAgentContract = {
+type UseBlocklessCodeAgentContract = {
     code: string;
     setCode: (code: string) => void;
     userPrompt: string;
@@ -20,7 +20,7 @@ type UseSolidityCodeAgentContract = {
     handleOpenErrorModal: (message: string) => void;
 };
 
-export function useSolidityCodeAgentContract(): UseSolidityCodeAgentContract {
+export function useBlocklessCodeAgentContract(): UseBlocklessCodeAgentContract {
     const [code, setCode] = useState('');
     const [userPrompt, setUserPrompt] = useState('');
     const [suggestions, setSuggestions] = useState<string | null>(null);
@@ -30,15 +30,15 @@ export function useSolidityCodeAgentContract(): UseSolidityCodeAgentContract {
     const [ethersProvider, setEthersProvider] = useState<ethers.providers.Web3Provider | null>(null);
     const [progressMessage, setProgressMessage] = useState<string>('');
 
-    const { isConnected } = useAccount();
-    const { data: walletClient } = useWalletClient();
+    const {isConnected} = useAccount();
+    const {data: walletClient} = useWalletClient();
 
 
     const codeGenerationMessages = useMemo(() => [
-        'Generating code...',
-        'Analyzing your instructions...',
-        'Creating the smart contract...',
-        'Finalizing the code...',
+        'Understanding your question...',
+        'Retrieving knowledge base...',
+        'Finding answers...',
+        'Generating answers...',
         "Almost there...",
     ], []);
 
@@ -67,7 +67,7 @@ export function useSolidityCodeAgentContract(): UseSolidityCodeAgentContract {
 
 
     const signer = ethersProvider?.getSigner();
-    const contractAddress = process.env.NEXT_PUBLIC_SOLIDITY_CODE_AGENT_CONTRACT_ADDRESS ?? '';
+    const contractAddress = process.env.NEXT_PUBLIC_BLOCKLESS_AGENT_CONTRACT_ADDRESS ?? '';
 
     const contract = useMemo(() => {
         if (ethersProvider && signer) {
@@ -104,12 +104,18 @@ export function useSolidityCodeAgentContract(): UseSolidityCodeAgentContract {
 
 
         const codeGenerationQuery = `
-        Please generate a Solidity smart contract based on the following instructions. Provide only the code without any additional text, comments, or formatting at the start or end. The code should be ready to use in a smart contract editor. Start directly with the code and do not include any backticks or other information. make sure to include SPDX license identifier at the top of the file. dont give any thing other that tne code, starting from spdx license identifier to the end of the code.
+            You are an AI assistant specializing in Blockless blockchain technology. Your task is to provide accurate, concise, and helpful responses to user queries about Blockless, using the knowledge base provided to you. Please follow these guidelines:
+            
+            1. Analyze the user's question carefully: "${prompt}"
+            2. Use the provided knowledge base to formulate your response.
+            3. If the question relates to code or implementation, provide relevant code snippets or examples.
+            4. Give links to official documentation or other resources at the end of your answer.
+            5. if user didn't provide any context, use the knowledge base to generate a response.
+             never tell the user to "google it" or "look it up".  dont give unnecessary \\n\\n (enter) or \\t\\t (tabs) in the response. 
 
-        Instructions:
-        ${prompt}
-        `;
-
+            
+            Remember to use the knowledge base provided and avoid using any external information, your goal is to assist users in understanding and working with Blockless technology effectively. Tailor your response to best address the user's specific needs and level of expertise.
+            `;
         const query = codeGenerationQuery;
         const messages = codeGenerationMessages;
 
@@ -135,7 +141,7 @@ export function useSolidityCodeAgentContract(): UseSolidityCodeAgentContract {
                 await new Promise((resolve) => setTimeout(resolve, 5000));
             }
             const messageHistoryContents = await getMessageHistoryContents(runId);
-            // console.log('Message history contents:', messageHistoryContents);
+            console.log('Message history contents:', messageHistoryContents);
             setSuggestions(messageHistoryContents[2]);
         } catch (error) {
             console.error('Error running agent:', error);

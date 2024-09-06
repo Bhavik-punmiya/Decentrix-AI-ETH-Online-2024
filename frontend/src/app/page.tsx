@@ -42,8 +42,8 @@ function App() {
                                 <Image src="/chain/rootstock-logo.png" alt="rootstock" width={40} height={40} />
                                 <div className=" text-xl text-center font-bold ">Rootstock</div>
                             </div>
-                            <Link href={"/agent/rootstock/code"}
-                                className="text-2xl   p-2 rounded-xl bg-theme-purple-dark text-white hover:scale-110 ease-out transition-all"><FaTelegramPlane />
+                            <Link href={"/agent/rootstock/chat"}
+                                  className="text-2xl   p-2 rounded-xl bg-theme-purple-dark text-white hover:scale-110 ease-out transition-all"><FaTelegramPlane/>
 
                             </Link>
                         </div>
@@ -59,8 +59,8 @@ function App() {
                                 <Image src="/chain/hedera-logo.png" alt="hedera" width={30} height={30} />
                                 <div className=" text-xl text-center font-bold ">Hedera</div>
                             </div>
-                            <Link href={"/agent/hedera/code"}
-                                className="text-2xl   p-2 rounded-xl bg-theme-green-dark text-white hover:scale-110 ease-out transition-all"><FaTelegramPlane />
+                            <Link href={"/agent/hedera/chat"}
+                                  className="text-2xl   p-2 rounded-xl bg-theme-green-dark text-white hover:scale-110 ease-out transition-all"><FaTelegramPlane/>
 
                             </Link>
                         </div>
@@ -72,17 +72,16 @@ function App() {
                     <div className="bg-theme-gray-light rounded-xl shadow-lg p-5">
                         <div className="flex w-full justify-between items-center">
                             <div className="flex items-center gap-1">
-                                <Image src="/chain/kinto-logo.png" alt="kinto" width={40} height={40} />
-                                <div className=" text-xl text-center font-bold ">Kinto</div>
+                                <Image src="/chain/blockless-logo.png" alt="blockless" width={40} height={40} className="rounded-full mr-2"/>
+                                <div className=" text-xl text-center font-bold ">Blockless</div>
                             </div>
-                            <Link href={"/agent/kinto"}
-                                className="text-2xl   p-2 rounded-xl bg-theme-gray-dark text-white hover:scale-110 ease-out transition-all"><FaTelegramPlane />
+                            <Link href={"/agent/blockless/chat"}
+                                  className="text-2xl   p-2 rounded-xl bg-theme-gray-dark text-white hover:scale-110 ease-out transition-all"><FaTelegramPlane/>
 
                             </Link>
                         </div>
                         <div className="font-light text-lg mt-3 ">
-                            Kinto is an L2 focused on providing safe access to on-chain finance.
-
+                            Blockless is the infrastructure platform to launch, integrate, and secure Network Neutral Applications (nnApps).
                         </div>
 
                     </div>

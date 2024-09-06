@@ -1,13 +1,7 @@
 # Knowledge Base Ingestion
 
-The RAG (Retrieval-Augmented Generation) Knowledge Base Script is designed to automate the process of ingesting documents into a knowledge base, converting them into a vectorized format, and storing this information on the Galadriel chain. This script simplifies the process of creating a decentralized, blockchain-based knowledge base that can be queried and utilized by AI models for enhanced information retrieval and decision-making processes.
-
-## Features
-
-- **Document Ingestion:** Automatically ingest multiple documents from a specified directory.
-- **Vectorization:** Convert textual information into a vector format suitable for AI models.
-- **Blockchain Integration:** Seamlessly integrates with the Galadriel L1 chain, leveraging its Oracle system for decentralized storage and retrieval.
-- **IPFS Support:** Uses IPFS (InterPlanetary File System) for secure and distributed document storage.
+The Knowledge Base Ingestion script is a Python tool that allows you to upload and index documents on the Galadriel L1 chain. The script processes a batch of documents, uploads them to IPFS, and requests indexing on the Galadriel L1 chain. The indexed collection can be queried using the provided CID (Content Identifier).
+This serves as the knowledge base for the Dedicated Agents used in the dapp.
 
 ## Prerequisites
 
@@ -36,6 +30,10 @@ To set up your environment for running the RAG Knowledge Base Script, follow the
     PRIVATE_KEY=your_wallet_private key
     PINATA_API_KEY=your_api_key_here
     ```
+   5. Run this commant to upload the indexes on ipfs (change "galadriel_docs" to the directory where your documents are stored, 1500 to the chunk size and 200 to the oracle fee):
+   ```bash
+   python3 add_knowledge_base.py -d galadriel_docs -s 1500 -o 200
+   ```
 
 ## How to Use
 
@@ -53,3 +51,4 @@ To set up your environment for running the RAG Knowledge Base Script, follow the
     ```
 3. Follow the command-line instructions as the script processes the documents, uploads them to IPFS, and requests indexing on the Galadriel L1 chain.
 4. Upon completion, the script will provide you with a CID (Content Identifier) that can be used in your smart contracts or applications to query the indexed collection.
+5. Use this CID to give the knowledge base to the dedicated agents while deploying them. Check deployAgentWithKb.ts in contracts_hardhat/scripts for more details.
