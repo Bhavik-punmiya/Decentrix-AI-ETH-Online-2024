@@ -86,7 +86,7 @@ const DashboardPage = () => {
                   </div>
                 </div>
                 <Link
-                  href={`/contract/${contract.contractAddress}`}
+                  href={`${contract.blockExplorerUrl}`}
                   className="text-2xl p-2 rounded-xl bg-blue-600 text-white hover:bg-blue-700 transition-colors"
                 >
                   <FaTelegramPlane />
