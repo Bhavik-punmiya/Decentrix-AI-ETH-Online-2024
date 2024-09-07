@@ -22,11 +22,15 @@ Decentrix.AI is designed to streamline the blockchain development process, makin
 ![img_1.png](img_1.png)
 
 ### 3. Dedicated Chain-Specific AI Agents
+
+https://github.com/user-attachments/assets/e2982636-9cff-438a-a848-4d24bc86e046
+
+
 - Specialized AI agents with in-depth knowledge of specific blockchain platforms
 - Get instant answers to your questions without sifting through complex documentation
 - Receive platform-specific best practices and optimization tips
 
-![chat_feature.mp4](chat_feature.mp4)
+
 
 ### 4. Interactive Learning and Development
 - Learn as you build with context-aware suggestions and explanations
