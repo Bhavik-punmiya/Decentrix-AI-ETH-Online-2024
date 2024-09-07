@@ -108,10 +108,7 @@ export default function Editor() {
     
             // Check if the user is on the correct network (Rootstock Testnet)
             const network = await provider.getNetwork();
-            if (network.chainId !== 31) {
-                toast.error("Please switch to the Rootstock Testnet in MetaMask.");
-                return;
-            }
+
             console.log("Connected to Rootstock Testnet.");
             setIsDeploying(true);
     
