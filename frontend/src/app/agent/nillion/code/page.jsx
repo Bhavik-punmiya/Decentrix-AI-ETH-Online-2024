@@ -371,7 +371,7 @@ export default function Editor() {
                         <CardHeader className="flex justify-between items-center px-4 py-2">
                             <div className="flex items-center">
 
-                                <h2 className="text-xl font-bold">Rootstock</h2>
+                                <h2 className="text-xl font-bold">Nillion</h2>
 
                             </div>
                             <div className="py-2">

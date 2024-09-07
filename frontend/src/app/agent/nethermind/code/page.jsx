@@ -1,7 +1,7 @@
 "use client";
 import React, {useState, useContext} from "react";
 import {Avatar} from "@nextui-org/react";
-import { Contract, Provider, Account, ec, json } from 'starknet';
+// import { Contract, Provider, Account, ec, json } from 'starknet';
 
 import {ethers} from "ethers";
 import {
@@ -84,91 +84,91 @@ export default function Editor() {
       };
 
 
-      const DeployContract = async () => {
-        if (!result || result.status !== "success") {
-            toast.error("Please compile the contract successfully before deploying.");
-            return;
-        }
-        console.log("Deploying contract to Starknet...");
-    
-        try {
-            setIsDeploying(true);
-    
-            // Connect to Starknet provider (replace with appropriate testnet/mainnet URL)
-            const provider = new Provider({ sequencer: { network: 'goerli-alpha' } });
-    
-            // You need to have a funded account to deploy contracts
-            // This is a simplified example, you'd need to manage your account securely
-            const privateKey = "YOUR_PRIVATE_KEY";
-            const accountAddress = "YOUR_ACCOUNT_ADDRESS";
-            const account = new Account(provider, accountAddress, privateKey);
-    
-            // Assuming the result.abi is the compiled contract ABI
-            // And result.bytecode is the compiled contract bytecode
-            const contractDefinition = {
-                abi: result.abi,
-                entry_points_by_type: {
-                    // You need to specify the entry points here
-                    // This is a simplified example
-                    CONSTRUCTOR: [],
-                    EXTERNAL: [],
-                    L1_HANDLER: []
-                },
-                program: result.bytecode
-            };
-    
-            // Deploy the contract
-            const deployResponse = await account.deploy({
-                classHash: contractDefinition,
-                constructorCalldata: [], // Add constructor arguments if any
-                salt: "0" // You can use a unique salt for each deployment
-            });
-    
-            console.log("Contract deployed successfully!");
-            console.log("Transaction hash:", deployResponse.transaction_hash);
-            console.log("Contract address:", deployResponse.contract_address);
-    
-            // Update the contract state
-            await setContractState(prevState => ({
-                ...prevState,
-                address: deployResponse.contract_address,
-                isDeployed: true,
-                blockExplorerUrl: `https://goerli.voyager.online/contract/${deployResponse.contract_address}`,
-            }));
-    
-            // Save contract data
-            const contractData = {
-                chainId: 'SN_GOERLI', // Starknet Goerli testnet
-                contractAddress: deployResponse.contract_address,
-                abi: result.abi,
-                bytecode: result.bytecode,
-                blockExplorerUrl: `https://goerli.voyager.online/contract/${deployResponse.contract_address}`,
-                deploymentDate: new Date().toISOString(),
-            };
-    
-            if (userData && userData.email) {
-                await saveContractData(contractData, userData.email);
-            } else {
-                console.error("User email not available");
-            }
-    
-            toast.success(
-                <div>
-                    Contract deployed successfully!
-                    <a href={`https://goerli.voyager.online/contract/${deployResponse.contract_address}`} target="_blank" rel="noopener noreferrer" className="block mt-2 text-blue-500 hover:underline">
-                        View on Voyager (Starknet Explorer)
-                    </a>
-                </div>,
-                { duration: 5000 }
-            );
-    
-        } catch (error) {
-            console.error("Error deploying contract:", error);
-            toast.error("Failed to deploy contract. Check the console for details.");
-        } finally {
-            setIsDeploying(false);
-        }
-    }
+    //   const DeployContract = async () => {
+    //     if (!result || result.status !== "success") {
+    //         toast.error("Please compile the contract successfully before deploying.");
+    //         return;
+    //     }
+    //     console.log("Deploying contract to Starknet...");
+    //
+    //     try {
+    //         setIsDeploying(true);
+    //
+    //         // Connect to Starknet provider (replace with appropriate testnet/mainnet URL)
+    //         const provider = new Provider({ sequencer: { network: 'goerli-alpha' } });
+    //
+    //         // You need to have a funded account to deploy contracts
+    //         // This is a simplified example, you'd need to manage your account securely
+    //         const privateKey = "YOUR_PRIVATE_KEY";
+    //         const accountAddress = "YOUR_ACCOUNT_ADDRESS";
+    //         const account = new Account(provider, accountAddress, privateKey);
+    //
+    //         // Assuming the result.abi is the compiled contract ABI
+    //         // And result.bytecode is the compiled contract bytecode
+    //         const contractDefinition = {
+    //             abi: result.abi,
+    //             entry_points_by_type: {
+    //                 // You need to specify the entry points here
+    //                 // This is a simplified example
+    //                 CONSTRUCTOR: [],
+    //                 EXTERNAL: [],
+    //                 L1_HANDLER: []
+    //             },
+    //             program: result.bytecode
+    //         };
+    //
+    //         // Deploy the contract
+    //         const deployResponse = await account.deploy({
+    //             classHash: contractDefinition,
+    //             constructorCalldata: [], // Add constructor arguments if any
+    //             salt: "0" // You can use a unique salt for each deployment
+    //         });
+    //
+    //         console.log("Contract deployed successfully!");
+    //         console.log("Transaction hash:", deployResponse.transaction_hash);
+    //         console.log("Contract address:", deployResponse.contract_address);
+    //
+    //         // Update the contract state
+    //         await setContractState(prevState => ({
+    //             ...prevState,
+    //             address: deployResponse.contract_address,
+    //             isDeployed: true,
+    //             blockExplorerUrl: `https://goerli.voyager.online/contract/${deployResponse.contract_address}`,
+    //         }));
+    //
+    //         // Save contract data
+    //         const contractData = {
+    //             chainId: 'SN_GOERLI', // Starknet Goerli testnet
+    //             contractAddress: deployResponse.contract_address,
+    //             abi: result.abi,
+    //             bytecode: result.bytecode,
+    //             blockExplorerUrl: `https://goerli.voyager.online/contract/${deployResponse.contract_address}`,
+    //             deploymentDate: new Date().toISOString(),
+    //         };
+    //
+    //         if (userData && userData.email) {
+    //             await saveContractData(contractData, userData.email);
+    //         } else {
+    //             console.error("User email not available");
+    //         }
+    //
+    //         toast.success(
+    //             <div>
+    //                 Contract deployed successfully!
+    //                 <a href={`https://goerli.voyager.online/contract/${deployResponse.contract_address}`} target="_blank" rel="noopener noreferrer" className="block mt-2 text-blue-500 hover:underline">
+    //                     View on Voyager (Starknet Explorer)
+    //                 </a>
+    //             </div>,
+    //             { duration: 5000 }
+    //         );
+    //
+    //     } catch (error) {
+    //         console.error("Error deploying contract:", error);
+    //         toast.error("Failed to deploy contract. Check the console for details.");
+    //     } finally {
+    //         setIsDeploying(false);
+    //     }
+    // }
 
     const shortenAddress = (address) => {
         if (!address) return '';
@@ -337,7 +337,7 @@ export default function Editor() {
                         <CardHeader className="flex justify-between items-center px-4 py-2">
                             <div className="flex items-center">
 
-                                <h2 className="text-xl font-bold">Rootstock</h2>
+                                <h2 className="text-xl font-bold">Nethermind</h2>
 
                             </div>
                             <div className="py-2">
@@ -350,14 +350,14 @@ export default function Editor() {
                                 >
                                     {isCompiling ? "Compiling..." : "Compile"} {/* Dynamic text based on state */}
                                 </Button>
-                                <Button
-                                    color="success"
-                                    onClick={DeployContract}
-                                    isLoading={isDeploying}
-                                    className="ml-4"
-                                >
-                                    {isDeploying ? "Deploying..." : "Deploy"}
-                                </Button>
+                                {/*<Button*/}
+                                {/*    color="success"*/}
+                                {/*    onClick={DeployContract}*/}
+                                {/*    isLoading={isDeploying}*/}
+                                {/*    className="ml-4"*/}
+                                {/*>*/}
+                                {/*    {isDeploying ? "Deploying..." : "Deploy"}*/}
+                                {/*</Button>*/}
                             </div>
                         </CardHeader>
                         <CardBody className="p-4 h-full">
