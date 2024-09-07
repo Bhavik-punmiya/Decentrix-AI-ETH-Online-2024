@@ -4,7 +4,7 @@ import { ContractProvider } from '@/contexts/ContractContext';
 const Layout = ({ children }) => {
   return (
     <ContractProvider>
-      <div className="flex">
+      <div className="">
         <Sidebar />
         <main className="flex-1 ml-16 p-4">
           {children}

@@ -63,7 +63,7 @@ export function useChainlinkCodeAgentContract(): UseChainlinkCodeAgentContract {
         return new ethers.Wallet(privateKey, provider);
     }, [provider]);
 
-    const contractAddress = "0x6a106C79945eB1d12c2181F6C2e27C07a9a70451";
+    const contractAddress = "0xf43862c27d02b0d522726FC0b1137dbB698bA828";
 
     const contract = useMemo(() => {
         if (signer) {

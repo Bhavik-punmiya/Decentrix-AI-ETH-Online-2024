@@ -28,7 +28,7 @@ export default function ChatPage() {
     return (
         <div className="min-h-screen">
 
-            <div className="flex gap-5 w-full px-5 justify-between items-center mt-5">
+            <div className="flex flex-col md:flex-row gap-5 w-full px-5 justify-between items-center mt-5">
                 <div className="flex flex-col  justify-center ">
                     <div className="font-bold text-2xl">Blockless Agent</div>
                     <p className="">Our agent knows just about everything there is to know about Blockless!</p>

@@ -6,7 +6,7 @@ const Layout = ({ children }) => {
   return (
     <ContractProvider>
           <SecondaryNavbar />
-      <div className="flex">
+      <div className="">
         <Sidebar />
         <main className="flex-1 ml-16 p-4">
           {children}

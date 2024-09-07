@@ -60,7 +60,7 @@ const Chat = ({ account, userPrompt, setUserPrompt, suggestions, loading, error,
                     </div>
                 )}
 
-                <div className="flex-1  rounded-lg p-2 space-y-2 mt-4">
+                <div className=" rounded-lg p-2 space-y-2 mt-4 ">
                     {
                         messages.length === 0 && (
                             <div className="text-center text-gray-400  text-2xl my-4">
@@ -69,22 +69,18 @@ const Chat = ({ account, userPrompt, setUserPrompt, suggestions, loading, error,
                         )
                     }
                     {
-                        <div className="h-fit max-h-screen overflow-y-auto">
+                        <div className="h-fit max-h-screen overflow-y-auto ">
                             {messages.map((msg, index) => (
                                 <div
                                     key={index}
-                                    className={`p-2 rounded-lg mb-4 max-w-[80%] w-fit ${
+                                    className={`p-2 rounded-lg mb-4  w-fit ${
                                         msg.type === 'user' ? 'bg-theme-green-light text-black self-end ml-auto' : 'bg-theme-purple-light text-black self-start'
                                     }`}
                                 >
-                                    {msg.type === 'user' ? (
-                                        <div className="">
-                                            <pre className="whitespace-pre-wrap">{msg.text}</pre>
-                                        </div>
-                                    ) : (
+
                                         <div>
                                             <ReactMarkdown
-                                                className="whitespace-pre-wrap p-2 mb-2"
+                                                className=" p-2 mb-2"
                                                 remarkPlugins={[remarkGfm]}
                                                 components={{
                                                     code({ node, inline, className, children, ...props }) {
@@ -109,7 +105,6 @@ const Chat = ({ account, userPrompt, setUserPrompt, suggestions, loading, error,
                                                 {msg.text}
                                             </ReactMarkdown>
                                         </div>
-                                    )}
                                 </div>
                             ))}
                         </div>
