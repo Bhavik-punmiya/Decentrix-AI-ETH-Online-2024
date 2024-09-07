@@ -12,14 +12,14 @@ Decentrix.AI is designed to streamline the blockchain development process, makin
 - Describe your contract requirements in natural language
 - Our AI agent will generate a fully functional smart contract based on your description
 - Supports multiple blockchain platforms
-![img.png](img.png)
+![img.png](assets/img.png)
 
 ### 2. One-Click Compile and Deploy
 - Compile your smart contracts with a single click
 - Automated error handling and suggestions for fixes
 - Seamless deployment to your chosen blockchain
 - Interaction with the contract directly from the platform
-![img_1.png](img_1.png)
+![img_1.png](assets/img_1.png)
 
 ### 3. Dedicated Chain-Specific AI Agents
 
