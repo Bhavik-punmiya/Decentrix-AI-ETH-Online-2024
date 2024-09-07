@@ -12,11 +12,11 @@ import {
     CardHeader,
     Switch,
 } from "@nextui-org/react";
-import SolidityEditor from "@/components/SolidityEditor";
+import CairoEditor from "@/components/CairoEditor";
 import axios from "axios";
 import WalletConnectButton from "@/components/WalletConnectButton";
 import {useAccount} from "wagmi";
-import {useSolidityCodeAgentContract} from '@/hooks/useSolidityCodeAgentContract';
+import {useCairoCodeAgentContract} from '@/hooks/useCairoCodeAgentContract';
 import {FaClipboard, FaClipboardCheck} from "react-icons/fa";
 import {Toaster, toast} from 'react-hot-toast';
 import { useContractState } from '@/contexts/ContractContext';
@@ -36,7 +36,7 @@ export default function Editor() {
         handleRunAgent,
         progressMessage,
         setSuggestions,
-    } = useSolidityCodeAgentContract();
+    } = useCairoCodeAgentContract();
 
     const [result, setResult] = useState(null);
     const { setContractState } = useContractState();
@@ -337,7 +337,7 @@ export default function Editor() {
                         <CardHeader className="flex justify-between items-center px-4 py-2">
                             <div className="flex items-center">
 
-                                <h2 className="text-xl font-bold">Nethermind</h2>
+                                <h2 className="text-xl font-bold">Cairo Agent</h2>
 
                             </div>
                             <div className="py-2">
@@ -368,10 +368,10 @@ export default function Editor() {
 
                                 <div className="flex flex-col h-full">
                                     <div className="flex-grow h-screen">
-                                        <SolidityEditor
+                                        <CairoEditor
                                             code={suggestions}
                                             onChange={handleCodeChange}
-                                            defaultValue={"// Solidity code will appear here"}
+                                            defaultValue={"// Cairo code will appear here"}
                                         />
                                     </div>
                                 </div>
