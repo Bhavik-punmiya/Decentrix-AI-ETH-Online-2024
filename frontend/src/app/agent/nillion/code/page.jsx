@@ -384,14 +384,14 @@ export default function Editor() {
                                 >
                                     {isCompiling ? "Compiling..." : "Compile"} {/* Dynamic text based on state */}
                                 </Button>
-                                <Button
-                                    color="success"
-                                    onClick={DeployContract}
-                                    isLoading={isDeploying}
-                                    className="ml-4"
-                                >
-                                    {isDeploying ? "Deploying..." : "Deploy"}
-                                </Button>
+                                {/*<Button*/}
+                                {/*    color="success"*/}
+                                {/*    onClick={DeployContract}*/}
+                                {/*    isLoading={isDeploying}*/}
+                                {/*    className="ml-4"*/}
+                                {/*>*/}
+                                {/*    {isDeploying ? "Deploying..." : "Deploy"}*/}
+                                {/*</Button>*/}
                             </div>
                         </CardHeader>
                         <CardBody className="p-4 h-full">
