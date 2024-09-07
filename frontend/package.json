@@ -39,6 +39,7 @@
     "react-monaco-editor": "^0.56.1",
     "react-resizable": "^3.0.5",
     "remark-gfm": "^4.0.0",
+    "starknet": "^6.11.0",
     "viem": "^2.21.1",
     "wagmi": "^2.12.8",
     "web3": "^4.12.1"

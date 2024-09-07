@@ -1,6 +1,8 @@
 "use client";
 import React, {useState, useContext} from "react";
 import {Avatar} from "@nextui-org/react";
+import { Contract, Provider, Account, ec, json } from 'starknet';
+
 import {ethers} from "ethers";
 import {
     NextUIProvider,
@@ -8,6 +10,7 @@ import {
     Card,
     CardBody,
     CardHeader,
+    Switch,
 } from "@nextui-org/react";
 import SolidityEditor from "@/components/SolidityEditor";
 import axios from "axios";
@@ -20,7 +23,6 @@ import { useContractState } from '@/contexts/ContractContext';
 import ContractInteraction from '@/components/ContractInteractions';
 import { saveContractData, saveSolidityCode } from "@/lib/contractService";
 import { GlobalContext } from "@/contexts/UserContext";
-import { starknet, Account, Contract, defaultProvider } from "starknet";
 
 export default function Editor() {
     const {
@@ -45,109 +47,128 @@ export default function Editor() {
     const { contractState } = useContractState();
     const { userData } = useContext(GlobalContext);
 
+
     const compileCode = async () => {
         setCompiling(true);
         try {
-            const formData = new FormData();
-            formData.append(
-                "file",
-                new Blob([suggestions], { type: "text/plain" }),
-                "Contract.sol"
-            );
-            const response = await axios.post(
-                "https://msl8g5vbv6.execute-api.ap-south-1.amazonaws.com/prod/api/contract/compile",
-                formData,
-                {
-                    headers: { "Content-Type": "multipart/form-data" },
-                }
-            );
-            setResult(response.data);
-            console.log(response.data);
-            
-            // Update the shared contract state
-            if (response.data.status === "success") {
-                setContractState(prevState => ({
-                    ...prevState,
-                    abi: response.data.abi,
-                    bytecode: response.data.bytecode,
-                    isCompiled: true,
-                }));
+          const formData = new FormData();
+          formData.append(
+            "file",
+            new Blob([suggestions], { type: "text/plain" }),
+            "Contract.sol"
+          );
+          const response = await axios.post(
+            "https://msl8g5vbv6.execute-api.ap-south-1.amazonaws.com/prod/api/contract/compile",
+            formData,
+            {
+              headers: { "Content-Type": "multipart/form-data" },
             }
+          );
+          setResult(response.data);
+          console.log(response.data);
+          
+          // Update the shared contract state
+          if (response.data.status === "success") {
+            setContractState(prevState => ({
+                ...prevState,
+                abi: response.data.abi,
+                bytecode: response.data.bytecode,
+                isCompiled: true,
+              }));
+          }
         } catch (error) {
-            setResult({ error: error.message });
+          setResult({ error: error.message });
         } finally {
-            setCompiling(false);
+          setCompiling(false);
         }
-    };
+      };
 
-    const DeployContract = async () => {
+
+      const DeployContract = async () => {
         if (!result || result.status !== "success") {
             toast.error("Please compile the contract successfully before deploying.");
             return;
         }
-        console.log("Deploying contract to StarkNet...");
-
+        console.log("Deploying contract to Starknet...");
+    
         try {
             setIsDeploying(true);
-
-            // Connect to StarkNet
-            const starknetAccount = new Account(defaultProvider);
-
-            // Deploy the contract to StarkNet
-            const contractFactory = new Contract(result.abi, result.bytecode, starknetAccount);
-            const deployResponse = await contractFactory.deploy();
-
-            // Wait for the contract to be deployed
-            const contractAddress = deployResponse.contract_address;
-            console.log("Contract deployed at address:", contractAddress);
-
-            const blockExplorerUrl = `https://testnet.starkscan.co/contract/${contractAddress}`;
-
-            // Save Solidity code to the backend
-            const solidityCode = suggestions;
-            const fileName = `Contract_${contractAddress}.sol`;
-            const solidityFilePath = await saveSolidityCode(solidityCode, fileName);
-
-            // Prepare contract data to save
+    
+            // Connect to Starknet provider (replace with appropriate testnet/mainnet URL)
+            const provider = new Provider({ sequencer: { network: 'goerli-alpha' } });
+    
+            // You need to have a funded account to deploy contracts
+            // This is a simplified example, you'd need to manage your account securely
+            const privateKey = "YOUR_PRIVATE_KEY";
+            const accountAddress = "YOUR_ACCOUNT_ADDRESS";
+            const account = new Account(provider, accountAddress, privateKey);
+    
+            // Assuming the result.abi is the compiled contract ABI
+            // And result.bytecode is the compiled contract bytecode
+            const contractDefinition = {
+                abi: result.abi,
+                entry_points_by_type: {
+                    // You need to specify the entry points here
+                    // This is a simplified example
+                    CONSTRUCTOR: [],
+                    EXTERNAL: [],
+                    L1_HANDLER: []
+                },
+                program: result.bytecode
+            };
+    
+            // Deploy the contract
+            const deployResponse = await account.deploy({
+                classHash: contractDefinition,
+                constructorCalldata: [], // Add constructor arguments if any
+                salt: "0" // You can use a unique salt for each deployment
+            });
+    
+            console.log("Contract deployed successfully!");
+            console.log("Transaction hash:", deployResponse.transaction_hash);
+            console.log("Contract address:", deployResponse.contract_address);
+    
+            // Update the contract state
+            await setContractState(prevState => ({
+                ...prevState,
+                address: deployResponse.contract_address,
+                isDeployed: true,
+                blockExplorerUrl: `https://goerli.voyager.online/contract/${deployResponse.contract_address}`,
+            }));
+    
+            // Save contract data
             const contractData = {
-                chainId: 'StarkNet',
-                contractAddress: contractAddress,
+                chainId: 'SN_GOERLI', // Starknet Goerli testnet
+                contractAddress: deployResponse.contract_address,
                 abi: result.abi,
                 bytecode: result.bytecode,
-                blockExplorerUrl: blockExplorerUrl,
-                solidityFilePath: solidityFilePath,
+                blockExplorerUrl: `https://goerli.voyager.online/contract/${deployResponse.contract_address}`,
                 deploymentDate: new Date().toISOString(),
             };
-
+    
             if (userData && userData.email) {
                 await saveContractData(contractData, userData.email);
             } else {
                 console.error("User email not available");
             }
-
-            await setContractState(prevState => ({
-                ...prevState,
-                address: contractAddress,
-                isDeployed: true,
-                blockExplorerUrl: blockExplorerUrl,
-            }));
-
+    
             toast.success(
                 <div>
                     Contract deployed successfully!
-                    <a href={blockExplorerUrl} target="_blank" rel="noopener noreferrer" className="block mt-2 text-black-500 hover:underline">
-                        View on Block Explorer
+                    <a href={`https://goerli.voyager.online/contract/${deployResponse.contract_address}`} target="_blank" rel="noopener noreferrer" className="block mt-2 text-blue-500 hover:underline">
+                        View on Voyager (Starknet Explorer)
                     </a>
                 </div>,
                 { duration: 5000 }
             );
+    
         } catch (error) {
             console.error("Error deploying contract:", error);
             toast.error("Failed to deploy contract. Check the console for details.");
         } finally {
             setIsDeploying(false);
         }
-    };
+    }
 
     const shortenAddress = (address) => {
         if (!address) return '';
@@ -157,6 +178,8 @@ export default function Editor() {
     const handleCodeChange = (value) => {
         setSuggestions(value);
     };
+
+    //useEffect to monitor sugeestion changes and compile code
 
     const RenderResult = () => {
         const [ABIcopied, setABICopied] = useState(false);
@@ -193,7 +216,7 @@ export default function Editor() {
                     <div className="bg-green-100 border border-green-400 text-green-700 p-4 rounded">
                         <h3 className="font-bold">Compilation Successful!</h3>
                     </div>
-                    <div className="p-4 rounded flex items-center space-x-4 justify-end my-2">
+                    <div className=" p-4 rounded flex items-center space-x-4 justify-end my-2">
                         <Button color="primary" className="flex gap-2 items-center" onClick={
                             () => {
                                 copyToClipboard(result.bytecode, 1)
@@ -220,9 +243,13 @@ export default function Editor() {
                                     : <FaClipboard/>
                             }
                         </Button>
+
                     </div>
+
                 </div>
-            );
+
+            )
+                ;
         }
 
         return (
@@ -231,6 +258,7 @@ export default function Editor() {
             </div>
         );
     };
+
 
     return (
         <div className="">
@@ -261,56 +289,100 @@ export default function Editor() {
                             <textarea
                                 value={userPrompt}
                                 onChange={(e) => setUserPrompt(e.target.value)}
-                                className="w-full p-2 border rounded-md"
-                                placeholder="Enter your description"
-                            ></textarea>
+                                className="w-full h-full p-4 rounded-xl border"
+                                placeholder="E.g. I want to create a smart contract that allows users to create a token"
+                            />
+                        </div>
+
+                        <div className="max-w-xl">
                             <Button
-                                color="primary"
-                                onClick={handleRunAgent}
-                                className="mt-4"
-                                isLoading={loading}
+                                disabled={loading}
+                                isLoading={loading} // Use isLoading to show the loading state
+                                onClick={() => {
+                                    handleRunAgent(userPrompt);
+                                }}
+                                color="default"
                             >
-                                Generate Code
+                                {loading ? progressMessage : 'Generate code'}
                             </Button>
-                            {progressMessage && <p>{progressMessage}</p>}
                         </div>
-                        <div className="flex justify-between">
-                            <Button onClick={() => setView("code")}>Code Editor</Button>
-                            <Button onClick={() => setView("result")}>View Result</Button>
+
+                        <div>
+                            {
+                                error && (
+                                    <div className="text-red-500 text-sm m-1">
+                                        <p>{error}</p>
+                                    </div>
+                                )
+                            }
                         </div>
-                        {view === "code" ? (
-                            <div>
-                                <SolidityEditor
-                                    code={suggestions}
-                                    onChange={handleCodeChange}
-                                />
-                                <div className="flex justify-end space-x-3">
-                                    <Button
-                                        color="primary"
-                                        onClick={compileCode}
-                                        isLoading={isCompiling}
-                                    >
-                                        Compile
-                                    </Button>
-                                    <Button
-                                        color="success"
-                                        onClick={DeployContract}
-                                        isLoading={isDeploying}
-                                        disabled={!result || result.status !== "success"}
-                                    >
-                                        Deploy
-                                    </Button>
-                                </div>
-                            </div>
+                        {contractState.isCompiled && contractState.abi ? (
+                            <ContractInteraction />
                         ) : (
-                            <RenderResult/>
+                            <div className="p-4 bg-yellow-100 border border-yellow-400 text-yellow-700 rounded mt-3">
+                                <p className="font-bold">No Contracts Compiled Yet</p>
+                                <p className="mt-2">Please compile a contract to interact with it.</p>
+                            </div>
                         )}
+
+                        <div className="my-5">
+                            {RenderResult()}
+                        </div>
+
+
                     </Card>
                 </div>
-                <div className="w-1/2 p-4">
-                    <ContractInteraction/>
+                <div className="w-1/2 p-4 flex flex-col">
+                    <Card className="flex-grow">
+                        <CardHeader className="flex justify-between items-center px-4 py-2">
+                            <div className="flex items-center">
+
+                                <h2 className="text-xl font-bold">Rootstock</h2>
+
+                            </div>
+                            <div className="py-2">
+
+                                <Button
+                                    color="default"
+                                    onClick={compileCode}
+                                    className=""
+                                    isLoading={isCompiling} // Use isLoading to indicate loading state
+                                >
+                                    {isCompiling ? "Compiling..." : "Compile"} {/* Dynamic text based on state */}
+                                </Button>
+                                <Button
+                                    color="success"
+                                    onClick={DeployContract}
+                                    isLoading={isDeploying}
+                                    className="ml-4"
+                                >
+                                    {isDeploying ? "Deploying..." : "Deploy"}
+                                </Button>
+                            </div>
+                        </CardHeader>
+                        <CardBody className="p-4 h-full">
+                            <div
+                                className="h-full overflow-auto"
+                                style={{maxHeight: "calc(100vh - 200px)"}}
+                            >
+
+                                <div className="flex flex-col h-full">
+                                    <div className="flex-grow h-screen">
+                                        <SolidityEditor
+                                            code={suggestions}
+                                            onChange={handleCodeChange}
+                                            defaultValue={"// Solidity code will appear here"}
+                                        />
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </CardBody>
+                    </Card>
                 </div>
             </div>
+
         </div>
     );
 }
