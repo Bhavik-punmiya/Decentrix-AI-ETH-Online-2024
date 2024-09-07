@@ -154,6 +154,25 @@ function App() {
                             The industry standard oracle network for powering trust-minimized applications across Web2 and Web3 ⬡
                         </div>
                     </div>
+
+                                        {/* Fhenix Agent */}
+                                        <div className="bg-theme-gray-light rounded-xl shadow-lg p-5">
+                        <div className="flex w-full justify-between items-center">
+                            <div className="flex items-center gap-3">
+                                <Image src="/chain/fhenix-logo.png" className="rounded-full" alt="fhenix" width={30}
+                                    height={30} />
+                                <div className="text-xl text-center font-bold">Fhenix</div>
+                            </div>
+                            <Link href={"/agent/fhenix/code"}
+                                className="text-2xl p-2 rounded-xl bg-theme-gray-dark text-white hover:scale-110 ease-out transition-all">
+                                <FaTelegramPlane />
+                            </Link>
+                        </div>
+                        <div className="font-light text-lg mt-3">
+                            Fhenix is the first Fully Homomorphic Encryption (FHE) powered L2 to bring computation over encrypted data to Ethereum
+                        </div>
+                    </div>
+
                     {/* Galadriel Agent */}
                     <div className="bg-theme-green-light rounded-xl shadow-lg p-5">
                         <div className="flex w-full justify-between items-center">
@@ -172,23 +191,7 @@ function App() {
                         </div>
                     </div>
 
-                    {/* Fhenix Agent */}
-                    <div className="bg-theme-gray-light rounded-xl shadow-lg p-5">
-                        <div className="flex w-full justify-between items-center">
-                            <div className="flex items-center gap-3">
-                                <Image src="/chain/fhenix-logo.png" className="rounded-full" alt="fhenix" width={30}
-                                    height={30} />
-                                <div className="text-xl text-center font-bold">Fhenix</div>
-                            </div>
-                            <Link href={"/agent/fhenix/code"}
-                                className="text-2xl p-2 rounded-xl bg-theme-gray-dark text-white hover:scale-110 ease-out transition-all">
-                                <FaTelegramPlane />
-                            </Link>
-                        </div>
-                        <div className="font-light text-lg mt-3">
-                            Fhenix is the first Fully Homomorphic Encryption (FHE) powered L2 to bring computation over encrypted data to Ethereum
-                        </div>
-                    </div>
+
 
 
 
