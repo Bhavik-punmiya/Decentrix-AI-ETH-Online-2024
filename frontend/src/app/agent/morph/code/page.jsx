@@ -155,7 +155,15 @@ export default function Editor() {
             blockExplorerUrl: blockExplorerUrl,
           }));
       
-          toast.success(`Contract deployed successfully! View on block explorer: ${blockExplorerUrl}`);
+          toast.success(
+            <div>
+                Contract deployed successfully!
+                <a href={blockExplorerUrl} target="_blank" rel="noopener noreferrer" className="block mt-2 text-black-500 hover:underline">
+                    View on Block Explorer
+                </a>
+            </div>,
+            { duration: 5000 }
+        );
         } catch (error) {
           console.error("Error deploying contract:", error);
           toast.error(`Error deploying contract: ${error.message}`);
