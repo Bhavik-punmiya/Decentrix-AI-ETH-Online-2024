@@ -4,7 +4,7 @@ import {Avatar} from "@nextui-org/react";
 import React, {useState} from "react";
 import WalletConnectButton from "@/components/WalletConnectButton";
 import {useAccount} from "wagmi";
-import {useRootstockCodeAgentContract} from "@/hooks/useRootstockAgentContract";
+import {useNillionCodeAgentContract} from "@/hooks/useNillionAgentContract";
 
 
 export default function ChatPage() {
@@ -16,7 +16,7 @@ export default function ChatPage() {
         error,
         handleRunAgent,
         progressMessage,
-    } = useRootstockCodeAgentContract();
+    } = useNillionCodeAgentContract();
 
     const account = useAccount();
 
@@ -30,12 +30,12 @@ export default function ChatPage() {
 
             <div className="flex gap-5 w-full px-5 justify-between items-center mt-5">
                 <div className="flex flex-col  justify-center ">
-                    <div className="font-bold text-2xl">Rootstock Agent</div>
-                    <p className="">Our agent knows just about everything there is to know about Rootstock!</p>
+                    <div className="font-bold text-2xl">Nillion Agent</div>
+                    <p className="">Our agent knows just about everything there is to know about Nillion!</p>
                 </div>
 
                 <div className="flex items-center space-x-4 w-fit bg-gray-100 p-4 rounded-lg  shadow-md mx-auto">
-                    <Avatar isBordered radius="md" src="/chain/nilion-logo.png"/>
+                    <Avatar isBordered radius="md" src="/chain/nillion-logo.png"/>
                     <div className="flex-grow">
                         {account.isConnected ? (
                             <div className="flex items-center justify-between">

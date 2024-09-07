@@ -99,11 +99,11 @@ function App() {
                     <div className="bg-theme-green-light rounded-xl shadow-lg p-5">
                         <div className="flex w-full justify-between items-center">
                             <div className="flex items-center gap-4">
-                                <Image src="/chain/nilion-logo.png" className="rounded-full" alt="nilion" width={40}
+                                <Image src="/chain/nillion-logo.png" className="rounded-full" alt="nillion" width={40}
                                        height={40}/>
                                 <div className="text-xl text-center font-bold">Nilion</div>
                             </div>
-                            <Link href={"/agent/nilion/chat"}
+                            <Link href={"/agent/nillion/chat"}
                                   className="text-2xl p-2 rounded-xl bg-theme-green-dark text-white hover:scale-110 ease-out transition-all">
                                 <FaTelegramPlane/>
                             </Link>
