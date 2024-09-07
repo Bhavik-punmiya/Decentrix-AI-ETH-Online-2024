@@ -35,12 +35,12 @@ function App() {
                     <div className="bg-theme-green-light rounded-xl shadow-lg p-5">
                         <div className="flex w-full justify-between items-center">
                             <div className="flex items-center gap-1">
-                                <Image src="/chain/rootstock-logo.png" alt="rootstock" width={40} height={40}/>
+                                <Image src="/chain/rootstock-logo.png" alt="rootstock" width={40} height={40} />
                                 <div className="text-xl text-center font-bold">Rootstock</div>
                             </div>
                             <Link href={"/agent/rootstock/chat"}
-                                  className="text-2xl p-2 rounded-xl bg-theme-green-dark text-white hover:scale-110 ease-out transition-all">
-                                <FaTelegramPlane/>
+                                className="text-2xl p-2 rounded-xl bg-theme-green-dark text-white hover:scale-110 ease-out transition-all">
+                                <FaTelegramPlane />
                             </Link>
                         </div>
                         <div className="font-light text-lg mt-3">
@@ -52,12 +52,12 @@ function App() {
                     <div className="bg-theme-purple-light rounded-xl shadow-lg p-5">
                         <div className="flex w-full justify-between items-center">
                             <div className="flex items-center gap-3">
-                                <Image src="/chain/hedera-logo.png" alt="hedera" width={30} height={30}/>
+                                <Image src="/chain/hedera-logo.png" alt="hedera" width={30} height={30} />
                                 <div className="text-xl text-center font-bold">Hedera</div>
                             </div>
                             <Link href={"/agent/hedera/chat"}
-                                  className="text-2xl p-2 rounded-xl bg-theme-purple-dark text-white hover:scale-110 ease-out transition-all">
-                                <FaTelegramPlane/>
+                                className="text-2xl p-2 rounded-xl bg-theme-purple-dark text-white hover:scale-110 ease-out transition-all">
+                                <FaTelegramPlane />
                             </Link>
                         </div>
                         <div className="font-light text-lg mt-3">
@@ -70,12 +70,12 @@ function App() {
                         <div className="flex w-full justify-between items-center">
                             <div className="flex items-center gap-1">
                                 <Image src="/chain/blockless-logo.png" alt="blockless" width={40} height={40}
-                                       className="rounded-full mr-2"/>
+                                    className="rounded-full mr-2" />
                                 <div className="text-xl text-center font-bold">Blockless</div>
                             </div>
                             <Link href={"/agent/blockless/chat"}
-                                  className="text-2xl p-2 rounded-xl bg-theme-gray-dark text-white hover:scale-110 ease-out transition-all">
-                                <FaTelegramPlane/>
+                                className="text-2xl p-2 rounded-xl bg-theme-gray-dark text-white hover:scale-110 ease-out transition-all">
+                                <FaTelegramPlane />
                             </Link>
                         </div>
                         <div className="font-light text-lg mt-3">
@@ -88,12 +88,12 @@ function App() {
                         <div className="flex w-full justify-between items-center">
                             <div className="flex items-center gap-3">
                                 <Image src="/chain/morph-logo.jpeg" className="rounded-full" alt="morph" width={30}
-                                       height={30}/>
+                                    height={30} />
                                 <div className="text-xl text-center font-bold">Morph</div>
                             </div>
                             <Link href={"/agent/morph/chat"}
-                                  className="text-2xl p-2 rounded-xl bg-theme-gray-dark text-white hover:scale-110 ease-out transition-all">
-                                <FaTelegramPlane/>
+                                className="text-2xl p-2 rounded-xl bg-theme-gray-dark text-white hover:scale-110 ease-out transition-all">
+                                <FaTelegramPlane />
                             </Link>
                         </div>
                         <div className="font-light text-lg mt-3">
@@ -106,12 +106,12 @@ function App() {
                         <div className="flex w-full justify-between items-center">
                             <div className="flex items-center gap-4">
                                 <Image src="/chain/nillion-logo.png" className="rounded-full" alt="nillion" width={40}
-                                       height={40}/>
+                                    height={40} />
                                 <div className="text-xl text-center font-bold">Nilion</div>
                             </div>
                             <Link href={"/agent/nillion/chat"}
-                                  className="text-2xl p-2 rounded-xl bg-theme-green-dark text-white hover:scale-110 ease-out transition-all">
-                                <FaTelegramPlane/>
+                                className="text-2xl p-2 rounded-xl bg-theme-green-dark text-white hover:scale-110 ease-out transition-all">
+                                <FaTelegramPlane />
                             </Link>
                         </div>
                         <div className="font-light text-lg mt-3">
@@ -124,56 +124,81 @@ function App() {
                         <div className="flex w-full justify-between items-center">
                             <div className="flex items-center gap-4">
                                 <Image src="/chain/nethermind-logo.png" className="rounded-full" alt="nethermind"
-                                       width={35} height={35}/>
+                                    width={35} height={35} />
                                 <div className="text-xl text-center font-bold">Nethermind</div>
                             </div>
                             <Link href={"/agent/nethermind/chat"}
-                                  className="text-2xl p-2 rounded-xl bg-theme-purple-dark text-white hover:scale-110 ease-out transition-all">
-                                <FaTelegramPlane/>
+                                className="text-2xl p-2 rounded-xl bg-theme-purple-dark text-white hover:scale-110 ease-out transition-all">
+                                <FaTelegramPlane />
                             </Link>
                         </div>
                         <div className="font-light text-lg mt-3">
                             Nethermind is a blockchain development company that provides Ethereum infrastructure and tools.
                         </div>
                     </div>
-                </div>
 
-                {/* Flex container for the last 2 agents */}
-                <div className="flex justify-center items-center mt-10 gap-7">
                     {/* Chainlink Agent */}
-                    <div className="bg-theme-blue-light rounded-xl shadow-lg p-5 w-80">
+                    <div className="bg-theme-purple-light rounded-xl shadow-lg p-5">
                         <div className="flex w-full justify-between items-center">
-                            <div className="flex items-center gap-2">
-                                <Image src="/chain/chainlink-logo.png" alt="chainlink" width={40} height={40} />
-                                <div className="text-xl text-center font-bold">Chainlink</div>
+                            <div className="flex items-center gap-4">
+                                <Image src="/chain/chainlink-logo.png" className="rounded-full" alt="chainlink"
+                                    width={35} height={35} />
+                                <div className="text-xl text-center font-bold">ChainLink</div>
                             </div>
                             <Link href={"/agent/chainlink/chat"}
-                                className="text-2xl p-2 rounded-xl bg-theme-blue-dark text-white hover:scale-110 ease-out transition-all">
+                                className="text-2xl p-2 rounded-xl bg-theme-purple-dark text-white hover:scale-110 ease-out transition-all">
                                 <FaTelegramPlane />
                             </Link>
                         </div>
                         <div className="font-light text-lg mt-3">
-                            Chainlink is the most widely used oracle network for powering hybrid smart contracts.
+                            The industry standard oracle network for powering trust-minimized applications across Web2 and Web3 ⬡
+                        </div>
+                    </div>
+                    {/* Galadriel Agent */}
+                    <div className="bg-theme-green-light rounded-xl shadow-lg p-5">
+                        <div className="flex w-full justify-between items-center">
+                            <div className="flex items-center gap-4">
+                                <Image src="/chain/galadriel-logo.png" className="rounded-full" alt="nillion" width={40}
+                                    height={40} />
+                                <div className="text-xl text-center font-bold">Galadriel</div>
+                            </div>
+                            <Link href={"/agent/galadriel/code"}
+                                className="text-2xl p-2 rounded-xl bg-theme-green-dark text-white hover:scale-110 ease-out transition-all">
+                                <FaTelegramPlane />
+                            </Link>
+                        </div>
+                        <div className="font-light text-lg mt-3">
+                            Galadriel enables developers to build AI apps & agents like smart contracts — decentralized and on-chain
                         </div>
                     </div>
 
                     {/* Fhenix Agent */}
-                    <div className="bg-theme-orange-light rounded-xl shadow-lg p-5 w-80">
+                    <div className="bg-theme-gray-light rounded-xl shadow-lg p-5">
                         <div className="flex w-full justify-between items-center">
-                            <div className="flex items-center gap-2">
-                                <Image src="/chain/fhenix-logo.png" alt="fhenix" width={40} height={40} />
+                            <div className="flex items-center gap-3">
+                                <Image src="/chain/fhenix-logo.png" className="rounded-full" alt="fhenix" width={30}
+                                    height={30} />
                                 <div className="text-xl text-center font-bold">Fhenix</div>
                             </div>
-                            <Link href={"/agent/fhenix/chat"}
-                                className="text-2xl p-2 rounded-xl bg-theme-orange-dark text-white hover:scale-110 ease-out transition-all">
+                            <Link href={"/agent/fhenix/code"}
+                                className="text-2xl p-2 rounded-xl bg-theme-gray-dark text-white hover:scale-110 ease-out transition-all">
                                 <FaTelegramPlane />
                             </Link>
                         </div>
                         <div className="font-light text-lg mt-3">
-                            Fhenix is a scalable blockchain platform designed for Web3 innovation and development.
+                            Fhenix is the first Fully Homomorphic Encryption (FHE) powered L2 to bring computation over encrypted data to Ethereum
                         </div>
                     </div>
+
+
+
+
+
+
                 </div>
+
+                {/* Flex container for the last 2 agents */}
+
             </div>
         </main>
     );
