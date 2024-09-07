@@ -1,7 +1,6 @@
-import {useState, useCallback, useEffect, useMemo} from "react";
-import {ethers} from 'ethers';
+import { useState, useCallback, useEffect, useMemo } from "react";
+import { ethers } from 'ethers';
 import SolidityCodeAgentABI from '../utils/SolidityCodeAgentABI.json';
-import {useAccount, useWalletClient} from "wagmi";
 
 type UseRootstockCodeAgentContract = {
     code: string;
@@ -13,7 +12,7 @@ type UseRootstockCodeAgentContract = {
     error: string | null;
     isErrorModalOpen: boolean;
     handleCloseErrorModal: () => void;
-    handleRunAgent: (prompt: string, isImprovementPrompt: boolean) => void;
+    handleRunAgent: (prompt: string) => void;
     setError: (error: string) => void;
     progressMessage: string;
     setSuggestions: (suggestions: string | null) => void;
@@ -27,12 +26,8 @@ export function useRootstockCodeAgentContract(): UseRootstockCodeAgentContract {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
-    const [ethersProvider, setEthersProvider] = useState<ethers.providers.Web3Provider | null>(null);
+    const [ethersProvider, setEthersProvider] = useState<ethers.providers.JsonRpcProvider | null>(null);
     const [progressMessage, setProgressMessage] = useState<string>('');
-
-    const {isConnected} = useAccount();
-    const {data: walletClient} = useWalletClient();
-
 
     const codeGenerationMessages = useMemo(() => [
         'Understanding your question...',
@@ -41,7 +36,6 @@ export function useRootstockCodeAgentContract(): UseRootstockCodeAgentContract {
         'Generating answers...',
         "Almost there...",
     ], []);
-
 
     const handleOpenErrorModal = (message: string) => {
         setError(message);
@@ -53,55 +47,58 @@ export function useRootstockCodeAgentContract(): UseRootstockCodeAgentContract {
     };
 
     useEffect(() => {
-        if (isConnected) {
-            console.log('Wallet connected:');
+        const provider = new ethers.providers.JsonRpcProvider(process.env.NEXT_PUBLIC_RPC_URL_GALADRIEL);
+        setEthersProvider(provider);
+    }, []);
+
+    const wallet = useMemo(() => {
+        if (ethersProvider && process.env.NEXT_PUBLIC_GALADRIEL_PRIVATEKEY) {
+            return new ethers.Wallet(process.env.NEXT_PUBLIC_GALADRIEL_PRIVATEKEY, ethersProvider);
         }
-    }, [isConnected]);
+        console.log('Wallet initialized');
+    }, [ethersProvider]);
 
-    useEffect(() => {
-        if (walletClient) {
-            const provider = new ethers.providers.Web3Provider(walletClient.transport, "any");
-            setEthersProvider(provider);
-        }
-    }, [walletClient]);
-
-
-    const signer = ethersProvider?.getSigner();
     const contractAddress = process.env.NEXT_PUBLIC_ROOTSTOCK_AGENT_CONTRACT_ADDRESS ?? '';
 
     const contract = useMemo(() => {
-        if (ethersProvider && signer) {
-            return new ethers.Contract(contractAddress, SolidityCodeAgentABI, signer);
+        if (wallet) {
+            return new ethers.Contract(contractAddress, SolidityCodeAgentABI, wallet);
         }
-    }, [contractAddress, ethersProvider, signer]);
+    }, [contractAddress, wallet]);
 
     const runAgent = useCallback(async (query: string, maxIterations: number) => {
-        const tx = await contract?.runAgent(query, maxIterations);
+        if (!contract) {
+            throw new Error("Contract is not initialized");
+        }
+        console.log('Running agent...');
+        const tx = await contract.runAgent(query, maxIterations);
         const receipt = await tx.wait();
+        console.log('Agent run transaction receipt:', receipt);
         const event = receipt.events?.find((event: { event: string; }) => event.event === 'AgentRunCreated');
         return event?.args[1].toNumber();
     }, [contract]);
 
     const getMessageHistoryContents = useCallback(async (agentId: number) => {
-        return await contract?.getMessageHistoryContents(agentId);
+        if (!contract) {
+            throw new Error("Contract is not initialized");
+        }
+        return await contract.getMessageHistoryContents(agentId);
     }, [contract]);
 
     const isRunFinished = useCallback(async (runId: number) => {
-        return await contract?.isRunFinished(runId);
+        if (!contract) {
+            throw new Error("Contract is not initialized");
+        }
+        return await contract.isRunFinished(runId);
     }, [contract]);
 
     const handleRunAgent = useCallback(async (prompt: string) => {
-        if (!isConnected) {
-            handleOpenErrorModal('Please connect your wallet');
-            return;
-        }
         if (!prompt) {
             handleOpenErrorModal('Please enter some prompt.');
             return;
         }
 
         const maxIterations = 10;
-
 
         const codeGenerationQuery = `
             You are an AI assistant specializing in Rootstock blockchain technology. Your task is to provide accurate, concise, and helpful responses to user queries about Rootstock, using the knowledge base provided to you. Please follow these guidelines:
@@ -138,22 +135,17 @@ export function useRootstockCodeAgentContract(): UseRootstockCodeAgentContract {
                 await new Promise((resolve) => setTimeout(resolve, 5000));
             }
             const messageHistoryContents = await getMessageHistoryContents(runId);
-            // console.log('Message history contents:', messageHistoryContents);
             setSuggestions(messageHistoryContents[2]);
         } catch (error) {
             console.error('Error running agent:', error);
             handleOpenErrorModal('Error fetching suggestions');
         } finally {
             console.log('Agent run complete');
-            // /run comipler
-            // if(error){
-            //     runErrorAgent();
-            // }
             setLoading(false);
             setProgressMessage('');
         }
 
-    }, [codeGenerationMessages, getMessageHistoryContents, isRunFinished, runAgent, suggestions, isConnected]);
+    }, [codeGenerationMessages, getMessageHistoryContents, isRunFinished, runAgent]);
 
     return {
         code,
