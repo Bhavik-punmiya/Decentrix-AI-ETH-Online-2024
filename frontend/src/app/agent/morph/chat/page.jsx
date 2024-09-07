@@ -30,16 +30,21 @@ export default function ChatPage() {
 
             <div className="flex gap-5 w-full px-5 justify-between items-center mt-5">
                 <div className="flex flex-col  justify-center ">
-                    <div className="font-bold text-2xl">Rootstock Agent</div>
-                    <p className="">Our agent knows just about everything there is to know about Rootstock!</p>
+                    <div className="font-bold text-2xl">Morph Agent</div>
+                    <p className="">Our agent knows just about everything there is to know about Morph!</p>
                 </div>
 
                 <div className="flex items-center space-x-4 w-fit bg-gray-100 p-4 rounded-lg  shadow-md mx-auto">
-                    <Avatar isBordered radius="md" src="/chain/morph-logo.png"/>
+                    <Avatar isBordered radius="md" src="/chain/morph-logo.jpeg"/>
                     <div className="flex-grow">
                         {account.isConnected ? (
                             <div className="flex items-center justify-between">
-                                <span className="text-green-600 font-semibold mr-5">Connected</span>
+                                <span className=" font-semibold mr-5">
+                                    Morph Holesky Testnet
+                                   <span className="text-green-600 font-semibold ml-2">
+                                    Connected 
+                                   </span>
+                                </span>
                                 <span className="text-gray-600 text-sm">
                                             {shortenAddress(account?.address)}
                                         </span>

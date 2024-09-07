@@ -81,7 +81,7 @@ function App() {
                     <div className="bg-theme-gray-light rounded-xl shadow-lg p-5">
                         <div className="flex w-full justify-between items-center">
                             <div className="flex items-center gap-3">
-                                <Image src="/chain/morph-logo.png" className="rounded-full" alt="morph" width={30}
+                                <Image src="/chain/morph-logo.jpeg" className="rounded-full" alt="morph" width={30}
                                        height={30}/>
                                 <div className="text-xl text-center font-bold">Morph</div>
                             </div>

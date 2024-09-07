@@ -1,7 +1,7 @@
 "use client";
-import React, {useState, useContext} from "react";
-import {Avatar} from "@nextui-org/react";
-import {ethers} from "ethers";
+import React, { useState, useContext } from "react";
+import { Avatar } from "@nextui-org/react";
+import { ethers } from "ethers";
 import {
     NextUIProvider,
     Button,
@@ -13,10 +13,10 @@ import {
 import SolidityEditor from "@/components/SolidityEditor";
 import axios from "axios";
 import WalletConnectButton from "@/components/WalletConnectButton";
-import {useAccount} from "wagmi";
-import {useSolidityCodeAgentContract} from '@/hooks/useSolidityCodeAgentContract';
-import {FaClipboard, FaClipboardCheck} from "react-icons/fa";
-import {Toaster, toast} from 'react-hot-toast';
+import { useAccount } from "wagmi";
+import { useSolidityCodeAgentContract } from '@/hooks/useSolidityCodeAgentContract';
+import { FaClipboard, FaClipboardCheck } from "react-icons/fa";
+import { Toaster, toast } from 'react-hot-toast';
 import { useContractState } from '@/contexts/ContractContext';
 import ContractInteraction from '@/components/ContractInteractions';
 import { saveContractData, saveSolidityCode } from "@/lib/contractService";
@@ -49,128 +49,128 @@ export default function Editor() {
     const compileCode = async () => {
         setCompiling(true);
         try {
-          const formData = new FormData();
-          formData.append(
-            "file",
-            new Blob([suggestions], { type: "text/plain" }),
-            "Contract.sol"
-          );
-          const response = await axios.post(
-            "https://msl8g5vbv6.execute-api.ap-south-1.amazonaws.com/prod/api/contract/compile",
-            formData,
-            {
-              headers: { "Content-Type": "multipart/form-data" },
+            const formData = new FormData();
+            formData.append(
+                "file",
+                new Blob([suggestions], { type: "text/plain" }),
+                "Contract.sol"
+            );
+            const response = await axios.post(
+                "https://msl8g5vbv6.execute-api.ap-south-1.amazonaws.com/prod/api/contract/compile",
+                formData,
+                {
+                    headers: { "Content-Type": "multipart/form-data" },
+                }
+            );
+            setResult(response.data);
+            console.log(response.data);
+
+            // Update the shared contract state
+            if (response.data.status === "success") {
+                setContractState(prevState => ({
+                    ...prevState,
+                    abi: response.data.abi,
+                    bytecode: response.data.bytecode,
+                    isCompiled: true,
+                }));
             }
-          );
-          setResult(response.data);
-          console.log(response.data);
-          
-          // Update the shared contract state
-          if (response.data.status === "success") {
-            setContractState(prevState => ({
-                ...prevState,
-                abi: response.data.abi,
-                bytecode: response.data.bytecode,
-                isCompiled: true,
-              }));
-          }
         } catch (error) {
-          setResult({ error: error.message });
+            setResult({ error: error.message });
         } finally {
-          setCompiling(false);
+            setCompiling(false);
         }
-      };
+    };
 
 
 
-    
-      const DeployContract = async () => {
+
+    const DeployContract = async () => {
         if (!result || result.status !== "success") {
-          toast.error("Please compile the contract successfully before deploying.");
-          return;
+            toast.error("Please compile the contract successfully before deploying.");
+            return;
         }
-      
+
         console.log("Deploying contract...");
-      
+
         try {
-          // Prompt user to connect their wallet if not connected
-          if (!window.ethereum) {
-            toast.error("Please install MetaMask to deploy the contract.");
-            return;
-          }
-      
-          console.log("Requesting MetaMask connection...");
-          // Request to connect to MetaMask
-          await window.ethereum.request({ method: "eth_requestAccounts" });
-          const provider = new ethers.providers.Web3Provider(window.ethereum);
-          const signer = provider.getSigner();
-          console.log("Connected to MetaMask.");
-      
-          // Check if the user is on the correct network (Morph Holesky Testnet)
-          const network = await provider.getNetwork();
-          if (network.chainId !== 2810) {
-            toast.error("Please switch to the Morph Holesky Testnet in MetaMask.");
-            return;
-          }
-      
-          console.log("Connected to Morph Holesky Testnet.");
-          setIsDeploying(true);
-      
-          // Create a new contract factory for deployment
-          const contractFactory = new ethers.ContractFactory(result.abi, result.bytecode, signer);
-          console.log("Deploying contract...");
-      
-          // Deploy the contract
-          const contract = await contractFactory.deploy();
-          await contract.deployed();
-      
-          // Get the block explorer URL
-          const blockExplorerUrl = `https://explorer-holesky.morphl2.io/address/${contract.address}`;
-          const solidityCode = suggestions; // Assuming suggestions holds your Solidity code
-          const fileName = `Contract_${contract.address}.sol`; // Generate a unique file name
-          const solidityFilePath = await saveSolidityCode(solidityCode, fileName);
-      
-          // Prepare contract data to save
-          const contractData = {
-            chainId: network.chainId,
-            contractAddress: contract.address,
-            abi: result.abi,
-            bytecode: result.bytecode,
-            blockExplorerUrl: blockExplorerUrl,
-            solidityFilePath: solidityFilePath,
-            deploymentDate: new Date().toISOString(),
-          };
-      
-          // Get user email from context
-          if (userData && userData.email) {
-            await saveContractData(contractData, userData.email);
-          } else {
-            console.error("User email not available");
-          }
-      
-          await setContractState(prevState => ({
-            ...prevState,
-            address: contract.address,
-            isDeployed: true,
-            blockExplorerUrl: blockExplorerUrl,
-          }));
-      
-          toast.success(
-            <div>
-                Contract deployed successfully!
-                <a href={blockExplorerUrl} target="_blank" rel="noopener noreferrer" className="block mt-2 text-black-500 hover:underline">
-                    View on Block Explorer
-                </a>
-            </div>,
-            { duration: 5000 }
-        );
+            // Prompt user to connect their wallet if not connected
+            if (!window.ethereum) {
+                toast.error("Please install MetaMask to deploy the contract.");
+                return;
+            }
+
+            console.log("Requesting MetaMask connection...");
+            // Request to connect to MetaMask
+            await window.ethereum.request({ method: "eth_requestAccounts" });
+            const provider = new ethers.providers.Web3Provider(window.ethereum);
+            const signer = provider.getSigner();
+            console.log("Connected to MetaMask.");
+
+            // Check if the user is on the correct network (Morph Holesky Testnet)
+            const network = await provider.getNetwork();
+            if (network.chainId !== 2810) {
+                toast.error("Please switch to the Morph Holesky Testnet in MetaMask.");
+                return;
+            }
+
+            console.log("Connected to Morph Holesky Testnet.");
+            setIsDeploying(true);
+
+            // Create a new contract factory for deployment
+            const contractFactory = new ethers.ContractFactory(result.abi, result.bytecode, signer);
+            console.log("Deploying contract...");
+
+            // Deploy the contract
+            const contract = await contractFactory.deploy();
+            await contract.deployed();
+
+            // Get the block explorer URL
+            const blockExplorerUrl = `https://explorer-holesky.morphl2.io/address/${contract.address}`;
+            const solidityCode = suggestions; // Assuming suggestions holds your Solidity code
+            const fileName = `Contract_${contract.address}.sol`; // Generate a unique file name
+            const solidityFilePath = await saveSolidityCode(solidityCode, fileName);
+
+            // Prepare contract data to save
+            const contractData = {
+                chainId: network.chainId,
+                contractAddress: contract.address,
+                abi: result.abi,
+                bytecode: result.bytecode,
+                blockExplorerUrl: blockExplorerUrl,
+                solidityFilePath: solidityFilePath,
+                deploymentDate: new Date().toISOString(),
+            };
+
+            // Get user email from context
+            if (userData && userData.email) {
+                await saveContractData(contractData, userData.email);
+            } else {
+                console.error("User email not available");
+            }
+
+            await setContractState(prevState => ({
+                ...prevState,
+                address: contract.address,
+                isDeployed: true,
+                blockExplorerUrl: blockExplorerUrl,
+            }));
+
+            toast.success(
+                <div>
+                    Contract deployed successfully!
+                    <a href={blockExplorerUrl} target="_blank" rel="noopener noreferrer" className="block mt-2 text-black-500 hover:underline">
+                        View on Block Explorer
+                    </a>
+                </div>,
+                { duration: 5000 }
+            );
         } catch (error) {
-          console.error("Error deploying contract:", error);
-          toast.error(`Error deploying contract: ${error.message}`);
+            console.error("Error deploying contract:", error);
+            toast.error(`Error deploying contract: ${error.message}`);
         } finally {
-          setIsDeploying(false);
+            setIsDeploying(false);
         }
-      };
+    };
 
 
     const shortenAddress = (address) => {
@@ -231,8 +231,8 @@ export default function Editor() {
                                 }
                             </h4>
                             {
-                                Bytecopied ? <FaClipboardCheck/>
-                                    : <FaClipboard/>
+                                Bytecopied ? <FaClipboardCheck />
+                                    : <FaClipboard />
                             }
                         </Button>
                         <Button color="primary" className="flex gap-2 items-center" onClick={() => {
@@ -242,8 +242,8 @@ export default function Editor() {
                                 ABIcopied ? "ABI Copied" : "Copy ABI"
                             }</h4>
                             {
-                                ABIcopied ? <FaClipboardCheck/>
-                                    : <FaClipboard/>
+                                ABIcopied ? <FaClipboardCheck />
+                                    : <FaClipboard />
                             }
                         </Button>
 
@@ -265,26 +265,31 @@ export default function Editor() {
 
     return (
         <div className="">
-            <Toaster/>
+            <Toaster />
             <div className="flex ">
                 <div className="w-1/2 p-2">
                     <Card className="flex-grow h-full p-6">
                         <div className="max-w-2xl bg-gray-100 p-4 rounded-lg shadow-md">
                             <div className="flex items-center space-x-4">
-                                <Avatar isBordered radius="md" src="/chain/morph-logo.png"/>
+                                <Avatar isBordered radius="md" src="/chain/morph-logo.jpeg" color="white" />
                                 <div className="flex-grow">
                                     {account.isConnected ? (
                                         <div className="flex items-center justify-between">
-                                            <span className="text-green-600 font-semibold">Connected</span>
+                                            <span className=" font-semibold mr-5">
+                                                Morph Holesky 
+                                                <span className="text-green-600 font-semibold ml-2">
+                                                    Connected
+                                                </span>
+                                            </span>
                                             <span className="text-gray-600 text-sm">
-                                            {shortenAddress(account?.address)}
-                                        </span>
+                                                {shortenAddress(account?.address)}
+                                            </span>
                                         </div>
                                     ) : (
                                         <span className="text-gray-600">Not connected</span>
                                     )}
                                 </div>
-                                <WalletConnectButton/>
+                                <WalletConnectButton />
                             </div>
                         </div>
                         <div className="my-3 h-48 mb-14">
@@ -340,7 +345,7 @@ export default function Editor() {
                         <CardHeader className="flex justify-between items-center px-4 py-2">
                             <div className="flex items-center">
 
-                                <h2 className="text-xl font-bold">Rootstock</h2>
+                                <h2 className="text-xl font-bold">Morph</h2>
 
                             </div>
                             <div className="py-2">
@@ -366,7 +371,7 @@ export default function Editor() {
                         <CardBody className="p-4 h-full">
                             <div
                                 className="h-full overflow-auto"
-                                style={{maxHeight: "calc(100vh - 200px)"}}
+                                style={{ maxHeight: "calc(100vh - 200px)" }}
                             >
 
                                 <div className="flex flex-col h-full">

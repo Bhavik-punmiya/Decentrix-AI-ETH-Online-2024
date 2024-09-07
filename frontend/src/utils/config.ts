@@ -48,9 +48,26 @@ const galadriealDevnet: Chain = {
     },
 };
 
+// Morph Holesky Testnet configuration
+const morphHoleskyTestnet: Chain = {
+    id: 2810,
+    name: "Morph Holesky Testnet",
+    nativeCurrency: {
+        decimals: 18,
+        name: "Morph Holesky Testnet Ether",
+        symbol: "ETH",
+    },
+    rpcUrls: {
+        default: { http: [`https://2810.rpc.thirdweb.com/${process.env.NEXT_PUBLIC_THIRDWEB_SECRETKEY}`] }
+    },
+    blockExplorers: {
+        default: { name: "Morph Explorer", url: "https://explorer-holesky.morphl2.io" },
+    },
+};
+
 // Export the configuration with chains included
 export const config = defaultWagmiConfig({
-    chains: [sepolia, galadriealDevnet, rootstockTestnet], // Add Rootstock Testnet here
+    chains: [sepolia, galadriealDevnet, rootstockTestnet, morphHoleskyTestnet], // Add Morph Holesky Testnet here
     projectId,
     metadata,
     ssr: true,
