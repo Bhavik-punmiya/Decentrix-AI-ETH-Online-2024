@@ -97,7 +97,7 @@ function App() {
                             </Link>
                         </div>
                         <div className="font-light text-lg mt-3">
-                            Morph is a blockchain platform focused on seamless asset exchanges and decentralized finance solutions.
+                        The first optimistic zkEVM Ethereum Layer 2 solution, Morph is 100% EVM compatible.
                         </div>
                     </div>
 
@@ -115,7 +115,7 @@ function App() {
                             </Link>
                         </div>
                         <div className="font-light text-lg mt-3">
-                            Nilion is a blockchain network designed for secure and scalable decentralized applications.
+                        Nillion is a secure computation network that decentralizes trust for high-value data
                         </div>
                     </div>
 
@@ -133,7 +133,7 @@ function App() {
                             </Link>
                         </div>
                         <div className="font-light text-lg mt-3">
-                            Nethermind is a blockchain development company that provides Ethereum infrastructure and tools.
+                         Empowering enterprises and developers worldwide to work with and build on decentralized systems.
                         </div>
                     </div>
 
