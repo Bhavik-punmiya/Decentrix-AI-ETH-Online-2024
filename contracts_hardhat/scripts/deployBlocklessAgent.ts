@@ -4,7 +4,8 @@ async function main() {
     if (!process.env.ORACLE_ADDRESS) {
         throw new Error("ORACLE_ADDRESS env variable is not set.");
     }
-    const oracleAddress: string = process.env.ORACLE_ADDRESS;
+    // @ts-ignore
+    const oracleAddress: string = process.env.ORACLE_ADDRESS_WITHOUT_TEE;
     const systemPrompt: string = "you are a helpful agent"; // Replace with your desired system prompt
     const knowledgeBaseCID: string = `QmXCfWHcpoexe1YioTCMUgGtBxBkZSoh85iyMUVmm5xjm4`; // Replace with your knowledge base CID
 

@@ -4,7 +4,7 @@ import {Avatar} from "@nextui-org/react";
 import React, {useState} from "react";
 import WalletConnectButton from "@/components/WalletConnectButton";
 import {useAccount} from "wagmi";
-import {useRootstockCodeAgentContract} from "@/hooks/useRootstockAgentContract";
+import {useMorphCodeAgentContract} from "@/hooks/useMorphAgentContract";
 
 
 export default function ChatPage() {
@@ -16,7 +16,7 @@ export default function ChatPage() {
         error,
         handleRunAgent,
         progressMessage,
-    } = useRootstockCodeAgentContract();
+    } = useMorphCodeAgentContract();
 
     const account = useAccount();
 
