@@ -111,7 +111,7 @@ export function useChainlinkCodeAgentContract(): UseChainlinkCodeAgentContract {
             3. If the question relates to code or implementation, provide relevant code snippets or examples.
             4. Give links to official documentation or other resources at the end of your answer.
             5. if user didn't provide any context, use the knowledge base to generate a response.
-             never tell the user to "google it" or "look it up". . 
+             never tell the user to "google it" or "look it up".   . 
 
             
             Remember to use the knowledge base provided and avoid using any external information, your goal is to assist users in understanding and working with Chainlink technology effectively. Tailor your response to best address the user's specific needs and level of expertise.
