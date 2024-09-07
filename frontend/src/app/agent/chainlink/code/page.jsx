@@ -109,7 +109,7 @@ export default function Editor() {
             // Check if the user is on the correct network (Rootstock Testnet)
             const network = await provider.getNetwork();
 
-            console.log("Connected to Rootstock Testnet.");
+            // console.log("Connected to Rootstock Testnet.");
             setIsDeploying(true);
     
             // Create a new contract factory for deployment

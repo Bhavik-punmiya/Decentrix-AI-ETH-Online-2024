@@ -5,10 +5,10 @@ const Layout = ({ children }) => {
   return (
     <ContractProvider>
       <div className="flex">
-        {/* <Sidebar /> */}
-        <div className="h-full flex justify-center items-center text-5xl font-bold py-24">
-                Coming soon !
-            </div>
+          <Sidebar />
+          <main className="flex-1 ml-16 p-4">
+              {children}
+          </main>
       </div>
     </ContractProvider>
   );

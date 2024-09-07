@@ -29,17 +29,36 @@ function App() {
             <div className="bg-theme-off-white-light rounded-xl p-10 w-full mt-24">
                 <div className="w-full text-center text-4xl mb-10" id="agents"><span>Choose an agent</span></div>
 
-                {/* Grid for initial 6 agents */}
+                {/* Grid for initial 9 agents */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
-                    {/* Rootstock Agent */}
+
+                    {/* Galadriel Agent */}
                     <div className="bg-theme-green-light rounded-xl shadow-lg p-5">
+                        <div className="flex w-full justify-between items-center">
+                            <div className="flex items-center gap-4">
+                                <Image src="/chain/galadriel-logo.png" className="rounded-full" alt="nillion" width={40}
+                                       height={40} />
+                                <div className="text-xl text-center font-bold">Galadriel</div>
+                            </div>
+                            <Link href={"/agent/galadriel/chat"}
+                                  className="text-2xl p-2 rounded-xl bg-theme-green-dark text-white hover:scale-110 ease-out transition-all">
+                                <FaTelegramPlane />
+                            </Link>
+                        </div>
+                        <div className="font-light text-lg mt-3">
+                            Galadriel enables developers to build AI apps & agents like smart contracts — decentralized and on-chain
+                        </div>
+                    </div>
+
+                    {/* Rootstock Agent */}
+                    <div className="bg-theme-gray-light rounded-xl shadow-lg p-5">
                         <div className="flex w-full justify-between items-center">
                             <div className="flex items-center gap-1">
                                 <Image src="/chain/rootstock-logo.png" alt="rootstock" width={40} height={40} />
                                 <div className="text-xl text-center font-bold">Rootstock</div>
                             </div>
                             <Link href={"/agent/rootstock/chat"}
-                                className="text-2xl p-2 rounded-xl bg-theme-green-dark text-white hover:scale-110 ease-out transition-all">
+                                className="text-2xl p-2 rounded-xl bg-theme-gray-dark text-white hover:scale-110 ease-out transition-all">
                                 <FaTelegramPlane />
                             </Link>
                         </div>
@@ -66,7 +85,7 @@ function App() {
                     </div>
 
                     {/* Blockless Agent */}
-                    <div className="bg-theme-gray-light rounded-xl shadow-lg p-5">
+                    <div className="bg-theme-purple-light rounded-xl shadow-lg p-5">
                         <div className="flex w-full justify-between items-center">
                             <div className="flex items-center gap-1">
                                 <Image src="/chain/blockless-logo.png" alt="blockless" width={40} height={40}
@@ -74,12 +93,29 @@ function App() {
                                 <div className="text-xl text-center font-bold">Blockless</div>
                             </div>
                             <Link href={"/agent/blockless/chat"}
-                                className="text-2xl p-2 rounded-xl bg-theme-gray-dark text-white hover:scale-110 ease-out transition-all">
+                                className="text-2xl p-2 rounded-xl bg-theme-purple-dark text-white hover:scale-110 ease-out transition-all">
                                 <FaTelegramPlane />
                             </Link>
                         </div>
                         <div className="font-light text-lg mt-3">
                             Blockless is the infrastructure platform to launch, integrate, and secure Network Neutral Applications (nnApps).
+                        </div>
+                    </div>
+                    {/* Fhenix Agent */}
+                    <div className="bg-theme-green-light rounded-xl shadow-lg p-5">
+                        <div className="flex w-full justify-between items-center">
+                            <div className="flex items-center gap-3">
+                                <Image src="/chain/fhenix-logo.png" className="rounded-full" alt="fhenix" width={30}
+                                       height={30} />
+                                <div className="text-xl text-center font-bold">Fhenix</div>
+                            </div>
+                            <Link href={"/agent/fhenix/chat"}
+                                  className="text-2xl p-2 rounded-xl bg-theme-green-dark text-white hover:scale-110 ease-out transition-all">
+                                <FaTelegramPlane />
+                            </Link>
+                        </div>
+                        <div className="font-light text-lg mt-3">
+                            Fhenix is the first Fully Homomorphic Encryption (FHE) powered L2 to bring computation over encrypted data to Ethereum
                         </div>
                     </div>
 
@@ -102,7 +138,7 @@ function App() {
                     </div>
 
                     {/* Nilion Agent */}
-                    <div className="bg-theme-green-light rounded-xl shadow-lg p-5">
+                    <div className="bg-theme-gray-light rounded-xl shadow-lg p-5">
                         <div className="flex w-full justify-between items-center">
                             <div className="flex items-center gap-4">
                                 <Image src="/chain/nillion-logo.png" className="rounded-full" alt="nillion" width={40}
@@ -110,7 +146,7 @@ function App() {
                                 <div className="text-xl text-center font-bold">Nilion</div>
                             </div>
                             <Link href={"/agent/nillion/chat"}
-                                className="text-2xl p-2 rounded-xl bg-theme-green-dark text-white hover:scale-110 ease-out transition-all">
+                                className="text-2xl p-2 rounded-xl bg-theme-gray-dark text-white hover:scale-110 ease-out transition-all">
                                 <FaTelegramPlane />
                             </Link>
                         </div>
@@ -138,7 +174,7 @@ function App() {
                     </div>
 
                     {/* Chainlink Agent */}
-                    <div className="bg-theme-purple-light rounded-xl shadow-lg p-5">
+                    <div className="bg-theme-green-light rounded-xl shadow-lg p-5">
                         <div className="flex w-full justify-between items-center">
                             <div className="flex items-center gap-4">
                                 <Image src="/chain/chainlink-logo.png" className="rounded-full" alt="chainlink"
@@ -146,7 +182,7 @@ function App() {
                                 <div className="text-xl text-center font-bold">ChainLink</div>
                             </div>
                             <Link href={"/agent/chainlink/chat"}
-                                className="text-2xl p-2 rounded-xl bg-theme-purple-dark text-white hover:scale-110 ease-out transition-all">
+                                className="text-2xl p-2 rounded-xl bg-theme-green-dark text-white hover:scale-110 ease-out transition-all">
                                 <FaTelegramPlane />
                             </Link>
                         </div>
@@ -154,47 +190,6 @@ function App() {
                             The industry standard oracle network for powering trust-minimized applications across Web2 and Web3 ⬡
                         </div>
                     </div>
-
-                                        {/* Fhenix Agent */}
-                                        <div className="bg-theme-gray-light rounded-xl shadow-lg p-5">
-                        <div className="flex w-full justify-between items-center">
-                            <div className="flex items-center gap-3">
-                                <Image src="/chain/fhenix-logo.png" className="rounded-full" alt="fhenix" width={30}
-                                    height={30} />
-                                <div className="text-xl text-center font-bold">Fhenix</div>
-                            </div>
-                            <Link href={"/agent/fhenix/code"}
-                                className="text-2xl p-2 rounded-xl bg-theme-gray-dark text-white hover:scale-110 ease-out transition-all">
-                                <FaTelegramPlane />
-                            </Link>
-                        </div>
-                        <div className="font-light text-lg mt-3">
-                            Fhenix is the first Fully Homomorphic Encryption (FHE) powered L2 to bring computation over encrypted data to Ethereum
-                        </div>
-                    </div>
-
-                    {/* Galadriel Agent */}
-                    <div className="bg-theme-green-light rounded-xl shadow-lg p-5">
-                        <div className="flex w-full justify-between items-center">
-                            <div className="flex items-center gap-4">
-                                <Image src="/chain/galadriel-logo.png" className="rounded-full" alt="nillion" width={40}
-                                    height={40} />
-                                <div className="text-xl text-center font-bold">Galadriel</div>
-                            </div>
-                            <Link href={"/agent/galadriel/code"}
-                                className="text-2xl p-2 rounded-xl bg-theme-green-dark text-white hover:scale-110 ease-out transition-all">
-                                <FaTelegramPlane />
-                            </Link>
-                        </div>
-                        <div className="font-light text-lg mt-3">
-                            Galadriel enables developers to build AI apps & agents like smart contracts — decentralized and on-chain
-                        </div>
-                    </div>
-
-
-
-
-
 
 
 

@@ -108,7 +108,7 @@ export default function Editor() {
                 toast.error("Please switch to the Rootstock Testnet in MetaMask.");
                 return;
             }
-            console.log("Connected to Rootstock Testnet.");
+            // console.log("Connected to Rootstock Testnet.");
             setIsDeploying(true);
     
             // Create a new contract factory for deployment
