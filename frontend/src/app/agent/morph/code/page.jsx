@@ -86,94 +86,83 @@ export default function Editor() {
     
       const DeployContract = async () => {
         if (!result || result.status !== "success") {
-            toast.error("Please compile the contract successfully before deploying.");
-            return;
+          toast.error("Please compile the contract successfully before deploying.");
+          return;
         }
+      
         console.log("Deploying contract...");
-    
+      
         try {
-            // Prompt user to connect their wallet if not connected
-            if (!window.ethereum) {
-                toast.error("Please install MetaMask to deploy the contract.");
-                return;
-            }
-            console.log("Requesting MetaMask connection...");
-    
-            // Request to connect to MetaMask
-            await window.ethereum.request({ method: "eth_requestAccounts" });
-    
-            const provider = new ethers.providers.Web3Provider(window.ethereum);
-            const signer = provider.getSigner();
-            console.log("Connected to MetaMask.");
-    
-            // Check if the user is on the correct network (Rootstock Testnet)
-            const network = await provider.getNetwork();
-            if (network.chainId !== 31) {
-                toast.error("Please switch to the Rootstock Testnet in MetaMask.");
-                return;
-            }
-            console.log("Connected to Rootstock Testnet.");
-            setIsDeploying(true);
-    
-            // Create a new contract factory for deployment
-            const contractFactory = new ethers.ContractFactory(result.abi, result.bytecode, signer);
-            console.log("Deploying contract...");
-    
-            // Deploy the contract
-            const contract = await contractFactory.deploy();
-            await contract.deployed();
-    
-            // Get the block explorer URL
-            const blockExplorerUrl = `https://explorer.testnet.rsk.co/address/${contract.address}`;
-            
-            const solidityCode = suggestions; // Assuming suggestions holds your Solidity code
-            const fileName = `Contract_${contract.address}.sol`; // Generate a unique file name
-            const solidityFilePath = await saveSolidityCode(solidityCode, fileName); // Save the Solidity code and get the file path
-
-            // Prepare contract data to save
-            const contractData = {
-                chainId: network.chainId,
-                contractAddress: contract.address,
-                abi: result.abi,
-                bytecode: result.bytecode,
-                blockExplorerUrl: blockExplorerUrl,
-                solidityFilePath: solidityFilePath,
-                deploymentDate: new Date().toISOString(),
-            };
-        
-            // Get user email from context
-            
-            if (userData && userData.email) {
-                await saveContractData(contractData, userData.email);
-            } else {
-                console.error("User email not available");
-            }
-    
-            await setContractState(prevState => ({
-                ...prevState,
-                address: contract.address,
-                isDeployed: true,
-                blockExplorerUrl: blockExplorerUrl,
-            }));
-    
-            toast.success(
-                <div>
-                    Contract deployed successfully!
-                    <a href={blockExplorerUrl} target="_blank" rel="noopener noreferrer" className="block mt-2 text-black-500 hover:underline">
-                        View on Block Explorer
-                    </a>
-                </div>,
-                { duration: 5000 }
-            );
-            console.log(`Contract deployed at: ${contract.address}`);
+          // Prompt user to connect their wallet if not connected
+          if (!window.ethereum) {
+            toast.error("Please install MetaMask to deploy the contract.");
+            return;
+          }
+      
+          console.log("Requesting MetaMask connection...");
+          // Request to connect to MetaMask
+          await window.ethereum.request({ method: "eth_requestAccounts" });
+          const provider = new ethers.providers.Web3Provider(window.ethereum);
+          const signer = provider.getSigner();
+          console.log("Connected to MetaMask.");
+      
+          // Check if the user is on the correct network (Morph Holesky Testnet)
+          const network = await provider.getNetwork();
+          if (network.chainId !== 2810) {
+            toast.error("Please switch to the Morph Holesky Testnet in MetaMask.");
+            return;
+          }
+      
+          console.log("Connected to Morph Holesky Testnet.");
+          setIsDeploying(true);
+      
+          // Create a new contract factory for deployment
+          const contractFactory = new ethers.ContractFactory(result.abi, result.bytecode, signer);
+          console.log("Deploying contract...");
+      
+          // Deploy the contract
+          const contract = await contractFactory.deploy();
+          await contract.deployed();
+      
+          // Get the block explorer URL
+          const blockExplorerUrl = `https://explorer-holesky.morphl2.io/address/${contract.address}`;
+          const solidityCode = suggestions; // Assuming suggestions holds your Solidity code
+          const fileName = `Contract_${contract.address}.sol`; // Generate a unique file name
+          const solidityFilePath = await saveSolidityCode(solidityCode, fileName);
+      
+          // Prepare contract data to save
+          const contractData = {
+            chainId: network.chainId,
+            contractAddress: contract.address,
+            abi: result.abi,
+            bytecode: result.bytecode,
+            blockExplorerUrl: blockExplorerUrl,
+            solidityFilePath: solidityFilePath,
+            deploymentDate: new Date().toISOString(),
+          };
+      
+          // Get user email from context
+          if (userData && userData.email) {
+            await saveContractData(contractData, userData.email);
+          } else {
+            console.error("User email not available");
+          }
+      
+          await setContractState(prevState => ({
+            ...prevState,
+            address: contract.address,
+            isDeployed: true,
+            blockExplorerUrl: blockExplorerUrl,
+          }));
+      
+          toast.success(`Contract deployed successfully! View on block explorer: ${blockExplorerUrl}`);
         } catch (error) {
-            console.error("Error deploying contract:", error);
-            toast.error("Failed to deploy contract. Check the console for details.");
+          console.error("Error deploying contract:", error);
+          toast.error(`Error deploying contract: ${error.message}`);
         } finally {
-            setIsDeploying(false);
+          setIsDeploying(false);
         }
-    };
-
+      };
 
 
     const shortenAddress = (address) => {
