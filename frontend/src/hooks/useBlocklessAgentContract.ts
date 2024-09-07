@@ -1,7 +1,6 @@
-import {useState, useCallback, useEffect, useMemo} from "react";
-import {ethers} from 'ethers';
+import { useState, useCallback, useEffect, useMemo } from "react";
+import { ethers } from 'ethers';
 import SolidityCodeAgentABI from '../utils/SolidityCodeAgentABI.json';
-import {useAccount, useWalletClient} from "wagmi";
 
 type UseBlocklessCodeAgentContract = {
     code: string;
@@ -13,7 +12,7 @@ type UseBlocklessCodeAgentContract = {
     error: string | null;
     isErrorModalOpen: boolean;
     handleCloseErrorModal: () => void;
-    handleRunAgent: (prompt: string, isImprovementPrompt: boolean) => void;
+    handleRunAgent: (prompt: string) => void;
     setError: (error: string) => void;
     progressMessage: string;
     setSuggestions: (suggestions: string | null) => void;
@@ -27,12 +26,7 @@ export function useBlocklessCodeAgentContract(): UseBlocklessCodeAgentContract {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
-    const [ethersProvider, setEthersProvider] = useState<ethers.providers.Web3Provider | null>(null);
     const [progressMessage, setProgressMessage] = useState<string>('');
-
-    const {isConnected} = useAccount();
-    const {data: walletClient} = useWalletClient();
-
 
     const codeGenerationMessages = useMemo(() => [
         'Understanding your question...',
@@ -41,7 +35,6 @@ export function useBlocklessCodeAgentContract(): UseBlocklessCodeAgentContract {
         'Generating answers...',
         "Almost there...",
     ], []);
-
 
     const handleOpenErrorModal = (message: string) => {
         setError(message);
@@ -52,56 +45,63 @@ export function useBlocklessCodeAgentContract(): UseBlocklessCodeAgentContract {
         setIsErrorModalOpen(false);
     };
 
-    useEffect(() => {
-        if (isConnected) {
-            console.log('Wallet connected:');
+    const provider = useMemo(() => {
+        const rpcUrl = process.env.NEXT_PUBLIC_RPC_URL_GALADRIEL;
+        if (!rpcUrl) {
+            console.error('RPC URL is not defined');
+            return null;
         }
-    }, [isConnected]);
+        return new ethers.providers.JsonRpcProvider(rpcUrl);
+    }, []);
 
-    useEffect(() => {
-        if (walletClient) {
-            const provider = new ethers.providers.Web3Provider(walletClient.transport, "any");
-            setEthersProvider(provider);
+    const signer = useMemo(() => {
+        const privateKey = process.env.NEXT_PUBLIC_GALADRIEL_PRIVATEKEY;
+        if (!privateKey || !provider) {
+            console.error('Private key is not defined or provider is not available');
+            return null;
         }
-    }, [walletClient]);
+        return new ethers.Wallet(privateKey, provider);
+    }, [provider]);
 
-
-    const signer = ethersProvider?.getSigner();
     const contractAddress = process.env.NEXT_PUBLIC_BLOCKLESS_AGENT_CONTRACT_ADDRESS ?? '';
 
     const contract = useMemo(() => {
-        if (ethersProvider && signer) {
+        if (signer) {
             return new ethers.Contract(contractAddress, SolidityCodeAgentABI, signer);
         }
-    }, [contractAddress, ethersProvider, signer]);
+    }, [contractAddress, signer]);
 
     const runAgent = useCallback(async (query: string, maxIterations: number) => {
-        const tx = await contract?.runAgent(query, maxIterations);
+        if (!contract) {
+            throw new Error('Contract is not initialized');
+        }
+        const tx = await contract.runAgent(query, maxIterations);
         const receipt = await tx.wait();
         const event = receipt.events?.find((event: { event: string; }) => event.event === 'AgentRunCreated');
         return event?.args[1].toNumber();
     }, [contract]);
 
     const getMessageHistoryContents = useCallback(async (agentId: number) => {
-        return await contract?.getMessageHistoryContents(agentId);
+        if (!contract) {
+            throw new Error('Contract is not initialized');
+        }
+        return await contract.getMessageHistoryContents(agentId);
     }, [contract]);
 
     const isRunFinished = useCallback(async (runId: number) => {
-        return await contract?.isRunFinished(runId);
+        if (!contract) {
+            throw new Error('Contract is not initialized');
+        }
+        return await contract.isRunFinished(runId);
     }, [contract]);
 
     const handleRunAgent = useCallback(async (prompt: string) => {
-        if (!isConnected) {
-            handleOpenErrorModal('Please connect your wallet');
-            return;
-        }
         if (!prompt) {
             handleOpenErrorModal('Please enter some prompt.');
             return;
         }
 
         const maxIterations = 10;
-
 
         const codeGenerationQuery = `
             You are an AI assistant specializing in Blockless blockchain technology. Your task is to provide accurate, concise, and helpful responses to user queries about Blockless, using the knowledge base provided to you. Please follow these guidelines:
@@ -148,15 +148,11 @@ export function useBlocklessCodeAgentContract(): UseBlocklessCodeAgentContract {
             handleOpenErrorModal('Error fetching suggestions');
         } finally {
             console.log('Agent run complete');
-            // /run comipler
-            // if(error){
-            //     runErrorAgent();
-            // }
             setLoading(false);
             setProgressMessage('');
         }
 
-    }, [codeGenerationMessages, getMessageHistoryContents, isRunFinished, runAgent, suggestions, isConnected]);
+    }, [codeGenerationMessages, getMessageHistoryContents, isRunFinished, runAgent]);
 
     return {
         code,

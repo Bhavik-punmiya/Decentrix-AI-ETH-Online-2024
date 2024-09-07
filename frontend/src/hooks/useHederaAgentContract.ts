@@ -1,7 +1,6 @@
-import {useState, useCallback, useEffect, useMemo} from "react";
-import {ethers} from 'ethers';
+import { useState, useCallback, useEffect, useMemo } from "react";
+import { ethers } from 'ethers';
 import SolidityCodeAgentABI from '../utils/SolidityCodeAgentABI.json';
-import {useAccount, useWalletClient} from "wagmi";
 
 type UseHederaCodeAgentContract = {
     code: string;
@@ -13,7 +12,7 @@ type UseHederaCodeAgentContract = {
     error: string | null;
     isErrorModalOpen: boolean;
     handleCloseErrorModal: () => void;
-    handleRunAgent: (prompt: string, isImprovementPrompt: boolean) => void;
+    handleRunAgent: (prompt: string) => void;
     setError: (error: string) => void;
     progressMessage: string;
     setSuggestions: (suggestions: string | null) => void;
@@ -27,12 +26,8 @@ export function useHederaCodeAgentContract(): UseHederaCodeAgentContract {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
-    const [ethersProvider, setEthersProvider] = useState<ethers.providers.Web3Provider | null>(null);
+    const [ethersProvider, setEthersProvider] = useState<ethers.providers.JsonRpcProvider | null>(null);
     const [progressMessage, setProgressMessage] = useState<string>('');
-
-    const {isConnected} = useAccount();
-    const {data: walletClient} = useWalletClient();
-
 
     const codeGenerationMessages = useMemo(() => [
         'Understanding your question...',
@@ -41,7 +36,6 @@ export function useHederaCodeAgentContract(): UseHederaCodeAgentContract {
         'Generating answers...',
         "Almost there...",
     ], []);
-
 
     const handleOpenErrorModal = (message: string) => {
         setError(message);
@@ -53,55 +47,68 @@ export function useHederaCodeAgentContract(): UseHederaCodeAgentContract {
     };
 
     useEffect(() => {
-        if (isConnected) {
-            console.log('Wallet connected:');
+        const provider = new ethers.providers.JsonRpcProvider(process.env.NEXT_PUBLIC_RPC_URL_GALADRIEL);
+        setEthersProvider(provider);
+        console.log('Hedera provider initialized');
+    }, []);
+
+    const wallet = useMemo(() => {
+        if (ethersProvider && process.env.NEXT_PUBLIC_GALADRIEL_PRIVATEKEY) {
+            const w = new ethers.Wallet(process.env.NEXT_PUBLIC_GALADRIEL_PRIVATEKEY, ethersProvider);
+            console.log('Wallet initialized with address:', w.address);
+            return w;
         }
-    }, [isConnected]);
+    }, [ethersProvider]);
 
-    useEffect(() => {
-        if (walletClient) {
-            const provider = new ethers.providers.Web3Provider(walletClient.transport, "any");
-            setEthersProvider(provider);
-        }
-    }, [walletClient]);
-
-
-    const signer = ethersProvider?.getSigner();
     const contractAddress = process.env.NEXT_PUBLIC_HEDERA_AGENT_CONTRACT_ADDRESS ?? '';
 
     const contract = useMemo(() => {
-        if (ethersProvider && signer) {
-            return new ethers.Contract(contractAddress, SolidityCodeAgentABI, signer);
+        if (wallet) {
+            const c = new ethers.Contract(contractAddress, SolidityCodeAgentABI, wallet);
+            console.log('Contract initialized at address:', contractAddress);
+            return c;
         }
-    }, [contractAddress, ethersProvider, signer]);
+    }, [contractAddress, wallet]);
 
     const runAgent = useCallback(async (query: string, maxIterations: number) => {
-        const tx = await contract?.runAgent(query, maxIterations);
+        if (!contract) {
+            console.error('Contract not initialized');
+            throw new Error("Contract is not initialized");
+        }
+        console.log('Running agent with query:', query);
+        const tx = await contract.runAgent(query, maxIterations);
+        console.log('Transaction sent:', tx.hash);
         const receipt = await tx.wait();
+        console.log('Transaction confirmed in block:', receipt.blockNumber);
         const event = receipt.events?.find((event: { event: string; }) => event.event === 'AgentRunCreated');
         return event?.args[1].toNumber();
     }, [contract]);
 
     const getMessageHistoryContents = useCallback(async (agentId: number) => {
-        return await contract?.getMessageHistoryContents(agentId);
+        if (!contract) {
+            console.error('Contract not initialized');
+            throw new Error("Contract is not initialized");
+        }
+        console.log('Getting message history for agent ID:', agentId);
+        return await contract.getMessageHistoryContents(agentId);
     }, [contract]);
 
     const isRunFinished = useCallback(async (runId: number) => {
-        return await contract?.isRunFinished(runId);
+        if (!contract) {
+            console.error('Contract not initialized');
+            throw new Error("Contract is not initialized");
+        }
+        console.log('Checking if run is finished for run ID:', runId);
+        return await contract.isRunFinished(runId);
     }, [contract]);
 
     const handleRunAgent = useCallback(async (prompt: string) => {
-        if (!isConnected) {
-            handleOpenErrorModal('Please connect your wallet');
-            return;
-        }
         if (!prompt) {
             handleOpenErrorModal('Please enter some prompt.');
             return;
         }
 
         const maxIterations = 10;
-
 
         const codeGenerationQuery = `
             You are an AI assistant specializing in Hedera blockchain technology. Your task is to provide accurate, concise, and helpful responses to user queries about Hedera, using the knowledge base provided to you. Please follow these guidelines:
@@ -119,11 +126,10 @@ export function useHederaCodeAgentContract(): UseHederaCodeAgentContract {
         setLoading(true);
         setError(null);
 
-        console.log('Running agent...');
+        console.log('Starting agent run with prompt:', prompt);
         try {
             const runId = await runAgent(query, maxIterations);
-            console.log('Agent run started:');
-            console.log('Run ID:', runId);
+            console.log('Agent run started with ID:', runId);
 
             let finished = false;
             let messageIndex = 0;
@@ -131,29 +137,26 @@ export function useHederaCodeAgentContract(): UseHederaCodeAgentContract {
             while (!finished) {
                 if (messageIndex < messages.length) {
                     setProgressMessage(messages[messageIndex]);
+                    console.log('Progress:', messages[messageIndex]);
                     messageIndex++;
                 }
                 finished = await isRunFinished(runId);
-                console.log('Run finished:', finished);
+                console.log('Run finished status:', finished);
                 await new Promise((resolve) => setTimeout(resolve, 5000));
             }
             const messageHistoryContents = await getMessageHistoryContents(runId);
-            // console.log('Message history contents:', messageHistoryContents);
+            console.log('Message history retrieved');
             setSuggestions(messageHistoryContents[2]);
         } catch (error) {
             console.error('Error running agent:', error);
             handleOpenErrorModal('Error fetching suggestions');
         } finally {
             console.log('Agent run complete');
-            // /run comipler
-            // if(error){
-            //     runErrorAgent();
-            // }
             setLoading(false);
             setProgressMessage('');
         }
 
-    }, [codeGenerationMessages, getMessageHistoryContents, isRunFinished, runAgent, suggestions, isConnected]);
+    }, [codeGenerationMessages, getMessageHistoryContents, isRunFinished, runAgent]);
 
     return {
         code,
