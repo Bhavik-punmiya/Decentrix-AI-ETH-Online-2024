@@ -69,11 +69,11 @@ const Chat = ({ account, userPrompt, setUserPrompt, suggestions, loading, error,
                         )
                     }
                     {
-                        <div className="h-fit max-h-screen overflow-y-auto ">
+                        <div className="h-fit max-h-screen overflow-y-auto p-2 ">
                             {messages.map((msg, index) => (
                                 <div
                                     key={index}
-                                    className={`p-2 rounded-lg mb-4  w-fit ${
+                                    className={`p-2 rounded-lg mb-4  w-fit max-w-full ${
                                         msg.type === 'user' ? 'bg-theme-green-light text-black self-end ml-auto' : 'bg-theme-purple-light text-black self-start'
                                     }`}
                                 >
