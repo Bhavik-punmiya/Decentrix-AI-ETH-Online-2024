@@ -38,7 +38,7 @@ https://github.com/user-attachments/assets/e2982636-9cff-438a-a848-4d24bc86e046
 
 ## Getting Started
 
-1. Visit [Decentrix.AI](https://decentrix.ai)
+1. Visit [Decentrix.AI](https://decentrix-ai.vercel.app/)
 2. Sign up for an account or log in
 3. Choose your preferred blockchain platform
 4. Start building your smart contract or explore the platform's features
@@ -47,6 +47,11 @@ https://github.com/user-attachments/assets/e2982636-9cff-438a-a848-4d24bc86e046
 - Rootstock
 - Hedera
 - Blockless
+- Fhenix
+- Morph
+- Nillion
+- Nethermind
+- ChainLink
 
 
 ## How It Works

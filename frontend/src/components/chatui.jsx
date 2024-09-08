@@ -17,10 +17,10 @@ const Chat = ({ account, userPrompt, setUserPrompt, suggestions, loading, error,
     }, [suggestions]);
 
     const handleSend = async () => {
-        if (!account.isConnected) {
-            alert("Please connect wallet!");
-            return;
-        }
+        // if (!account.isConnected) {
+        //     alert("Please connect wallet!");
+        //     return;
+        // }
         if (input.trim()) {
             const userMessage = { text: input, type: 'user' };
             setMessages(prevMessages => [userMessage, ...prevMessages]);

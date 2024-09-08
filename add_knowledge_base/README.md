@@ -40,7 +40,7 @@ To set up your environment for running the RAG Knowledge Base Script, follow the
 1. Place your document files in a designated directory. The script can process multiple files in a batch.
 2. Run the script with the necessary arguments. For example, to ingest documents from the `galadriel_docs` directory, set a chunk size of 1500, and specify an oracle fee of 200:
     ```
-    % python add_knowledge_base.py -d galadriel_docs -s 1500 -o 200
+    % python3 add_knowledge_base.py -d galadriel_docs -s 1500 -o 200
     [Loading 13 files from galadriel_docs.]
     Processing Files: 100%|███████████████████████████████████████████████████████████████████████████████████████| 13/13 [00:02<00:00,  4.70file/s]
     Generated 47 documents from 13 files.
