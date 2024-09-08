@@ -7,15 +7,7 @@ import AgentCard from '@/components/AgentCard';
 
 function App() {
     const agentData = [
-        {
-            name: "Galadriel",
-            logo: "/chain/galadriel-logo.png",
-            description: "Galadriel enables developers to build AI apps & agents like smart contracts — decentralized and on-chain",
-            backgroundColor: "bg-theme-green-light",
-            buttonColor: "bg-theme-green-dark",
-            chatLink: "/agent/galadriel/chat",
-            codeLink: "/agent/galadriel/code"
-        },
+
         {
             name: "Rootstock",
             logo: "/chain/rootstock-logo.png",
