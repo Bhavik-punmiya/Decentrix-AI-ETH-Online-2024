@@ -151,7 +151,10 @@ export default function Editor() {
 
             toast.success(
                 <div>
-                    Contract deployed successfully on {network.name}!
+                    Contract deployed successfully!
+                    <a href={blockExplorerUrl} target="_blank" rel="noopener noreferrer" className="block mt-2 text-black-500 hover:underline">
+                        View on Block Explorer
+                    </a>
                 </div>,
                 { duration: 5000 }
             );
