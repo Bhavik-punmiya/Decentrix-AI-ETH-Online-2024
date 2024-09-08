@@ -63,7 +63,7 @@ export function useNethermindCodeAgentContract(): UseNethermindCodeAgentContract
         return new ethers.Wallet(privateKey, provider);
     }, [provider]);
 
-    const contractAddress = "0x79aF5729E7b8768681f2FD4Ae343eB1567459C80";
+    const contractAddress = "0xC8925111c2C354fE1d232468AD8cA16fb0d49803";
 
     const contract = useMemo(() => {
         if (signer) {
