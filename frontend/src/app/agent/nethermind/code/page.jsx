@@ -316,14 +316,14 @@ export default function Editor() {
                                 )
                             }
                         </div>
-                        {contractState.isCompiled && contractState.abi ? (
+                        {/* {contractState.isCompiled && contractState.abi ? (
                             <ContractInteraction />
                         ) : (
                             <div className="p-4 bg-yellow-100 border border-yellow-400 text-yellow-700 rounded mt-3">
                                 <p className="font-bold">No Contracts Compiled Yet</p>
                                 <p className="mt-2">Please compile a contract to interact with it.</p>
                             </div>
-                        )}
+                        )} */}
 
                         <div className="my-5">
                             {RenderResult()}

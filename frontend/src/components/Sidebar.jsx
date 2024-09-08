@@ -63,7 +63,7 @@ const Sidebar = () => {
 
             {activeIcon === 'contract' && (
                 <NestedSidebar title="Contract Interaction">
-                    {contractState.isDeployed && contractState.abi ? (
+                    {/* {contractState.isDeployed && contractState.abi ? (
                         <div className="text-xs w-[125%]" style={{ transform: 'scale(0.8)', transformOrigin: 'top left' }}>
                             <ContractInteraction />
                         </div>
@@ -72,7 +72,7 @@ const Sidebar = () => {
                             <p className="font-bold">No Contracts Deployed Yet</p>
                             <p className="mt-2">Please deploy a contract to interact with it.</p>
                         </div>
-                    )}
+                    )} */}
                 </NestedSidebar>
             )}
 
