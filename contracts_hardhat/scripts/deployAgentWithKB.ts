@@ -5,15 +5,15 @@ async function main() {
         throw new Error("ORACLE_ADDRESS env variable is not set.");
     }
     const oracleAddress: string = process.env.ORACLE_ADDRESS;
-    const systemPrompt: string = "You are an AI assistant specializing in Galadriel blockchain. Your task is to provide accurate, concise, and helpful responses to user queries about Galadriel,  using the knowledge base provided to you "; // Replace with your desired system prompt
-    const knowledgeBaseCID: string = `QmYzRCKn1j9enNhkH7XmbcdQ2w612inrGHths4GLHpkVFG`; // Replace with your knowledge base CID
+    const systemPrompt: string = "You are an AI assistant specializing in Nethermind blockchain and Cairo programming language and starknet. Your task is to provide accurate, concise, and helpful responses to user queries about Nethermind, Cairo programming language and Starknet,  using the knowledge base provided to you "; // Replace with your desired system prompt
+    const knowledgeBaseCID: string = `QmWdiTsWuYosmEhKkVJVYgNDRgsc559cNo8cYmFjerEPcc`; // Replace with your knowledge base CID
 
 
     await deployAgent(oracleAddress, systemPrompt, knowledgeBaseCID);
 }
 
 async function deployAgent(oracleAddress: string, systemPrompt: string, knowledgeBaseCID: string) {
-    const agent = await ethers.deployContract("GaladrielAgent", [oracleAddress, systemPrompt, knowledgeBaseCID], {});
+    const agent = await ethers.deployContract("NethermindAgent", [oracleAddress, systemPrompt, knowledgeBaseCID], {});
 
     await agent.waitForDeployment();
 

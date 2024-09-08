@@ -1,3 +1,4 @@
+
 # Decentrix.AI
 
 Welcome to Decentrix.AI - Your Ultimate AI-Powered Blockchain Development Companion
