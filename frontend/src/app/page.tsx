@@ -30,8 +30,8 @@ function App() {
             name: "Blockless",
             logo: "/chain/blockless-logo.png",
             description: "Blockless is the infrastructure platform to launch, integrate, and secure Network Neutral Applications (nnApps).",
-            backgroundColor: "bg-theme-purple-light",
-            buttonColor: "bg-theme-purple-dark",
+            backgroundColor: "bg-theme-green-light",
+            buttonColor: "bg-theme-green-dark",
             chatLink: "/agent/blockless/chat",
             codeLink: "/agent/blockless/code"
         },
@@ -57,8 +57,8 @@ function App() {
             name: "Nillion",
             logo: "/chain/nillion-logo.png",
             description: "Nillion is a secure computation network that decentralizes trust for high-value data",
-            backgroundColor: "bg-theme-gray-light",
-            buttonColor: "bg-theme-gray-dark",
+            backgroundColor: "bg-theme-purple-light",
+            buttonColor: "bg-theme-purple-dark",
             chatLink: "/agent/nillion/chat",
             codeLink: "/agent/nillion/code"
         },
@@ -94,7 +94,7 @@ function App() {
                 </button>
                 <div className="w-[90%] border mt-2 border-theme-dark"></div>
                 <div className="text-lg md:text-3xl font-light text-center">
-                    Empowering Web2 developers to transition into Web3 with our AI-driven platform. <br/>Describe your
+                    Assisting developers to learn new technologies in web3 with our AI-driven platform. <br/>Describe your
                     needs,
                     and our AI will handle the rest.
                 </div>
