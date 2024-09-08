@@ -3,6 +3,12 @@ import React, {useState,  useContext } from "react";
 import {Avatar} from "@nextui-org/react";
 import {ethers} from "ethers";
 import {
+    Client,
+    PrivateKey,
+    FileCreateTransaction,
+    ContractCreateTransaction,
+  } from "@hashgraph/sdk"; 
+import {
     NextUIProvider,
     Button,
     Card,
@@ -79,92 +85,84 @@ export default function Editor() {
         }
       };
 
-
       const DeployContract = async () => {
+        const myAccountId = process.env.NEXT_PUBLIC_HEDERA_TESTNET_ACCOUNT_ID; // Your Hedera Account ID
+        const myPrivateKey = process.env.NEXT_PUBLIC_HEDERA_TESTNET_PRIVATE_KEY; // Your Hedera Private Key
+      
+        // Check if environment variables are set
+        if (!myAccountId || !myPrivateKey) {
+          throw new Error(
+            "Environment variables HEDERA_TESTNET_ACCOUNT_ID and HEDERA_TESTNET_PRIVATE_KEY must be set"
+          );
+        }
+      
+        const client = Client.forTestnet(); // Create a client for Hedera Testnet
+        client.setOperator(myAccountId, myPrivateKey); // Set your account ID and private key
+      
         if (!result || result.status !== "success") {
-            toast.error("Please compile the contract successfully before deploying.");
-            return;
+          toast.error("Please compile the contract successfully before deploying.");
+          return;
         }
-        console.log("Deploying contract...");
-    
+      
         try {
-            // Prompt user to connect their wallet if not connected
-            if (!window.ethereum) {
-                toast.error("Please install MetaMask to deploy the contract.");
-                return;
-            }
-            console.log("Requesting MetaMask connection...");
-    
-            // Request to connect to MetaMask
-            await window.ethereum.request({ method: "eth_requestAccounts" });
-    
-            const provider = new ethers.providers.Web3Provider(window.ethereum);
-            const signer = provider.getSigner();
-            console.log("Connected to MetaMask.");
-    
-            // Check if the user is on the correct network (Rootstock Testnet)
-            const network = await provider.getNetwork();
-            if (network.chainId !== 31) {
-                toast.error("Please switch to the Rootstock Testnet in MetaMask.");
-                return;
-            }
-            // console.log("Connected to Rootstock Testnet.");
-            setIsDeploying(true);
-    
-            // Create a new contract factory for deployment
-            const contractFactory = new ethers.ContractFactory(result.abi, result.bytecode, signer);
-            console.log("Deploying contract...");
-    
-            // Deploy the contract
-            const contract = await contractFactory.deploy();
-            await contract.deployed();
-    
-            // Get the block explorer URL
-            const blockExplorerUrl = `https://explorer.testnet.rsk.co/address/${contract.address}`;
-    
-            // Prepare contract data to save
-            const contractData = {
-                chainId: network.chainId,
-                contractAddress: contract.address,
-                abi: result.abi,
-                bytecode: result.bytecode,
-                blockExplorerUrl: blockExplorerUrl,
-                deploymentDate: new Date().toISOString(),
-            };
-            consoel.log(userData.email);
-            // Get user email from context
-           
-            if (userData && userData.email) {
-                await saveContractData(contractData, userData.email);
-            } else {
-                console.error("User email not available");
-            }
-    
-            await setContractState(prevState => ({
-                ...prevState,
-                address: contract.address,
-                isDeployed: true,
-                blockExplorerUrl: blockExplorerUrl,
-            }));
-    
-            toast.success(
-                <div>
-                    Contract deployed successfully!
-                    <a href={blockExplorerUrl} target="_blank" rel="noopener noreferrer" className="block mt-2 text-blue-500 hover:underline">
-                        View on Block Explorer
-                    </a>
-                </div>,
-                { duration: 5000 }
-            );
-            console.log(`Contract deployed at: ${contract.address}`);
+          setIsDeploying(true);
+      
+          // Create a file on Hedera containing the compiled contract bytecode
+          const fileCreateTx = new FileCreateTransaction()
+            .setKeys([PrivateKey.fromString(myPrivateKey)])
+            .setContents(result.bytecode)
+            .freezeWith(client);
+      
+          const fileCreateSubmit = await fileCreateTx.execute(client);
+          const fileCreateRx = await fileCreateSubmit.getReceipt(client);
+          const bytecodeFileId = fileCreateRx.fileId;
+      
+          console.log(`- The smart contract bytecode file ID is: ${bytecodeFileId}`);
+      
+          // Deploy the contract using ContractCreateTransaction
+          const contractCreateTx = new ContractCreateTransaction()
+            .setGas(100000) // Set appropriate gas limit
+            .setBytecodeFileId(bytecodeFileId) // Set the bytecode file ID
+            .setConstructorParameters(); // Add any constructor parameters here
+      
+          const contractCreateSubmit = await contractCreateTx.execute(client);
+          const contractCreateRx = await contractCreateSubmit.getReceipt(client);
+          const newContractId = contractCreateRx.contractId;
+      
+          console.log(`- The smart contract ID is: ${newContractId}`);
+      
+          const blockExplorerUrl = `https://testnet.dragonglass.me/hedera/contracts/${newContractId}`;
+      
+          // Update state with deployment details
+          await setContractState((prevState) => ({
+            ...prevState,
+            address: newContractId.toString(),
+            isDeployed: true,
+            blockExplorerUrl,
+          }));
+      
+          toast.success(
+            <div>
+              Contract deployed successfully!
+              <a
+                href={blockExplorerUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block mt-2 text-blue-500 hover:underline"
+              >
+                View on Block Explorer
+              </a>
+            </div>,
+            { duration: 5000 }
+          );
         } catch (error) {
-            console.error("Error deploying contract:", error);
-            toast.error("Failed to deploy contract. Check the console for details.");
+          console.error("Error deploying contract:", error);
+          toast.error("Failed to deploy contract. Check the console for details.");
         } finally {
-            setIsDeploying(false);
+          setIsDeploying(false);
         }
-    };
-
+      };
+      
 
     const shortenAddress = (address) => {
         if (!address) return '';
@@ -212,7 +210,7 @@ export default function Editor() {
                     <div className="bg-green-100 border border-green-400 text-green-700 p-4 rounded">
                         <h3 className="font-bold">Compilation Successful!</h3>
                     </div>
-                    <div className=" p-4 rounded flex items-center justify-between my-2">
+                    <div className=" p-4 rounded flex items-center space-x-4 justify-end my-2">
                         <Button color="primary" className="flex gap-2 items-center" onClick={
                             () => {
                                 copyToClipboard(result.bytecode, 1)
@@ -264,7 +262,7 @@ export default function Editor() {
                     <Card className="flex-grow h-full p-6">
                         <div className="max-w-2xl bg-gray-100 p-4 rounded-lg shadow-md">
                             <div className="flex items-center space-x-4">
-                                <Avatar isBordered radius="md" src="/chain/rootstock-logo.png"/>
+                                <Avatar isBordered radius="md" src="/chain/hedera-logo.png"/>
                                 <div className="flex-grow">
                                     {account.isConnected ? (
                                         <div className="flex items-center justify-between">
@@ -312,14 +310,14 @@ export default function Editor() {
                                 )
                             }
                         </div>
-                        {contractState.isCompiled && contractState.abi ? (
+                        {/* {contractState.isCompiled && contractState.abi ? (
                             <ContractInteraction />
                         ) : (
                             <div className="p-4 bg-yellow-100 border border-yellow-400 text-yellow-700 rounded mt-3">
                                 <p className="font-bold">No Contracts Compiled Yet</p>
                                 <p className="mt-2">Please compile a contract to interact with it.</p>
                             </div>
-                        )}
+                        )} */}
 
                         <div className="my-5">
                             {RenderResult()}

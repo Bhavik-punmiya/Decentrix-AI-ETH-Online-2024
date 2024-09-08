@@ -181,7 +181,7 @@ export default function Editor() {
                     <div className="bg-green-100 border border-green-400 text-green-700 p-4 rounded">
                         <h3 className="font-bold">Compilation Successful!</h3>
                     </div>
-                    <div className=" p-4 rounded flex items-center justify-between my-2">
+                    <div className=" p-4 rounded flex items-center space-x-4 justify-end my-2">
                         <Button color="primary" className="flex gap-2 items-center" onClick={
                             () => {
                                 copyToClipboard(result.bytecode, 1)
