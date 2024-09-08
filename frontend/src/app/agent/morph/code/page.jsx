@@ -117,7 +117,7 @@ export default function Editor() {
             await contract.deployed();
 
             // Get the block explorer URL (if available)
-            let blockExplorerUrl = '';
+            let blockExplorerUrl = `https://explorer-holesky.morphl2.io/address/${contract.address}`;
 
             const solidityCode = suggestions;
             const fileName = `Contract_${contract.address}.sol`;
@@ -125,7 +125,7 @@ export default function Editor() {
 
             const contractData = {
                 chainId: network.chainId,
-                networkName: network.name,
+                networkName: "Morph Holesky",
                 contractAddress: contract.address,
                 abi: result.abi,
                 bytecode: result.bytecode,
