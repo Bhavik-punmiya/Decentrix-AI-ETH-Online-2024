@@ -11,27 +11,30 @@ function registerCairoLanguageSupport() {
 
     monaco.languages.setLanguageConfiguration(languageId, {
         comments: {
-            lineComment: '#',
+            lineComment: '//',
+            blockComment: ['/*', '*/'],
         },
         brackets: [
             ['{', '}'],
             ['[', ']'],
             ['(', ')'],
-            ['%{', '%}'],
+            ['<', '>'],
         ],
         autoClosingPairs: [
             { open: '{', close: '}' },
             { open: '[', close: ']' },
             { open: '(', close: ')' },
-            { open: '%{', close: '%}' },
+            { open: '<', close: '>' },
             { open: "'", close: "'", notIn: ['string', 'comment'] },
+            { open: '"', close: '"', notIn: ['string'] },
         ],
         surroundingPairs: [
             { open: '{', close: '}' },
             { open: '[', close: ']' },
             { open: '(', close: ')' },
-            { open: '%{', close: '%}' },
+            { open: '<', close: '>' },
             { open: "'", close: "'" },
+            { open: '"', close: '"' },
         ],
     });
 
@@ -42,54 +45,73 @@ function registerCairoLanguageSupport() {
             { token: 'delimiter.curly', open: '{', close: '}' },
             { token: 'delimiter.parenthesis', open: '(', close: ')' },
             { token: 'delimiter.square', open: '[', close: ']' },
-            { token: 'delimiter.curly', open: '%{', close: '%}' },
+            { token: 'delimiter.angle', open: '<', close: '>' },
         ],
         keywords: [
-            'if', 'else', 'end', 'alloc_locals', 'as', 'assert', 'cast', 'const',
-            'dw', 'felt', 'from', 'func', 'import', 'let', 'local', 'member',
-            'nondet', 'return', 'static_assert', 'struct', 'tempvar', 'with_attr',
-            'with', 'ap', 'fp', 'call', 'jmp', 'ret', 'abs', 'rel',
+            'use', 'mod', 'fn', 'struct', 'enum', 'trait', 'impl', 'self', 'pub',
+            'let', 'mut', 'ref', 'const', 'static', 'if', 'else', 'match', 'for',
+            'while', 'loop', 'return', 'break', 'continue', 'in', 'extern', 'crate',
+            'super', 'where', 'move', 'unsafe', 'as', 'type', 'dyn', 'async', 'await',
+            'try', 'use', 'mod', 'pub', 'impl', 'trait', 'contract', 'storage',
+            'constructor', 'event', 'abi'
         ],
-        operators: ['=', ':', '==', '++', '+', '-', '*', '**', '/', '&', '%', '_'],
+        typeKeywords: [
+            'u8', 'u16', 'u32', 'u64', 'u128', 'u256', 'usize', 'i8', 'i16', 'i32',
+            'i64', 'i128', 'isize', 'f32', 'f64', 'bool', 'char', 'str', 'ContractAddress'
+        ],
+        operators: [
+            '=', '>', '<', '!', '~', '?', ':', '==', '<=', '>=', '!=',
+            '&&', '||', '++', '--', '+', '-', '*', '/', '&', '|', '^', '%',
+            '<<', '>>', '>>>', '+=', '-=', '*=', '/=', '&=', '|=', '^=',
+            '%=', '<<=', '>>=', '>>>='
+        ],
         symbols: /[=><!~?:&|+\-*\/\^%]+/,
-        numberDecimal: /[+-]?[0-9]+/,
-        numberHex: /[+-]?0x[0-9a-fA-F]+/,
+        escapes: /\\(?:[abfnrtv\\"']|x[0-9A-Fa-f]{1,4}|u[0-9A-Fa-f]{4}|U[0-9A-Fa-f]{8})/,
         tokenizer: {
             root: [
-                [
-                    /[a-zA-Z_]\w*/,
-                    {
-                        cases: {
-                            '@keywords': { token: 'keyword.$0' },
-                            '@default': 'identifier',
-                        },
-                    },
-                ],
+                [/[a-z_$][\w$]*/, {
+                    cases: {
+                        '@typeKeywords': 'keyword.type',
+                        '@keywords': 'keyword',
+                        '@default': 'identifier'
+                    }
+                }],
+                [/[A-Z][\w$]*/, 'type.identifier'],
                 { include: '@whitespace' },
-                [/^%[a-zA-Z]\w*/, 'tag'],
                 [/[{}()\[\]]/, '@brackets'],
                 [/[<>](?!@symbols)/, '@brackets'],
-                [
-                    /@symbols/,
-                    {
-                        cases: {
-                            '@operators': 'delimiter',
-                            '@default': '',
-                        },
-                    },
-                ],
-                [/(@numberHex)/, 'number.hex'],
-                [/(@numberDecimal)/, 'number'],
-                [/'[^']*'/, 'string'],
+                [/@symbols/, { cases: { '@operators': 'operator', '@default': '' } }],
+                [/\d*\.\d+([eE][\-+]?\d+)?/, 'number.float'],
+                [/0[xX][0-9a-fA-F]+/, 'number.hex'],
+                [/\d+/, 'number'],
+                [/[;,.]/, 'delimiter'],
+                [/"([^"\\]|\\.)*$/, 'string.invalid'],
+                [/"/, { token: 'string.quote', bracket: '@open', next: '@string' }],
+                [/'[^\\']'/, 'string'],
+                [/(')(@escapes)(')/, ['string', 'string.escape', 'string']],
+                [/'/, 'string.invalid']
+            ],
+            comment: [
+                [/[^\/*]+/, 'comment'],
+                [/\/\*/, 'comment', '@push'],
+                ["\\*/", 'comment', '@pop'],
+                [/[\/*]/, 'comment']
+            ],
+            string: [
+                [/[^\\"]+/, 'string'],
+                [/@escapes/, 'string.escape'],
+                [/\\./, 'string.escape.invalid'],
+                [/"/, { token: 'string.quote', bracket: '@close', next: '@pop' }]
             ],
             whitespace: [
-                [/\s+/, 'white'],
-                [/(^#.*$)/, 'comment'],
+                [/[ \t\r\n]+/, 'white'],
+                [/\/\*/, 'comment', '@comment'],
+                [/\/\/.*$/, 'comment'],
             ],
         },
     });
 
-    // Add formatting provider
+    // Add formatting provider (you may want to implement a more sophisticated formatter)
     monaco.languages.registerDocumentFormattingEditProvider('cairo', {
         provideDocumentFormattingEdits(model, options, token) {
             const text = model.getValue();
@@ -109,10 +131,13 @@ function registerCairoLanguageSupport() {
         inherit: true,
         rules: [
             { token: 'keyword', foreground: '#569CD6' },
+            { token: 'keyword.type', foreground: '#4EC9B0' },
             { token: 'string', foreground: '#CE9178' },
             { token: 'comment', foreground: '#6A9955' },
             { token: 'number', foreground: '#B5CEA8' },
-            { token: 'tag', foreground: '#D7BA7D' },
+            { token: 'operator', foreground: '#D4D4D4' },
+            { token: 'type.identifier', foreground: '#4EC9B0' },
+            { token: 'identifier', foreground: '#9CDCFE' },
         ],
         colors: {
             'editor.background': '#1E1E1E',
@@ -128,10 +153,10 @@ function formatCairoCode(code) {
 
     lines.forEach(line => {
         line = line.trim();
-        if (line.endsWith('{')) {
+        if (line.endsWith('{') || line.endsWith('(')) {
             formatted += '    '.repeat(indentLevel) + line + '\n';
             indentLevel++;
-        } else if (line.startsWith('}')) {
+        } else if (line.startsWith('}') || line.startsWith(')')) {
             indentLevel = Math.max(0, indentLevel - 1);
             formatted += '    '.repeat(indentLevel) + line + '\n';
         } else {
@@ -142,7 +167,7 @@ function formatCairoCode(code) {
     return formatted;
 }
 
-export default function CairoEditor({ initialCode = '# Cairo code will appear here' }) {
+export default function CairoEditor({code, onChange , defaultValue}) {
     const editorRef = useRef(null);
 
     useEffect(() => {
@@ -150,7 +175,7 @@ export default function CairoEditor({ initialCode = '# Cairo code will appear he
             registerCairoLanguageSupport();
 
             editorRef.current = monaco.editor.create(document.getElementById('cairo-editor-container'), {
-                value: initialCode,
+                value: code ,
                 language: 'cairo',
                 theme: 'cairoDarkTheme',
                 automaticLayout: true,
@@ -170,7 +195,7 @@ export default function CairoEditor({ initialCode = '# Cairo code will appear he
                 editorRef.current = null;
             }
         };
-    }, [initialCode]);
+    }, [code]); // Add defaultValue to the dependency array
 
     return <div id="cairo-editor-container" style={{ width: '100%', height: '500px' }}></div>;
 }

@@ -263,8 +263,10 @@ export default function Editor() {
     return (
         <div className="">
             <Toaster/>
-            <div className="flex ">
-                <div className="w-1/2 p-2">
+            <div className="flex flex-col md:flex-row">
+
+                {/*left side*/}
+                <div className="w-full md:w-1/2 p-2">
                     <Card className="flex-grow h-full p-6">
                         <div className="max-w-2xl bg-gray-100 p-4 rounded-lg shadow-md">
                             <div className="flex items-center space-x-4">
@@ -332,7 +334,9 @@ export default function Editor() {
 
                     </Card>
                 </div>
-                <div className="w-1/2 p-4 flex flex-col">
+
+                {/*right side*/}
+                <div className="w-full md:w-1/2 p-4 flex flex-col">
                     <Card className="flex-grow">
                         <CardHeader className="flex justify-between items-center px-4 py-2">
                             <div className="flex items-center">

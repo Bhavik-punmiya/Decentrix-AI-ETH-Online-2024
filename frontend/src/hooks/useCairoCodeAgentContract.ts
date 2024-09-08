@@ -22,7 +22,7 @@ type UseCairoCodeAgentContract = {
 export function useCairoCodeAgentContract(): UseCairoCodeAgentContract {
     const [code, setCode] = useState('');
     const [userPrompt, setUserPrompt] = useState('');
-    const [suggestions, setSuggestions] = useState<string | null>(null);
+    const [suggestions, setSuggestions] = useState<string | null>("//Your cairo code will appear here");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
@@ -75,7 +75,7 @@ export function useCairoCodeAgentContract(): UseCairoCodeAgentContract {
             console.error('Contract not initialized');
             throw new Error("Contract is not initialized");
         }
-        console.log('Running agent with query:', query);
+        // console.log('Running agent with query:', query);
         const tx = await contract.runAgent(query, maxIterations);
         console.log('Transaction sent:', tx.hash);
         const receipt = await tx.wait();
@@ -111,9 +111,9 @@ export function useCairoCodeAgentContract(): UseCairoCodeAgentContract {
         const maxIterations = 10;
 
         const codeGenerationQuery = `
-        Please generate a Cairo smart contract based on the following instructions. Provide only the code without any additional text, comments, or formatting at the start or end. The code should be ready to use in a Cairo smart contract editor. Start directly with the code and do not include any backticks or other information. Don't give anything other than the code,  Use Cairo syntax and conventions throughout the contract.
-
-        Instructions:
+        Please generate a Cairo smart contract based on the following instructions. and the knowledge base provided to you about the cairo language.Provide only the code without any additional text, comments, or formatting at the start or end. The code should be ready to use in a Cairo smart contract editor. Start directly with the code and do not include any backticks or other information. Don't give anything other than the code,  Use Cairo syntax and conventions throughout the contract.
+            dont add \" \`\`\`cairo\" at the beginning or at the end. dont add any other instructions at the end only give code .
+        Make a cairo contract based on the following instructions and the knowledge base provided:
         ${prompt}
         `;
 
