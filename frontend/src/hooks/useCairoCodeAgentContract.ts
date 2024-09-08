@@ -60,7 +60,7 @@ export function useCairoCodeAgentContract(): UseCairoCodeAgentContract {
         }
     }, [ethersProvider]);
 
-    const contractAddress = process.env.NEXT_PUBLIC_CAIRO_CODE_AGENT_CONTRACT_ADDRESS ?? '';
+    const contractAddress = "0x1EBfc3650489873c0987E0760Bd2e7f953019750" ?? '';
 
     const contract = useMemo(() => {
         if (wallet) {
