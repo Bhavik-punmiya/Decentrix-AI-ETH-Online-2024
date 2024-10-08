@@ -45,15 +45,10 @@ https://github.com/user-attachments/assets/e2982636-9cff-438a-a848-4d24bc86e046
 4. Start building your smart contract or explore the platform's features
 
 ## Supported Blockchain Platforms
-- Rootstock
-- Hedera
-- Blockless
-- Fhenix
-- Morph
-- Nillion
-- Nethermind
-- ChainLink
-
+- Base Mainnet 
+- Base Sepolia 
+- Optimism 
+- Optimism Sepolia
 
 ## How It Works
 
